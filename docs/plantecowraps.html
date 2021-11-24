@@ -454,7 +454,7 @@
 <section id="sec-plantecowrap-nogroup" class="level2" data-number="16.1">
 <h2 data-number="16.1" class="anchored" data-anchor-id="sec-plantecowrap-nogroup"><span class="header-section-number">16.1</span> 无分组数据的使用</h2>
 <p>软件包介绍参考 <a href="phtosyn-pacakges.html">sec.&nbsp;<span>3</span></a>，这里使用软件包自带的数据进行演示：</p>
-<div class="cell" data-hash="plantecowraps_cache/html/unnamed-chunk-1_5e4e85b571c748e8e5bb2f5ca677c986">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecowrap)</span>
@@ -465,13 +465,13 @@
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="plantecowraps_cache/html/unnamed-chunk-2_e0e2ace5be196551b150daf78e6c6d88">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-tbl-cap="{}" data-hash="plantecowraps_cache/html/plantecowraps-data_d130b5784eb1a3aa64d3f154e93dde09">
+<div class="cell" data-tbl-cap="{}">
 <div class="cell-output-display">
 <table class="table">
 <caption>plantecowraps 自带的示例数据 #{tbl-plantecowraps}</caption>
@@ -546,7 +546,7 @@
 </div>
 </div>
 <p>这里使用的是示例数据，上面的代码就是调用软件包示例数据的意思，一般我们也不会这么用。</p>
-<div class="cell" data-hash="plantecowraps_cache/html/unnamed-chunk-4_dd87c8701b67bbffbd75a6bd5dab83a3">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">&lt;-</span> <span class="fu">fitacis2</span>(</span>
@@ -570,20 +570,20 @@
 </details>
 </div>
 <p>到这里为止，如果熟悉 <code>plantecophys</code> 的话，一直没有什么新意，只是给 <code>fitacis</code> 改了个名字，然后给 25 摄氏度下的叶肉导度赋值了一个不可能的数据，这样是为了使用 Ci 的数据来进行拟合。下面是关键部分了：</p>
-<div class="cell" data-hash="plantecowraps_cache/html/unnamed-chunk-5_88c415fae360188cb206498d9c03264a">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tresp <span class="ot">&lt;-</span> <span class="fu">fit_topt_VJ</span>(outputs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>这里使用这个函数 <code>fit_topt_VJ</code> 来拟合 <strong>Vcmax 和 Jmax</strong> 对温度响应的曲线，要查看拟合的参数：</p>
-<div class="cell" data-hash="plantecowraps_cache/html/unnamed-chunk-6_cdbbb68a2266f6fea3fed95d4b8dc35e">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>tresp[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-lable="wraps-para" data-tbl-cap="{}" data-hash="plantecowraps_cache/html/unnamed-chunk-7_999144b327534abf3564e00511afb904">
+<div class="cell" data-lable="wraps-para" data-tbl-cap="{}">
 <div class="cell-output-display">
 <div id="tbl-ecoerap-para" class="anchored">
 <table class="table">
@@ -618,7 +618,7 @@
 </div>
 </div>
 <p>这里是显示拟合参数，k25 是指 25 度时候的 Km，Ea 是活化能。响应图形的查看是：</p>
-<div class="cell" data-hash="plantecowraps_cache/html/fig-plantecowrap-plot_098dfe4e758423b0977458a64e6c1f72">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tresp[[<span class="dv">3</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -637,7 +637,7 @@
 <section id="sec-plantecowrap-group" class="level2" data-number="16.2">
 <h2 data-number="16.2" class="anchored" data-anchor-id="sec-plantecowrap-group"><span class="header-section-number">16.2</span> 多个分组数据的使用</h2>
 <p>上面的示例是简单的演示，实际应用中肯定是要有很多分组的，分组代码如下，使用相似，为避免篇幅太长，这里的代码不再实际运行。</p>
-<div class="cell" data-hash="plantecowraps_cache/html/unnamed-chunk-9_f074aac19c9d9e8c1849a3495d748ac0">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># eval: false</span></span>
@@ -660,7 +660,7 @@
 </div>
 </div>
 <p>数据根据 Groping 分为了 a,b两组。</p>
-<div class="cell" data-hash="plantecowraps_cache/html/unnamed-chunk-10_ef07326436cb06128eec33c1faaeb8bd">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fits2 <span class="ot">&lt;-</span> <span class="fu">fitacis2</span>(</span>
@@ -695,7 +695,7 @@
 </details>
 </div>
 <p>这里就是利用率分组信息来区分不同的数据组。和上面没太大区别。这里既然使用了多个分组，那么要获取对应的图形和参数，就麻烦一些，但是作者考虑了这一点，直接写好相关的函数，望文生义即可，就是代表字面意思：</p>
-<div class="cell" data-hash="plantecowraps_cache/html/unnamed-chunk-11_19108c789b95fc34fa79db846973e4aa">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pars <span class="ot">&lt;-</span> <span class="fu">get_t_pars</span>(tresps)</span>

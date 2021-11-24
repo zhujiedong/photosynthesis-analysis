@@ -461,7 +461,7 @@ P_{n} = \frac{\alpha I + P_{nmax} \sqrt{(\alpha I + P_{nmax})^{2} - 4  \theta \a
 <p>其中，<span class="math inline">\theta</span> 为表示曲线弯曲程度的曲角参数，取值为<span class="math inline">0\leq \theta \leq 1</span>。其他参数意义同式 <a href="hyp.html#eq-rec">eq.&nbsp;<span>8.1</span></a>。同样如同直角双曲线模型，式仍然没有极值，无法求得 <span class="math inline">I_{sat}</span>，可以仍然参考直角双曲线模型的方式进行计算。</p>
 <section id="sec-nonrec_mode_exam" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="sec-nonrec_mode_exam"><span class="header-section-number">9.1</span> 非直角双曲线模型的实现</h2>
-<div class="cell" data-hash="non-hypo_cache/html/fig-nrecr_70cf5f61d47f50fff4996b09ef7e769f">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(minpack.lm)</span>
@@ -548,7 +548,7 @@ P_{n} = \frac{\alpha I + P_{nmax} \sqrt{(\alpha I + P_{nmax})^{2} - 4  \theta \a
 </div>
 </div>
 </div>
-<div class="cell" data-tbl-cap="{}" data-hash="non-hypo_cache/html/nrectable_cb4bf0384f1ce713409b978e92337a1c">
+<div class="cell" data-tbl-cap="{}">
 <div class="cell-output-display">
 <div id="tbl-nrectable-" class="anchored">
 <table class="table">
@@ -604,14 +604,14 @@ P_{n} = \frac{\alpha I + P_{nmax} \sqrt{(\alpha I + P_{nmax})^{2} - 4  \theta \a
 <section id="sec-photosyn-aq" class="level3" data-number="9.2.1">
 <h3 data-number="9.2.1" class="anchored" data-anchor-id="sec-photosyn-aq"><span class="header-section-number">9.2.1</span> 使用 <code>photosynthesis</code> 处理</h3>
 <p>安装可以通过 <code>CRAN</code>:</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-3_fd103e9e26d40fc1d34575e79e4607f6">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'photosynthesis'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>我们看一下 LI-6400 数据的使用：</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-4_98e623e7e6722fd6ed2526b0aa609117">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
@@ -619,7 +619,7 @@ P_{n} = \frac{\alpha I + P_{nmax} \sqrt{(\alpha I + P_{nmax})^{2} - 4  \theta \a
 </details>
 </div>
 <p>他的拟合结果的查看方式为：</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-5_319b3a7b72164fa36af12fd4bea52f42">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit6400[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -645,7 +645,7 @@ Achieved convergence tolerance: 1.49e-08</code></pre>
 </div>
 </div>
 <p>除此以外，它还提供了只看拟合结果的方式：</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-6_ab75240740c21571517e342d3805629b">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit6400[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -665,7 +665,7 @@ k_sat 15.80173 0.06580667 0.3700908 0.1461717 2.234292 0.04216531</code></pre>
 <li><p>残差的平方和 (resid_SS)。</p></li>
 </ol>
 <p>也可以直接输出图形，只不过要想定制化，还要自己做：</p>
-<div class="cell" data-hash="non-hypo_cache/html/photosynthesis-aq_e717fc6070007d9767e121fa2482f6b0">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit6400[[<span class="dv">3</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -680,7 +680,7 @@ k_sat 15.80173 0.06580667 0.3700908 0.1461717 2.234292 0.04216531</code></pre>
 </div>
 </div>
 <p>如果是 LI-6800，稍微修改一下参数即可，这里不再进行一步一步的演示：</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-8_7c40285ad0a9fd43f5299ddbc962a924">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>aq6800 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/lrc6800.csv"</span>)</span>
@@ -692,7 +692,7 @@ k_sat 15.80173 0.06580667 0.3700908 0.1461717 2.234292 0.04216531</code></pre>
 <section id="sec-fiaq" class="level3" data-number="9.2.2">
 <h3 data-number="9.2.2" class="anchored" data-anchor-id="sec-fiaq"><span class="header-section-number">9.2.2</span> 使用 <code>FitAQ</code> 处理</h3>
 <p>安装必须是从 github 安装，当然，如果你和我遇到一样登录 github 困难的话，我把他 fork 到 gitee 上去了：</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-9_2b1dc6d86a4ce7550e7772e022382a70">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_git</span>(<span class="st">"https://gitee.com/zhu_jie_dong/FitAQ"</span>)</span>
@@ -701,7 +701,7 @@ k_sat 15.80173 0.06580667 0.3700908 0.1461717 2.234292 0.04216531</code></pre>
 </details>
 </div>
 <p>使用也比较方便，默认这样操作就行了：</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-10_91890a8129a6390ff439c3cb6d498a68">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FitAQ)</span>
@@ -713,7 +713,7 @@ Amax 15.80173 0.06580667 0.1461717 0.3700908</code></pre>
 </div>
 </div>
 <p>如果觉得不满意，还可以手动调整初值，作者考虑的比较周到：</p>
-<div class="cell" data-hash="non-hypo_cache/html/fitaq-plot_be23369d088df7a3bf3ad0d88a6d52f9">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">FitAQ</span>(</span>
@@ -801,7 +801,7 @@ Algorithm "port", convergence message: relative convergence (4)</code></pre>
 </div>
 </div>
 <p>饱和点和补偿点的计算也提供了方便的函数：</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-12_eb20e789c55fea9a1662706a35632046">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FitLCP</span>(fit1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -829,7 +829,7 @@ Algorithm "port", convergence message: relative convergence (4)</code></pre>
 </div>
 <p>饱和点也是使用了达到最大饱和光强多少比例时候的值，带入模型求的光强而得到，例如这里修改后使用了 0.95，看上去结果就不不正常了。</p>
 <p>至于 LI-6800 的分析，也是一样，修改光合速率和光合有效辐射两个参数的名称即可：</p>
-<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-13_9160872bab6e35d8e7017b1ef0a694a4">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>aq6800 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/lrc6800.csv"</span>)</span>

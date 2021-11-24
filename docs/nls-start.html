@@ -447,7 +447,7 @@
 </blockquote>
 <p>用通俗但不是特别严谨的说法可解释为：每次执行这种算法时，程序都会从原值（也就是我抄的上面迭代法定义的旧值）推导出一个新值。</p>
 <p>之所以先介绍这个迭代，原因很简单，非线性拟合就是通过迭代的方法，需要对每一个变量<strong>最初的估计值进行不断的迭代，得到一个向一个点收缩或汇聚的值，这个估计值必须在实际值的一定范围内，程序通过不断调整这个值来改善拟合结果</strong>。这就解释了上面的问题，初始值是让程序开始运行的前提，不然没法想着目标值迭代推进，必须设定。我下面的内容将以 LI-6800 的光响应曲线的测试数据，使用非直角双曲线模型进行拟合来讲解具体的 R 中的一些实现方法，我们首先导入数据，然后再利用这些数据逐个举例不同的确定初始值的方式。</p>
-<div class="cell" data-hash="nls-start_cache/html/unnamed-chunk-1_9987c0b9ea9578dba1fa6efa454bfcdd">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nls <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/nlstest.csv"</span>)</span>
@@ -465,7 +465,7 @@
 </blockquote>
 <p>的概率会大大降低，而且尽管有可能结果不如意，我们也可以利用他的结果缩小初值的范围，继续尝试其他初值。</p>
 <p>例如下面的例子中，非直角双曲线 (<a href="non-hypo.html">sec.&nbsp;<span>9</span></a>) 的 Rd 的初值我们可以利用暗呼吸的实测值大致估计，同理最大光合速率也是如此，剩下的分别为非直角双曲线曲率，我们暂定为 1，alpha 也暂定为 0.1，使用 <code>nlsLM</code> 进行拟合，结果如下：</p>
-<div class="cell" data-hash="nls-start_cache/html/unnamed-chunk-2_6a9436c40e9dc8173ff2d2d0902785e0">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(minpack.lm)</span>
@@ -478,7 +478,7 @@
 </details>
 </div>
 <p>结果没有报错，看上去没有问题，那我们观察一下具体的拟合结果：</p>
-<div class="cell" data-hash="nls-start_cache/html/unnamed-chunk-3_0b594080a5f5fe9b59ca4ee2a8eca8ca">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lrcnls_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -517,7 +517,7 @@ Achieved convergence tolerance: 1.49e-08</code></pre>
 </ul>
 <section id="plot_exam" class="level3" data-number="7.2.1">
 <h3 data-number="7.2.1" class="anchored" data-anchor-id="plot_exam"><span class="header-section-number">7.2.1</span> 实现过程</h3>
-<div class="cell" data-hash="nls-start_cache/html/unnamed-chunk-4_93a6062b1417772dbff09fd5d11d0d4b">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 我们选择的模型，将其写为一个函数，用于计算净光合速率</span></span>
@@ -530,7 +530,7 @@ Achieved convergence tolerance: 1.49e-08</code></pre>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> lrc_Q, <span class="at">y =</span> lrc_A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="nls-start_cache/html/fig-pomp_05dbaf13dbd18a6e16b89012487b3b22">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 先做实测数据的散点图</span></span>
@@ -551,7 +551,7 @@ Achieved convergence tolerance: 1.49e-08</code></pre>
 </div>
 </div>
 <p>观察 <a href="#fig-pomp">fig.&nbsp;<span>7.1</span></a> 的结果可以看到，曲线在 0-600 的范围内，拟合值明显偏大，观察模型的方程式，以及其他起始值的设定方式，我们初步判断 alpha 的值偏大，于是乎我们将其改小观察，但曲线和测量点的重合仍然不是很好，我们尝试修改 theta 值与 alpha 值（也即曲线高于测量点，则需要减小纵坐标的值，低于测量点，则需要增加该值，该过程省略，我大概设置了五分钟完成），最终得出的结果如下：</p>
-<div class="cell" data-hash="nls-start_cache/html/fig-alpp_7b29feaa400f2be8ce87fd6ee7ad5bda">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(y <span class="sc">~</span> x, <span class="at">data =</span> test)</span>
@@ -568,7 +568,7 @@ Achieved convergence tolerance: 1.49e-08</code></pre>
 </div>
 </div>
 <p><a href="#fig-alpp">fig.&nbsp;<span>7.2</span></a> 尽管看上去效果仍然不满意，但我们可试着进行拟合，看能否得到显著差异的结果：</p>
-<div class="cell" data-hash="nls-start_cache/html/unnamed-chunk-7_908194fc6c2263c584aff34a405e8f26">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lrcnls_manual <span class="ot">&lt;-</span> <span class="fu">nls</span>(lrc_A <span class="sc">~</span> </span>
@@ -599,7 +599,7 @@ Number of iterations to convergence: 7
 Achieved convergence tolerance: 4.601e-06</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="nls-start_cache/html/fig-alpf_11daf2b6d91bd428cdefc2fcdd35ae95">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 对拟合之后的结果作图，观察使用我们的估计值，</span></span>
@@ -622,7 +622,7 @@ Achieved convergence tolerance: 4.601e-06</code></pre>
 <section id="sec-show_demo" class="level3" data-number="7.2.2">
 <h3 data-number="7.2.2" class="anchored" data-anchor-id="sec-show_demo"><span class="header-section-number">7.2.2</span> 直观展示</h3>
 <p>上面的表述太啰嗦，直接用下面的图形说明一下，其中 alhpa 的取值在此处选择从 0.01 到 0.07，每次增加 0.05，其他值分别为 Am = 12.31, Rd= 0.66, theta=0.71 （此处为展示效果和方便，将这些值直接按照拟合结果设定了，实际差别不大）</p>
-<div class="cell" data-hash="nls-start_cache/html/fig-malp_c9a2b45abb07da4a4a435347d40b477e">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
@@ -682,7 +682,7 @@ Achieved convergence tolerance: 4.601e-06</code></pre>
 <section id="mult_try" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="mult_try"><span class="header-section-number">7.3</span> 自动多次尝试法</h2>
 <p>该方法实际为使用 <code>nls2</code> 来实现，具体方法参考 <span class="citation" data-cites="nls2">Bouvier and Huet (<a href="references.html#ref-nls2" role="doc-biblioref">1994</a>)</span> 的文章，可简单概括为使用一系列的起始值梯度（例如下面的代码中， alpha 的取值在 0.01 到 0.08 之间 ），然后软件循序使用不同的起始值，即排列组合所有的起始值序列，最终找到合适的值，具体实现如下：</p>
-<div class="cell" data-hash="nls-start_cache/html/unnamed-chunk-10_21f182ed5853e2790e468c0e4c89e96e">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nls2)</span>
@@ -759,7 +759,7 @@ Achieved convergence tolerance: NA</code></pre>
 </div>
 </div>
 <p>通过结果可以看到，虽然和之前采用手动方法判定的结果比较接近，但还是略有差异，可以看一下他们各自的结果同测量值的重合程度：</p>
-<div class="cell" data-hash="nls-start_cache/html/fig-mcomp_fb2cf2806394073325c06c00e7d8cc18">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lrc_Q, lrc_A)</span>

@@ -464,7 +464,7 @@
 <section id="sec-fitaci_intro" class="level3" data-number="14.1.1">
 <h3 data-number="14.1.1" class="anchored" data-anchor-id="sec-fitaci_intro"><span class="header-section-number">14.1.1</span> fitaci 函数介绍</h3>
 <p><code>fitaci</code> 的用法如下<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>：</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-1_6d184825ab81fa1adf2502c5c8a29cf3">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitaci</span>(data, <span class="at">varnames =</span> <span class="fu">list</span>(<span class="at">ALEAF =</span> <span class="st">"Photo"</span>, </span>
@@ -519,21 +519,21 @@
 <section id="sec-use-fitaci" class="level3" data-number="14.1.2">
 <h3 data-number="14.1.2" class="anchored" data-anchor-id="sec-use-fitaci"><span class="header-section-number">14.1.2</span> <code>fitaci</code> 的使用</h3>
 <p>首先安装 <code>plantecophys</code>:</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-2_28f95d5c6d3c79247b45d7d985849662">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"plantecophys"</span>, <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>如果使用 LI-6800，为方便起见，可以使用我修改后的 <code>plantecophys2</code>:</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-3_4d8d2e47eb81aa5cda9fb42ef50ec357">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_git</span>(<span class="st">"https://gitee.com/zhu_jie_dong/plantecophys2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>我们先看一个使用 LI-6400 的例子：</p>
-<div class="cell" data-hash="aci_cache/html/fitaci-eg_2f76bb638711b4845994826f075bf8d1">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"plantecophys"</span>)</span>
@@ -689,7 +689,7 @@ Km =  1223.279 </code></pre>
 </div>
 </div>
 <p>需要注意，<code>plantecophys</code> 的 Rd 不需要带负号，即上面的仅仅表示呼吸速率的值。</p>
-<div class="cell" data-hash="aci_cache/html/fig-fitaci6400_f59e5013c67247e89e512d6243a03ad9">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 设置作图参数，图形的边距及分为1行两列输出图形</span></span>
@@ -728,7 +728,7 @@ Km =  1223.279 </code></pre>
 </div>
 </div>
 <p>如果需要导出数据做他用，使用 Rstudio 的话，其自动补全的功能在选择数据上更方便 (即输入拟合的名称 + $ 符号后，自动补全会弹出提示)。例如导出预测值和系数分别使用如下方式：</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-6_d44395ea60d5a4e8f0c300fd99b7b9d0">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 将模型拟合结果中df（即计算数据）赋给predictaci，</span></span>
@@ -742,7 +742,7 @@ Km =  1223.279 </code></pre>
 <section id="sec-multi_curve" class="level4">
 <h4 class="anchored" data-anchor-id="sec-multi_curve">一次拟合多条 ACi 曲线</h4>
 <p>fitacis 函数实际上是 fitaci 函数的扩展，方便一次拟合多条曲线<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>。函数的参数如下：</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-7_a4b059f983806cdb0081782b90affb30">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitacis</span>(data, group, <span class="at">fitmethod =</span> <span class="fu">c</span>(<span class="st">"default"</span>, </span>
@@ -762,7 +762,7 @@ Km =  1223.279 </code></pre>
 <section id="sec-fitacis_exa" class="level4">
 <h4 class="anchored" data-anchor-id="sec-fitacis_exa">fitacis 函数应用举例</h4>
 <p>下文代码根据 plantecophys 中的示例代码修改，进行演示，原代码请参考其帮助文档。</p>
-<div class="cell" data-hash="aci_cache/html/fig-fitacisr_902e20b72a7e5eb5a73e141f5a34fb6f">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecophys)</span>
@@ -885,13 +885,13 @@ Km =  698.2084 </code></pre>
 <section id="sec-onpoint_fit" class="level3" data-number="14.1.4">
 <h3 data-number="14.1.4" class="anchored" data-anchor-id="sec-onpoint_fit"><span class="header-section-number">14.1.4</span> 使用 ‘onepoint’ 单独计算 V<sub>cmax</sub> 和 J<sub>max</sub></h3>
 <p>目前我手头没有相应数据，仅有使用 LI-6400 测试 auto log 2 时的一个数据，我们用这个来示范该方法的使用：</p>
-<div class="cell" data-hash="aci_cache/html/onepointdata_95a57dde580b48c0086c32d0b39e41c8">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>one_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/onepoint.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-tbl-cap="{}" data-hash="aci_cache/html/one_pointdata_203a421a3e0a5b1fdc99deea20d7d081">
+<div class="cell" data-tbl-cap="{}">
 <div class="cell-output-display">
 <div id="tbl-one_point" class="anchored">
 <table class="table">
@@ -1402,7 +1402,7 @@ Km =  698.2084 </code></pre>
 </div>
 <p><a href="#tbl-one_point">tbl.&nbsp;<span>14.1</span></a> 数据为同一个叶片连续记录数据，故所有的光合速率十分接近。</p>
 <p>使用方法：</p>
-<div class="cell" data-hash="aci_cache/html/start_onepoint_cb90d12772cd7fb5d46d30d61cd861bc">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecophys)</span>
@@ -1412,7 +1412,7 @@ Km =  698.2084 </code></pre>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>aci_fit <span class="ot">&lt;-</span> <span class="fu">fitaci</span>(one_data, <span class="at">fitmethod =</span> <span class="st">"onepoint"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="aci_cache/html/onepoint-result_47324feb2ee2866c956d15266d8592e3">
+<div class="cell">
 <div class="cell-output-display">
 <div id="tbl-onekable-result" class="anchored">
 <table class="table">
@@ -2030,14 +2030,14 @@ Km =  698.2084 </code></pre>
 <section id="sec-transition" class="level3" data-number="14.1.5">
 <h3 data-number="14.1.5" class="anchored" data-anchor-id="sec-transition"><span class="header-section-number">14.1.5</span> <code>findCiTransition</code> 函数</h3>
 <p>对于计算不同 ACi 限制阶段过渡点的方式，可以使用 CiTransition 的函数，第一点为 Ac ~ Aj，第二点为 Aj ~ Ap，并且仅在计算 TPU 的前提下才会有第二点出现。</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-13_3b3581e731e2c6c68dcb6e2e914bdcd8">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findCiTransition</span>(object, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>参数使用，object 为 fitaci 函数对象，或者整个的 <code>Photosyn</code> 函数。 … 为使用 <code>Photosyn</code> 时可传递的参数。默认的 <code>fitaci</code> 对象作图会标记该点，如图 <a href="#fig-fitaci6400">fig.&nbsp;<span>14.1</span></a>。 数据的计算也非常简单：</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-14_a2998b7f9e03549dc4b6db84f01761ca">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findCiTransition</span>(acifit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2053,7 +2053,7 @@ Km =  698.2084 </code></pre>
 <h2 data-number="14.2" class="anchored" data-anchor-id="sec-photosynthesis-aci"><span class="header-section-number">14.2</span> <code>photosynthesis</code> 拟合</h2>
 <p>相比<code>plantecophys</code>， <code>photosynthesis</code> (<a href="phtosyn-pacakges.html">sec.&nbsp;<span>3</span></a>) 做了一些改进，但基本使用非常相似。我们使用和 <code>plantecophys</code> 相同的数据集进行演示。</p>
 <p>这里官方文档说是温度使用的摄氏度，但是 vignette 使用的是 K，经过验证，应该是 K 才能拟合。。</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-15_d5e8ef4a6c0a96bd952cbe433793ca6b">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
@@ -2070,13 +2070,13 @@ Km =  698.2084 </code></pre>
 </details>
 </div>
 <p>我们先观察拟合结果：</p>
-<div class="cell" data-hash="aci_cache/html/unnamed-chunk-16_5d2e5b00fa74f36a6c3fcdf7b2774bb6">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>reshape2<span class="sc">::</span><span class="fu">melt</span>(fit[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-tbl-cap="{}" data-hash="aci_cache/html/photosyn-fitaci-_a207ae2764e9d7eda121e832a3744f91">
+<div class="cell" data-tbl-cap="{}">
 <div class="cell-output-display">
 <div id="tbl-photosyn-fitaci" class="anchored">
 <table class="table">
@@ -2198,7 +2198,7 @@ Km =  698.2084 </code></pre>
 </div>
 </div>
 <p>上面使用 <code>melt</code> 纯粹是因为横排数据太长，并非必须。其实也能看出来它拟合 <code>ACi</code> 和非直角双曲线光响应模型是一样的展示结果的方式，图形查看为：</p>
-<div class="cell" data-hash="aci_cache/html/photosyn-fitaci-plot_e9dbaa02a9c3ea8782ca436e7b3b8f13">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fit[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

@@ -470,14 +470,14 @@ P_{nmax}= AQE \times I_{sat} - R_{d}
 <section id="sec-rec_fit" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="sec-rec_fit"><span class="header-section-number">8.1</span> 直角双曲线模型的实现</h2>
 <p>若没有安装 <code>minpack.lm</code>, 则需要首先：</p>
-<div class="cell" data-hash="hyp_cache/html/unnamed-chunk-1_0d88a9ea3452b770dfc3b7b5cd6626b7">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"minpack.lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>具体实现过程如下：</p>
-<div class="cell" data-hash="hyp_cache/html/fig-recr_1af78f43040f863e63e4a1aa9b908841">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 调用非线性拟合包minpack.lm，也可以直接使用nls</span></span>
@@ -572,7 +572,7 @@ P_{nmax}= AQE \times I_{sat} - R_{d}
 <li><p>光响应曲线的拟合，使用到了非线性模型 nlsLM，也可以使用 nls，具体实现方法请查看参考文档。</p></li>
 <li><p>求饱和点和补偿点，补偿点的计算根据其定义，净光合速率为 0，求解模型在一定区间的根来计算，而饱和点则较为麻烦，若使用 <a href="#eq-aqe">eq.&nbsp;<span>8.2</span></a> 计算，那么饱和点远远低于我们实际需求的，因此，我们使用了 <span class="math inline">0.75P_{nmax}</span> 来计算，求得目标区间的根。当然也可以采用其他比例来作为饱和点光合速率。</p></li>
 </ul>
-<div class="cell" data-tbl-cap="{}" data-hash="hyp_cache/html/rectable_8413b369da5edd0c09c3273fcba30fa6">
+<div class="cell" data-tbl-cap="{}">
 <div class="cell-output-display">
 <div id="tbl-para-rec-tab" class="anchored">
 <table class="table">

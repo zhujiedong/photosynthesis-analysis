@@ -462,7 +462,7 @@
 <section id="sec-geom-pca" class="level2" data-number="24.1">
 <h2 data-number="24.1" class="anchored" data-anchor-id="sec-geom-pca"><span class="header-section-number">24.1</span> 几何解释</h2>
 <p>PCA 通常能够反映我们复杂数据集的一些分布特征，例如典型的 <code>iris</code> 数据集，我们看到了三个鸢尾种的四个性状：花萼的长宽、花瓣的长宽，如果给我们这么一个数据，我们肉眼很难看出他们的特征来，如果作图也很难表达，因为这是一个四维的数据，假设我们只对前两组也就是花萼的长宽作图，先看一下二维的数据情况：</p>
-<div class="cell" data-hash="pca_cache/html/fig-2dim-iris_85469e13cf351a0569e02429cd19b9ef">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">log</span>(iris<span class="sc">$</span>Sepal.Length), <span class="fu">log</span>(iris<span class="sc">$</span>Sepal.Width))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -495,7 +495,7 @@
 <ul>
 <li>所有的点投影到这条拟合线上，投影后的点之间的距离是最大的，该方向代表了所有变异最大，也就是最大化的区分所有的数据点，因为我们的目的就是要区分数据点之间的差异。如果在读的各位有跟我一样空间想象力有限的，可以根据图 <a href="#fig-maxvar">fig.&nbsp;<span>24.4</span></a> 的极端情况来理解，蓝色线为最佳拟合线，红色的数据点投影到其上的距离之和当然大于投影到蓝色的拟合线上。</li>
 </ul>
-<div class="cell" data-hash="pca_cache/html/fig-maxvar_97eec21ee57a4f592ccd47dfb406d5b9">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">col=</span><span class="st">"red"</span>)</span>
@@ -523,7 +523,7 @@
 </div>
 <p>如果我们做一条通过中心点并与 PC1 垂直的线，并不断旋转这条线使其满足：所有投影于其上的点，他们的距离最大，也就是变异最大，这样就做出了第二个主成份，PC2，如图 <a href="#fig-pc3">fig.&nbsp;<span>24.5</span></a>。<strong>就这样不断的变换，一般情况下，我们可以使用 2~3 个主成份来解释绝大部分数据所展示的信息（所有数据都尽可能少的损失信息投影于其上）</strong>。</p>
 <p>以上为基本变换，如果我们使用 R 计算 PCA (这里推荐两个包 <code>factoextra</code> 和 <code>FactoMineR</code>)，查看其结果：</p>
-<div class="cell" data-hash="pca_cache/html/fig-scree_ff6f3b55450701c9e9359893e85d5768">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"FactoMineR"</span>)</span>
@@ -545,7 +545,7 @@
 </div>
 <p>我们可以看到，前两个成分可以解释数据 95% 以上的变异，所以我们可以只使用主成份 1 和主成份 2 对我们的结果进行解释。</p>
 <p>既然我们使用两个主成份解释整个数据，那么我们怎么把四个性状都放在这个图上呢？这就需要载荷图来展示了，如图 <a href="#fig-loadingpca">fig.&nbsp;<span>24.7</span></a></p>
-<div class="cell" data-hash="pca_cache/html/fig-loadingpca_7de484cee41b5e356337fb9969993684">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_var</span>(ir_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -561,7 +561,7 @@
 </div>
 <p>因为原始的数据点相当于在坐标轴上，这几个性状分布的产生类似于原始的数据点在拉拽某个性状，影响强的偏向某一方向，换句话说，<strong>这些性状决定主成份时有不同的权重，也就是对主成份影响的权重大小。同时他们是有方向的，如果两个性状方向接近，也就是夹角非常小，说明他们有较强的正相关性，例如图中的花瓣的长宽，如果他们互相垂直，那说明他们无相关性，例如图中花萼的长宽，如果夹角非常大，例如他们几乎在一条直线上，说明具有显著的负相关</strong>。其本质还是所有的单位向量（本例有四个性状，各个性状中心化后形成的轴，也就是向量）在现在的这个二维平面的位置。</p>
 <p>而如果我想通过这些性状来对鸢尾分类，怎么看呢？那就需要得分图来展示了，如图 <a href="#fig-scorepca">fig.&nbsp;<span>24.8</span></a> ，得分图本质是各个品种的每个观测值在各个轴上的长度，也就是得分，所以其值都是每个物种性状的加权，每个点代表了每个物种的观测值。</p>
-<div class="cell" data-hash="pca_cache/html/fig-scorepca_39aa7c80053f1b619d7d9736af736d58">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_ind</span>(ir_pca, <span class="at">repel =</span> <span class="cn">TRUE</span>, <span class="at">col.ind=</span> iris<span class="sc">$</span>Species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -599,7 +599,7 @@ finaldata = rowfeaturevector \times rowdataajust
 <h3 data-number="24.2.2" class="anchored" data-anchor-id="sec-man_pca"><span class="header-section-number">24.2.2</span> 手动实现过程</h3>
 <section id="sec-av_val" class="level4">
 <h4 class="anchored" data-anchor-id="sec-av_val">均值的计算</h4>
-<div class="cell" data-hash="pca_cache/html/unnamed-chunk-6_1a8d0ea527172ee8db14807f8dba7cef">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>iris_mean <span class="ot">&lt;-</span> <span class="fu">apply</span>(iris[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">2</span>, <span class="cf">function</span>(x) x <span class="sc">-</span> <span class="fu">mean</span>(x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -609,7 +609,7 @@ finaldata = rowfeaturevector \times rowdataajust
 </section>
 <section id="sec-cov_val" class="level4">
 <h4 class="anchored" data-anchor-id="sec-cov_val">计算协方差矩阵</h4>
-<div class="cell" data-hash="pca_cache/html/unnamed-chunk-7_97f2b886bc806626b4b503c9806aa46e">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>iris_cov <span class="ot">&lt;-</span> <span class="fu">cov</span>(iris_mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -618,14 +618,14 @@ finaldata = rowfeaturevector \times rowdataajust
 </section>
 <section id="sec-eig_val" class="level4">
 <h4 class="anchored" data-anchor-id="sec-eig_val">计算特征值和特征向量</h4>
-<div class="cell" data-hash="pca_cache/html/unnamed-chunk-8_e62f8eb9aec3e751d29562bbe58b33c0">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>iris_eigen <span class="ot">&lt;-</span> <span class="fu">eigen</span>(iris_cov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>这里就可以看到之前提到的，特征值和特征向量是根据协方差矩阵计算的。我们选取特征值最大的两个，他们的特征值之和已经占所有的特征值之和相当大的比例：</p>
-<div class="cell" data-hash="pca_cache/html/unnamed-chunk-9_ffece4c6a862b6a52dcee1fc45959ffe">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(iris_eigen<span class="sc">$</span>values[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])<span class="sc">/</span><span class="fu">sum</span>(iris_eigen<span class="sc">$</span>values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -641,7 +641,7 @@ finaldata = rowfeaturevector \times rowdataajust
 <section id="sec-prcom" class="level3" data-number="24.2.3">
 <h3 data-number="24.2.3" class="anchored" data-anchor-id="sec-prcom"><span class="header-section-number">24.2.3</span> <code>prcomp</code> 的实现</h3>
 <p>我们用 <code>prcomp</code> 来简化实现过程，注意，根据 <span class="citation" data-cites="kemp2003modern">Kemp (<a href="references.html#ref-kemp2003modern" role="doc-biblioref">2003</a>)</span>，我们把 iris 数据对数化一下，并提取所有物种名字：</p>
-<div class="cell" data-hash="pca_cache/html/unnamed-chunk-10_a6746317f46f77cf119e1480e9adf3a3">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"iris"</span>)</span>
@@ -650,7 +650,7 @@ finaldata = rowfeaturevector \times rowdataajust
 </details>
 </div>
 <p>需要注意，我们处理时使用特征中心化。即每一维的数据都减去该维的均值。这里的“维”指的就是一个特征（或属性），变换之后每一维的均值都变成了0 (参考 <a href="#eq-despca">eq.&nbsp;<span>24.2</span></a> )。</p>
-<div class="cell" data-hash="pca_cache/html/unnamed-chunk-11_f27c44dc245047419bc2a9250a0e36c0">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>value_pca <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(iris_pca, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>

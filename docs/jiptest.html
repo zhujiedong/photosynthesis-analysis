@@ -469,7 +469,7 @@
 <section id="sec-jiptest" class="level2" data-number="19.1">
 <h2 data-number="19.1" class="anchored" data-anchor-id="sec-jiptest"><span class="header-section-number">19.1</span> jip test 的实现</h2>
 <p>分析依赖于我写的 <code>jiptest</code> 软件包，去年冬天（2020.11）我修改了一次，其中我希望大改的是求曲线下部面积的部分，<strong>因为曲线形状不规则，需要用到积分，我用的现成的软件包，而且印象里求面积没有使用标准化后的数据来进行计算，所以不太合适，这个我争取近期找时间来解决一下，这里先立一个 flag，</strong>安装可以按照下面的方式：</p>
-<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-1_db0072e38ac6ed14e187aa0da7b259ce">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"zhujiedong/jiptest"</span>)</span>
@@ -483,7 +483,7 @@
 <p><code>read_files</code> 用于批量读取所有调制光测量数据，方便用于其他的数据分析。<strong>函数要求所有数据必须是 <code>xlsx</code> 格式，并且所有测量数据都保存在同一文件夹内。</strong>，如有其他文件或测量数据则会报错。 <code>read_dcfiles</code> 用于批量读取所有连续光测量数据，其他选项与 <code>read_dcfiles</code> 相同。例如在了 data文件夹下的 ojip 文件夹内，有五个数据文件。</p>
 <p>函数仅有一个参数，即保存数据文件夹的路径，使用如下：</p>
 <p>读取调制光测量数据：</p>
-<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-2_d96ee3a27b6ee519ffa435d96f38d3c3">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jiptest)</span>
@@ -491,14 +491,14 @@
 </details>
 </div>
 <p>读取连续光数据：</p>
-<div class="cell" data-hash="jiptest_cache/html/dcjipdata_57fdd9e3aed4cca2cd96cb5e6b3fb24f">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>jip_dcdata <span class="ot">&lt;-</span> <span class="fu">read_dcfiles</span>(<span class="st">"data/ojip"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>调制光的信号前 10 行数据：</p>
-<div class="cell" data-tbl-cap="{}" data-hash="jiptest_cache/html/mod-data_12f6a1d491658915258fa8d66797679b">
+<div class="cell" data-tbl-cap="{}">
 <div class="cell-output-display">
 <div id="tbl-ac-importdata" class="anchored">
 <table class="table">
@@ -554,7 +554,7 @@
 </div>
 </div>
 <p>连续光的信号前 10 行数据：</p>
-<div class="cell" data-tbl-cap="{}" data-hash="jiptest_cache/html/dc-data_54726a23e8605957c01f5f72583da67e">
+<div class="cell" data-tbl-cap="{}">
 <div class="cell-output-display">
 <div id="tbl-dc-importdata" class="anchored">
 <table class="table">
@@ -626,34 +626,34 @@
 <section id="sec-testfluor" class="level2" data-number="19.3">
 <h2 data-number="19.3" class="anchored" data-anchor-id="sec-testfluor"><span class="header-section-number">19.3</span> <code>jip_test</code> 及 <code>jip_dctest</code> 函数</h2>
 <p><code>jiptest</code> 是 jiptest 的核心函数，用于所有数据的 <code>jiptest</code> 分析，函数仅包一个参数，测量数据的保存文件夹路径。 <code>jip_dctest</code> 与 <code>jip_test</code> 相似，用于连续光测量数据的分析。</p>
-<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-5_b297bd1283da88447c797a5f3e1d1598">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>actest <span class="ot">&lt;-</span> <span class="fu">jip_test</span>(<span class="st">"data/ojip"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-6_dba6b398fa14fa51768c869817a85a33">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dctest <span class="ot">&lt;-</span> <span class="fu">jip_dctest</span>(<span class="st">"data/ojip"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>调制光信号的计算参数：</p>
-<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-7_5e1fad1633f07e8e1b9202b991497219">
+<div class="cell">
 <div class="cell-output-display">
-<div id="htmlwidget-ea2f327769ca2817eb9e" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ea2f327769ca2817eb9e">{"x":{"filter":"none","vertical":false,"caption":"<caption>jiptest 输出的调制光计算参数<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34"],["Fo","Fm","F300","FJ","FI","Tfmax","Area","Fv","Vj","Mo","Sm","Ss","N","Vav","phi_po","phi_ET2o","phi_RE1o","psi_ET2o","psi_RE1o","delta_RE1o","phi_Do","phi_Pav","ABS_RC","TR0_RC","ET2o_RC","RE1o_RC","DI0_RC","ABC_CS","TR0_CS","ET0_CS","DI0_CS","PIabs"," PItotal","DFabs"],[620,2609.28,1593.2,1722.9,2268.95,159.99799936,0.0370785256694329,1989.28,0.554421700313681,1.95688892463605,1.86391687793739e-05,0.28331792026305,6.57888804282769e-05,0.999999883503738,0.762386558744175,0.339702906548933,0.130430616875153,0.445578299686319,0.171081999517414,0.383954962882737,0.237613441255825,8.88151839316141e-08,4.62967733545593,3.52960377187415,1.5727148472381,0.603851670796434,1.10007356358178,620,3.52960377187415,1.5727148472381,616.470396228126,0.556977067538007,0.34714038164126,-0.585231211288402],[887,4649.52,2181.4,2594.3,4443.11,256.016,0.0211767796365814,3762.52,0.453765029820439,1.37609899748041,5.6283500517157e-06,0.329747373300371,1.70686728915617e-05,0.999999978015632,0.8092276191951,0.442028424439512,0.0443938299007211,0.546234970179561,0.0548595090524437,0.100432070532595,0.1907723808049,1.77903580397866e-08,3.74755450756465,3.03262461196041,1.65652561447999,0.166368297352506,0.714929895604243,887,3.03262461196041,1.65652561447999,883.96737538804,1.3625602534541,0.152122750263933,0.309365469296071],[849,3714.27,1798.6,2104.6,3547.11,316.016,0.0206134159969076,2865.27,0.43821350169443,1.32566913414792,7.19423160711122e-06,0.330560235888795,2.17637538519045e-05,0.999999977234597,0.771422109862772,0.433374525815302,0.0450048057895629,0.56178649830557,0.0583400517228743,0.103847372442799,0.228577890137228,1.75617352196623e-08,3.92154595005701,3.02516725071679,1.69949811656887,0.176488413877163,0.89637869934022,849,3.02516725071679,1.69949811656887,845.974832749283,1.10328089369791,0.127849674657744,0.0982883712208778],[981,4225.24,2067.8,2456.8,4009.22,272.016,0.0232992857307214,3244.24,0.45489852785244,1.33997484773013,7.18173924577756e-06,0.339482885535517,2.11549375587777e-05,0.9999999735981,0.767823839592544,0.418541905311888,0.0511260898789181,0.54510147214756,0.0665857026607156,0.122152857886047,0.232176160407456,2.02720083154646e-08,3.83637032499204,2.94565659303429,1.60568174530416,0.196138614044358,0.890713731957757,981,2.94565659303429,1.60568174530416,978.054343406966,1.03296657286611,0.143737802315441,0.0324348303362052],[914,3754.27,2537.2,2569,3556.53,200.016,0.0284091531893741,2840.27,0.582691082185849,2.28597985402796,1.00022720337764e-05,0.254897732873337,3.92403334506969e-05,0.99999994999264,0.756543882032992,0.315712508690105,0.0526706923050286,0.417308917814151,0.0696201417470873,0.166831186143241,0.243456117967008,3.78327619518671e-08,5.18561062633327,3.9231419939577,1.63716213992974,0.273129701713286,1.26246863237556,914,3.9231419939577,1.63716213992974,910.076858006042,0.429173424386615,0.0859363795917179,-0.845894189092755]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>parameters<\/th>\n      <th>data_file1<\/th>\n      <th>data_file2<\/th>\n      <th>data_file3<\/th>\n      <th>data_file4<\/th>\n      <th>data_file5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e25a5b0641bdf1896fca" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e25a5b0641bdf1896fca">{"x":{"filter":"none","vertical":false,"caption":"<caption>jiptest 输出的调制光计算参数<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34"],["Fo","Fm","F300","FJ","FI","Tfmax","Area","Fv","Vj","Mo","Sm","Ss","N","Vav","phi_po","phi_ET2o","phi_RE1o","psi_ET2o","psi_RE1o","delta_RE1o","phi_Do","phi_Pav","ABS_RC","TR0_RC","ET2o_RC","RE1o_RC","DI0_RC","ABC_CS","TR0_CS","ET0_CS","DI0_CS","PIabs"," PItotal","DFabs"],[620,2609.28,1593.2,1722.9,2268.95,159.99799936,0.0370785256694329,1989.28,0.554421700313681,1.95688892463605,1.86391687793739e-05,0.28331792026305,6.57888804282769e-05,0.999999883503738,0.762386558744175,0.339702906548933,0.130430616875153,0.445578299686319,0.171081999517414,0.383954962882737,0.237613441255825,8.88151839316141e-08,4.62967733545593,3.52960377187415,1.5727148472381,0.603851670796434,1.10007356358178,620,3.52960377187415,1.5727148472381,616.470396228126,0.556977067538007,0.34714038164126,-0.585231211288402],[887,4649.52,2181.4,2594.3,4443.11,256.016,0.0211767796365814,3762.52,0.453765029820439,1.37609899748041,5.6283500517157e-06,0.329747373300371,1.70686728915617e-05,0.999999978015632,0.8092276191951,0.442028424439512,0.0443938299007211,0.546234970179561,0.0548595090524437,0.100432070532595,0.1907723808049,1.77903580397866e-08,3.74755450756465,3.03262461196041,1.65652561447999,0.166368297352506,0.714929895604243,887,3.03262461196041,1.65652561447999,883.96737538804,1.3625602534541,0.152122750263933,0.309365469296071],[849,3714.27,1798.6,2104.6,3547.11,316.016,0.0206134159969076,2865.27,0.43821350169443,1.32566913414792,7.19423160711122e-06,0.330560235888795,2.17637538519045e-05,0.999999977234597,0.771422109862772,0.433374525815302,0.0450048057895629,0.56178649830557,0.0583400517228743,0.103847372442799,0.228577890137228,1.75617352196623e-08,3.92154595005701,3.02516725071679,1.69949811656887,0.176488413877163,0.89637869934022,849,3.02516725071679,1.69949811656887,845.974832749283,1.10328089369791,0.127849674657744,0.0982883712208778],[981,4225.24,2067.8,2456.8,4009.22,272.016,0.0232992857307214,3244.24,0.45489852785244,1.33997484773013,7.18173924577756e-06,0.339482885535517,2.11549375587777e-05,0.9999999735981,0.767823839592544,0.418541905311888,0.0511260898789181,0.54510147214756,0.0665857026607156,0.122152857886047,0.232176160407456,2.02720083154646e-08,3.83637032499204,2.94565659303429,1.60568174530416,0.196138614044358,0.890713731957757,981,2.94565659303429,1.60568174530416,978.054343406966,1.03296657286611,0.143737802315441,0.0324348303362052],[914,3754.27,2537.2,2569,3556.53,200.016,0.0284091531893741,2840.27,0.582691082185849,2.28597985402796,1.00022720337764e-05,0.254897732873337,3.92403334506969e-05,0.99999994999264,0.756543882032992,0.315712508690105,0.0526706923050286,0.417308917814151,0.0696201417470873,0.166831186143241,0.243456117967008,3.78327619518671e-08,5.18561062633327,3.9231419939577,1.63716213992974,0.273129701713286,1.26246863237556,914,3.9231419939577,1.63716213992974,910.076858006042,0.429173424386615,0.0859363795917179,-0.845894189092755]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>parameters<\/th>\n      <th>data_file1<\/th>\n      <th>data_file2<\/th>\n      <th>data_file3<\/th>\n      <th>data_file4<\/th>\n      <th>data_file5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>连续光信号计算参数：</p>
-<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-8_56f74bb3490df07f1d9093e62aa9117f">
+<div class="cell">
 <div class="cell-output-display">
-<div id="htmlwidget-666bed47aad017779c02" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-666bed47aad017779c02">{"x":{"filter":"none","vertical":false,"caption":"<caption>jiptest输出的连续光计算参数<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34"],["Fo","Fm","F300","FJ","FI","Tfmax","Area","Fv","Vj","Mo","Sm","Ss","N","Vav","phi_po","phi_ET2o","phi_RE1o","psi_ET2o","psi_RE1o","delta_RE1o","phi_Do","phi_Pav","ABS_RC","TR0_RC","ET2o_RC","RE1o_RC","DI0_RC","ABC_CS","TR0_CS","ET0_CS","DI0_CS","PIabs"," PItotal","DFabs"],[98161,402308,246753,267827,349985,171.99799936,0.032408581542512,304147,0.557842096091693,1.95421292993191,1.065556508613e-07,0.285456148379455,3.73282031114834e-07,0.999999999380483,0.756005349135488,0.334273740517216,0.130057070702049,0.442157903908307,0.172031945079189,0.389073549423339,0.243994650864512,4.68357992918753e-10,4.63378340631032,3.50316504190586,1.54895211197395,0.602656296092483,1.13061836440445,98161,3.50316504190586,1.54895211197395,98157.4968349581,0.529998867665533,0.337534150695778,-0.634880408918379],[154000,713839,338091,400744,681505,276.016,0.0185299747008991,559839,0.440740998751427,1.31531386702248,3.30987564297934e-08,0.335084278970726,9.87774076762489e-08,0.999999999880084,0.784265079380645,0.438607305008552,0.0452959280734171,0.559259001248573,0.0577558905328139,0.103272169788722,0.215734920619355,9.40459917008939e-11,3.80524890380906,2.98432383360892,1.66900996658644,0.172362280648385,0.820925070200136,154000,2.98432383360892,1.66900996658644,153997.015676166,1.21224078187918,0.139608398037054,0.192470532832677],[133191,560610,275476.8,320245,534314,300.016,0.0189398021417022,427419,0.437636136905472,1.33158142244495,4.43120267037783e-08,0.328658938558872,1.34826780911789e-07,0.999999999852301,0.762417723551132,0.42875617630795,0.0469060487683059,0.562363863094528,0.0615227680566376,0.109400287063424,0.237582276448868,1.12608223388146e-10,3.99081474460245,3.04266789269409,1.71108647024913,0.187193351035597,0.948146851908358,133191,3.04266789269409,1.71108647024913,133187.957332107,1.03328852392899,0.126928023325361,0.0327464579430637],[156664,647660,322859.2,376885,614590,288.016,0.0200724035412602,490996,0.448518928871111,1.35394341298096,4.0880991986208e-08,0.331268592594732,1.23407388747599e-07,0.99999999985806,0.758107649075132,0.418082018342958,0.051060741747213,0.551481071128889,0.0673528908585813,0.122130920505955,0.241892350924868,1.07605811306407e-10,3.98188633623156,3.0186984892449,1.66475507626393,0.203318069881076,0.963187846986661,156664,3.0186984892449,1.66475507626393,156660.981301511,0.967764569897516,0.134637362808989,-0.0327664342024075],[153589,584839,388110.4,406671,552253,212.016,0.0243955604515514,431250,0.586856811594203,2.17527095652174,5.65694155398292e-08,0.269785614447125,2.09682846343596e-07,0.999999999733183,0.737382424906684,0.304644526100346,0.0557178984301662,0.413143188405797,0.0755617391304347,0.182894795922949,0.262617575093316,1.96745930401744e-10,5.02676322670604,3.70664685754024,1.5313759010185,0.280080682898102,1.32011636916579,153589,3.70664685754024,1.53137590101851,153585.293353142,0.393232145695641,0.0880181801296736,-0.933355139992716]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>parameters<\/th>\n      <th>data_file1<\/th>\n      <th>data_file2<\/th>\n      <th>data_file3<\/th>\n      <th>data_file4<\/th>\n      <th>data_file5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-4de1ba6fc63b9cab7d30" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4de1ba6fc63b9cab7d30">{"x":{"filter":"none","vertical":false,"caption":"<caption>jiptest输出的连续光计算参数<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34"],["Fo","Fm","F300","FJ","FI","Tfmax","Area","Fv","Vj","Mo","Sm","Ss","N","Vav","phi_po","phi_ET2o","phi_RE1o","psi_ET2o","psi_RE1o","delta_RE1o","phi_Do","phi_Pav","ABS_RC","TR0_RC","ET2o_RC","RE1o_RC","DI0_RC","ABC_CS","TR0_CS","ET0_CS","DI0_CS","PIabs"," PItotal","DFabs"],[98161,402308,246753,267827,349985,171.99799936,0.032408581542512,304147,0.557842096091693,1.95421292993191,1.065556508613e-07,0.285456148379455,3.73282031114834e-07,0.999999999380483,0.756005349135488,0.334273740517216,0.130057070702049,0.442157903908307,0.172031945079189,0.389073549423339,0.243994650864512,4.68357992918753e-10,4.63378340631032,3.50316504190586,1.54895211197395,0.602656296092483,1.13061836440445,98161,3.50316504190586,1.54895211197395,98157.4968349581,0.529998867665533,0.337534150695778,-0.634880408918379],[154000,713839,338091,400744,681505,276.016,0.0185299747008991,559839,0.440740998751427,1.31531386702248,3.30987564297934e-08,0.335084278970726,9.87774076762489e-08,0.999999999880084,0.784265079380645,0.438607305008552,0.0452959280734171,0.559259001248573,0.0577558905328139,0.103272169788722,0.215734920619355,9.40459917008939e-11,3.80524890380906,2.98432383360892,1.66900996658644,0.172362280648385,0.820925070200136,154000,2.98432383360892,1.66900996658644,153997.015676166,1.21224078187918,0.139608398037054,0.192470532832677],[133191,560610,275476.8,320245,534314,300.016,0.0189398021417022,427419,0.437636136905472,1.33158142244495,4.43120267037783e-08,0.328658938558872,1.34826780911789e-07,0.999999999852301,0.762417723551132,0.42875617630795,0.0469060487683059,0.562363863094528,0.0615227680566376,0.109400287063424,0.237582276448868,1.12608223388146e-10,3.99081474460245,3.04266789269409,1.71108647024913,0.187193351035597,0.948146851908358,133191,3.04266789269409,1.71108647024913,133187.957332107,1.03328852392899,0.126928023325361,0.0327464579430637],[156664,647660,322859.2,376885,614590,288.016,0.0200724035412602,490996,0.448518928871111,1.35394341298096,4.0880991986208e-08,0.331268592594732,1.23407388747599e-07,0.99999999985806,0.758107649075132,0.418082018342958,0.051060741747213,0.551481071128889,0.0673528908585813,0.122130920505955,0.241892350924868,1.07605811306407e-10,3.98188633623156,3.0186984892449,1.66475507626393,0.203318069881076,0.963187846986661,156664,3.0186984892449,1.66475507626393,156660.981301511,0.967764569897516,0.134637362808989,-0.0327664342024075],[153589,584839,388110.4,406671,552253,212.016,0.0243955604515514,431250,0.586856811594203,2.17527095652174,5.65694155398292e-08,0.269785614447125,2.09682846343596e-07,0.999999999733183,0.737382424906684,0.304644526100346,0.0557178984301662,0.413143188405797,0.0755617391304347,0.182894795922949,0.262617575093316,1.96745930401744e-10,5.02676322670604,3.70664685754024,1.5313759010185,0.280080682898102,1.32011636916579,153589,3.70664685754024,1.53137590101851,153585.293353142,0.393232145695641,0.0880181801296736,-0.933355139992716]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>parameters<\/th>\n      <th>data_file1<\/th>\n      <th>data_file2<\/th>\n      <th>data_file3<\/th>\n      <th>data_file4<\/th>\n      <th>data_file5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>可以看出，对于标准化之后的参数，二者基本一致，原始信号则无法一致，因为连续光信号强度更高（所以数据的比较要在相同的测量光内进行）。 。若需要将数据导出，可以使用相关命令：</p>
-<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-9_aafff5ab98e7a41133ea225682ee8cb5">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(actest, <span class="st">"d:/data/jip_resluts.csv"</span>)</span>
@@ -670,7 +670,7 @@
 <ol type="1">
 <li>默认调制光图形</li>
 </ol>
-<div class="cell" data-hash="jiptest_cache/html/fig-default-moulation-plot-ac_d102cb0483f73c6aa435828d26d90ceb">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(jip_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -687,7 +687,7 @@
 <ol start="2" type="1">
 <li>默认连续光图形</li>
 </ol>
-<div class="cell" data-hash="jiptest_cache/html/fig-default-moulation-plot-dc_a5966053660b098171972667a8f31417">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(jip_dcdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -710,7 +710,7 @@
 <li>定制调制光图形</li>
 </ol>
 <p>这里使用原始荧光信号，然后更改图例颜色等，主要是 <code>add_leg = FALSE</code> 不增加默认的图例，以及 <code>normalized = FALSE</code> 不使用信号标准化。其他请参考帮助 <code>?plot.jip</code>。 我简单写了一下帮助文档，大家应该基本能看明白，我<del>暂时</del>一直没时间详细了写。</p>
-<div class="cell" data-hash="jiptest_cache/html/fig-cus-ac-plot-leg-cls_00935a0f92cd8290359f1e5294b3b357">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="fu">palette.colors</span>(<span class="at">n =</span> <span class="dv">5</span>,  <span class="st">"set 2"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>)</span>
@@ -747,7 +747,7 @@
 <li>定制连续光图形</li>
 </ol>
 <p>连续光图形，例如修改图例的位置以及不显示标准化的数据。</p>
-<div class="cell" data-hash="jiptest_cache/html/fig-cus-dc-plot-leg-cls_0bac0ff646221aabf5e63d5f3ac0dcb9">
+<div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(jip_dcdata, <span class="at">legend_pos =</span> <span class="st">"bottomright"</span>, <span class="at">normalized =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
