@@ -1,0 +1,105 @@
+# 叶肉与气孔导度 {#sec-gsgm}
+
+本章主要介绍气孔导度和叶肉导度。
+
+## 气孔导度相关 {#sec-stamotal-related}
+
+todo `plantecophys` 和 `photosynthesis` 使用的气孔导度模型
+
+###  气孔导度模型简介 {#sec-plant-intro}
+
+气孔导度模型的拟合是通过 `fitBB` 来实现的，可以拟合三个 **Ball-Berry 类型的气孔导度模型**，共有下面几个参数：
+
+* 气孔导度 (gs), 
+* 光合 (A), 
+* 外界 CO~2~ 浓度 (Ca) 
+* 水气压亏缺 (VPD).
+
+其三个模型的简介如下：
+
+####  BallBerry 模型 {#sec-ballberry}
+
+@Ball1987A 发表的文章中的模型：
+
+$$
+g_s = g0 + g1(\frac{A h_r}{C_a})
+$${#eq-ballberry}
+
+其中 A 为净光合速率，g~0~ 和 g~1~ 为拟合参数，h~r~ 为叶片表面的相对湿度，C~a~ 为叶片处CO~2~浓度。
+
+### BBLeuning 模型 {#sec-bbleuning}
+
+@leuning1995a 发表的文章中的模型：
+
+$$
+g_s = g_0 + g_1(\frac{A}{(C_a - \Gamma)(1 + \frac{D}{D_0})})
+$${#eq-BBLeuning}
+
+
+其中 $\Gamma$ 为 CO~2~ 补偿点，g~0~、g~1~ 和 D~0~ 为拟合参数。
+
+### BBOptiFull 模型 {#sec-bboptifull}
+
+@Medlyn2011Reconciling 发表的文章中的模型：
+
+$$
+g_s^* \approx g_0 + g_1(1 + \frac{g_1}{D}) \frac{A}{C_a}
+$${#eq-BBOptiFull}
+
+额外的参数 g~k~ 来自于 @Duursma2013Near
+
+$$
+g_s = g_0 + 1.6(1 + \frac{g_1}{D}(1-g_k)) \frac{A}{C_a}
+$${#eq-Duursm}
+
+#### Medlyn 模型 (Medlyn_partial) {#sec-Medlyn_partial}
+
+@ball_model_1987 和 @leuning_critical_1995 模型最为人批判的地方是他们都是经验模型，也就意味着对于他们参数的预测和解释并无理论依据。因而 @Medlyn2011Reconciling 提出了基于最优气控模型的方法来解决这个问题。也就是根据：
+
+$$
+\frac{\partial E}{\partial A} = \lambda
+$${#eq-medlyn-paritial}
+
+得到查看临界水分利用效率或者说植物损耗单位水分的碳生产量。然后将其考虑在模型内，两个基本的计算依据是：
+
+简化关系，使得 g0 等于零，确定胞间二氧化碳浓度和外界二氧化碳浓度的关系为：
+
+$$
+\frac{C_i}{C_a} \approx \frac{g_1}{g_1 + \sqrt{D}}
+$${#eq-medlyn-parital1}
+而 A 与 E 之间的关系（ITE）表示为：
+
+$$
+\frac{A}{E} = \frac{C_a P}{g_1\sqrt{D}+D}
+$$ {#eq-medlyn-parital2}
+
+最终得到的，考虑了最优气孔导度模型的模型为：
+
+$$
+g_s^* \approx g_0 + 1.6 \Bigg( 1 + \frac{g_1}{\sqrt{D}} \Bigg) A/C_a
+$${#eq-medlyn-parital3}
+这里 P 为大气压，单位是 kPa。文献附加材料里有详细推导说明，需要的可以参考一下。
+
+:::{.callout-note}
+
+## 注意
+
+不同的作者喜欢不同的参数名称，但本质上是一样的，例如 判的地方是他们都是经验模型，也就意味着对于他们参数的预测和解释并无理论依据。因而 @Medlyn2011Reconciling 将 @ball_model_1987 的模型写为 @eq-medlyn-parital3
+
+:::
+
+
+$$
+g_s = g_0 +g_1(A h_r/C_a)
+$$ {#eq-medlyn-parital3}
+
+
+
+
+#### Medlyn 模型 (Medlyn_full) {#sec-Medlyn_full}
+
+@duursma_near-optimal_2013 考虑了同化速率对温度的响应，最终模型的形式（我们选择了 `plantecophys` 中 `fitBB` 函数的写法）：
+
+$$
+g_s = g_0 + 1.6(1+\frac{g_1}{D}(1-g_k))\frac{A}{C_a}
+$${#eq-medlyn-full}

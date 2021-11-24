@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.299">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+  <title>LI-6800 和 LI-6400 光合数据分析指南 - 9&nbsp; 非直角双曲线模型</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <link href="./exp.html" rel="next">
+  <link href="./hyp.html" rel="prev">
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+</head>
+<body class="floating">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/jjallaire/hopr/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+  </div>
+    <div class="px-3 mt-2 flex-shrink-0 align-items-center">
+      <div class="sidebar-search">
+      <div id="quarto-search" class="" title="Search"></div>
+      </div>
+    </div>
+  <div class="sidebar-menu-container"> 
+  <ul class="list-unstyled mt-1">
+      <li class="sidebar-item">
+  <a href="./index.html" class="">欢迎</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./preface.html" class="">序言</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./intro.html" class="">介绍</a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./basics.html" class="">必备工具</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#必备工具-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="必备工具-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./packages.html" class="">光合相关的软件包</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光合相关的软件包-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光合相关的软件包-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./data-prepare.html" class="">数据准备</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#数据准备-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="数据准备-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./light-response.html" class="">光响应曲线简介</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光响应曲线简介-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光响应曲线简介-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./non-hypo.html" class="active"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#二氧化碳响应曲线概述-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="二氧化碳响应曲线概述-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶绿素荧光数据的处理-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶绿素荧光数据的处理-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶肉与气孔导度-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶肉与气孔导度-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./other-stat.html" class="">其他统计方法</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#其他统计方法-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="其他统计方法-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <li class="sidebar-item">
+  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#appendices-collapse" aria-expanded="true">
+              <div class="me-auto sidebar-section-item">Appendices</div>
+            <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="appendices-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  </ul>
+  </div>
+</nav>
+<!-- toc -->
+    <nav id="TOC" role="doc-toc" class="sidebar sidebar-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#sec-nonrec_mode_exam" class="nav-link active" data-scroll-target="#sec-nonrec_mode_exam"> <span class="header-section-number">9.1</span> 非直角双曲线模型的实现</a></li>
+<li><a href="#sec-fitqa-quick" class="nav-link" data-scroll-target="#sec-fitqa-quick"> <span class="header-section-number">9.2</span> 利用函数来拟合</a>
+<ul class="collapse">
+<li><a href="#sec-photosyn-aq" class="nav-link" data-scroll-target="#sec-photosyn-aq"> <span class="header-section-number">9.2.1</span> 使用 <code>photosynthesis</code> 处理</a></li>
+<li><a href="#sec-fiaq" class="nav-link" data-scroll-target="#sec-fiaq"> <span class="header-section-number">9.2.2</span> 使用 <code>FitAQ</code> 处理</a></li>
+</ul></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jjallaire/hopr/edit/master/non-hypo.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<!-- main -->
+<main class="content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="sec-non-hypo" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></span></h1>
+</header>
+
+<p><span class="citation" data-cites="Thornley1976">Thornley (<a href="references.html#ref-Thornley1976" role="doc-biblioref">1976</a>)</span> 提出了非直角双曲线模型，它的表达式为：</p>
+<p><span id="eq-nrec"><span class="math display">
+P_{n} = \frac{\alpha I + P_{nmax} \sqrt{(\alpha I + P_{nmax})^{2} - 4  \theta \alpha I P_{nmax}}}{2 \theta} - R_{d}
+ \qquad(9.1)</span></span></p>
+<p>其中，<span class="math inline">\theta</span> 为表示曲线弯曲程度的曲角参数，取值为<span class="math inline">0\leq \theta \leq 1</span>。其他参数意义同式 <a href="hyp.html#eq-rec">eq.&nbsp;<span>8.1</span></a>。同样如同直角双曲线模型，式仍然没有极值，无法求得 <span class="math inline">I_{sat}</span>，可以仍然参考直角双曲线模型的方式进行计算。</p>
+<section id="sec-nonrec_mode_exam" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="sec-nonrec_mode_exam"><span class="header-section-number">9.1</span> 非直角双曲线模型的实现</h2>
+<div class="cell" data-hash="non-hypo_cache/html/fig-nrecr_70cf5f61d47f50fff4996b09ef7e769f">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(minpack.lm)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 读取数据，同fitaci数据格式</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>lrc <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/lrc.csv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>lrc <span class="ot">&lt;-</span> <span class="fu">subset</span>(lrc, Obs <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 光响应曲线没有太多参数，</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 直接调出相应的光强和光合速率</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 方便后面调用</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>lrc_Q <span class="ot">&lt;-</span> lrc<span class="sc">$</span>PARi</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>lrc_A <span class="ot">&lt;-</span> lrc<span class="sc">$</span>Photo </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 非直角双曲线模型的拟合</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>lrcnls <span class="ot">&lt;-</span> <span class="fu">nlsLM</span>(lrc_A <span class="sc">~</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                (<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>theta))<span class="sc">*</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                (alpha<span class="sc">*</span>lrc_Q<span class="sc">+</span>Am<span class="sc">-</span><span class="fu">sqrt</span>((alpha<span class="sc">*</span>lrc_Q<span class="sc">+</span>Am)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                <span class="dv">4</span><span class="sc">*</span>alpha<span class="sc">*</span>theta<span class="sc">*</span>Am<span class="sc">*</span>lrc_Q))<span class="sc">-</span> Rd,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">start=</span><span class="fu">list</span>(<span class="at">Am=</span>(<span class="fu">max</span>(lrc_A)<span class="sc">-</span><span class="fu">min</span>(lrc_A)),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                <span class="at">alpha=</span><span class="fl">0.05</span>,<span class="at">Rd=</span><span class="sc">-</span><span class="fu">min</span>(lrc_A),<span class="at">theta=</span><span class="dv">1</span>)) </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>fitlrc_nrec <span class="ot">&lt;-</span> <span class="fu">summary</span>(lrcnls)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 光补偿点</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>Ic <span class="ot">&lt;-</span> <span class="cf">function</span>(Ic){</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">4</span>,<span class="dv">1</span>])) <span class="sc">*</span> </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    (fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> Ic <span class="sc">+</span> fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">1</span>,<span class="dv">1</span>] <span class="sc">-</span> </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sqrt</span>((fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> Ic <span class="sc">+</span> fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">1</span>,<span class="dv">1</span>]</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    )<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span>  <span class="dv">4</span> <span class="sc">*</span> fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> </span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">4</span>,<span class="dv">1</span>] <span class="sc">*</span> fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">1</span>,<span class="dv">1</span>] <span class="sc">*</span> Ic)) <span class="sc">-</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">3</span>,<span class="dv">1</span>]</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">uniroot</span>(Ic, <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">50</span>))<span class="sc">$</span>root  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>[1] 2.234292</code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 光饱和点</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Isat <span class="ot">&lt;-</span> <span class="cf">function</span>(Isat){</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span> <span class="sc">*</span> fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">4</span>,<span class="dv">1</span>])) <span class="sc">*</span> (fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  Isat <span class="sc">+</span> fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">1</span>,<span class="dv">1</span>] <span class="sc">-</span> <span class="fu">sqrt</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  (fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> Isat <span class="sc">+</span>fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">1</span>,<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">4</span><span class="sc">*</span>fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">4</span>,<span class="dv">1</span>] <span class="sc">*</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">1</span>,<span class="dv">1</span>] <span class="sc">*</span> Isat)) <span class="sc">-</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">3</span>,<span class="dv">1</span>] <span class="sc">-</span> (<span class="fl">0.9</span><span class="sc">*</span>fitlrc_nrec<span class="sc">$</span>coef[<span class="dv">1</span>,<span class="dv">1</span>])}</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">uniroot</span>(Isat, <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2000</span>))<span class="sc">$</span>root</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>[1] 1596.286</code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用ggplot2进行作图并拟合曲线</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>light <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">lrc_Q =</span> lrc<span class="sc">$</span>PARi, <span class="at">lrc_A =</span> lrc<span class="sc">$</span>Photo)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>nonrec_form <span class="ot">&lt;-</span> y <span class="sc">~</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>theta))<span class="sc">*</span>(alpha<span class="sc">*</span>x<span class="sc">+</span>Am<span class="sc">-</span><span class="fu">sqrt</span>((alpha<span class="sc">*</span>x<span class="sc">+</span>Am)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>   <span class="dv">4</span><span class="sc">*</span>alpha<span class="sc">*</span>theta<span class="sc">*</span>Am<span class="sc">*</span>x))<span class="sc">-</span> Rd</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(light, <span class="fu">aes</span>(<span class="at">x =</span> lrc_Q, <span class="at">y =</span> lrc_A)) <span class="sc">+</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">16</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"green"</span>) <span class="sc">+</span> </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"nls"</span>, <span class="at">formula =</span> nonrec_form, <span class="at">se =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">start =</span> <span class="fu">c</span>(<span class="at">Am=</span>(<span class="fu">max</span>(lrc_A)<span class="sc">-</span><span class="fu">min</span>(lrc_A)), </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha=</span><span class="fl">0.05</span>, <span class="at">Rd=</span><span class="sc">-</span><span class="fu">min</span>(lrc_A), <span class="at">theta=</span><span class="dv">1</span>), </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">color=</span><span class="st">'blue'</span>, <span class="at">size =</span> <span class="fl">1.2</span>))) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"photosynthetic rate  "</span>, </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>          <span class="st">"("</span>, mu, mol<span class="sc">%.%</span>m<span class="sc">^-</span><span class="dv">2</span><span class="sc">%.%</span>s<span class="sc">^-</span><span class="dv">1</span>, <span class="st">")"</span>)), </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x=</span><span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"PAR "</span>, </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>           <span class="st">"("</span>, mu, mol<span class="sc">%.%</span>m<span class="sc">^-</span><span class="dv">2</span><span class="sc">%.%</span>s<span class="sc">^-</span><span class="dv">1</span>, <span class="st">")"</span>))) <span class="sc">+</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-nrecr" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="non-hypo_files/figure-html/fig-nrecr-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.1: 非直角双曲线模型拟合</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap="{}" data-hash="non-hypo_cache/html/nrectable_cb4bf0384f1ce713409b978e92337a1c">
+<div class="cell-output-display">
+<div id="tbl-nrectable-" class="anchored">
+<table class="table">
+<caption>Table 9.1: 非直角双曲线计算参数 </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">Std. Error</th>
+<th style="text-align: right;">t value</th>
+<th style="text-align: right;">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Am</td>
+<td style="text-align: right;">15.8017296</td>
+<td style="text-align: right;">0.1513064</td>
+<td style="text-align: right;">104.435285</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">alpha</td>
+<td style="text-align: right;">0.0658067</td>
+<td style="text-align: right;">0.0020216</td>
+<td style="text-align: right;">32.551422</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rd</td>
+<td style="text-align: right;">0.1461717</td>
+<td style="text-align: right;">0.0420800</td>
+<td style="text-align: right;">3.473659</td>
+<td style="text-align: right;">0.0070082</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">theta</td>
+<td style="text-align: right;">0.3700908</td>
+<td style="text-align: right;">0.0493403</td>
+<td style="text-align: right;">7.500783</td>
+<td style="text-align: right;">0.0000369</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>最终的数据拟结果如图 <a href="#fig-nrecr">fig.&nbsp;<span>9.1</span></a> 所示，拟合的参数及结果见表 <span class="quarto-unresolved-ref">?tbl-nrectable</span>-。单纯从作图来看，本例数据使用非直角双曲线与散点图重合程度更高。</p>
+</section>
+<section id="sec-fitqa-quick" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="sec-fitqa-quick"><span class="header-section-number">9.2</span> 利用函数来拟合</h2>
+<p>上面的方式是手动实现，也并不复杂，<code>phtosynthesis</code> 和 <code>FitAQ</code> 软件包提供了<strong>非直角双曲线模型</strong>的相应的函数，可以让我们方便的进行处理。</p>
+<section id="sec-photosyn-aq" class="level3" data-number="9.2.1">
+<h3 data-number="9.2.1" class="anchored" data-anchor-id="sec-photosyn-aq"><span class="header-section-number">9.2.1</span> 使用 <code>photosynthesis</code> 处理</h3>
+<p>安装可以通过 <code>CRAN</code>:</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-3_fd103e9e26d40fc1d34575e79e4607f6">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'photosynthesis'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>我们看一下 LI-6400 数据的使用：</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-4_98e623e7e6722fd6ed2526b0aa609117">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fit6400 <span class="ot">&lt;-</span> <span class="fu">fit_aq_response</span>(lrc, <span class="at">varnames =</span> <span class="fu">list</span>(<span class="at">A_net =</span> <span class="st">"Photo"</span>, <span class="at">PPFD =</span> <span class="st">"PARi"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>他的拟合结果的查看方式为：</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-5_319b3a7b72164fa36af12fd4bea52f42">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit6400[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+Formula: A_net ~ aq_response(k_sat, phi_J, Q_abs = data$Q_abs, theta_J) - 
+    Rd
+
+Parameters:
+                Estimate Std. Error t value Pr(&gt;|t|)    
+k_sat          15.801730   0.151307 104.435 3.43e-15 ***
+phi_J.Q_abs     0.065807   0.002022  32.551 1.20e-10 ***
+theta_J         0.370091   0.049340   7.501 3.69e-05 ***
+Rd.(Intercept)  0.146172   0.042080   3.474  0.00701 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.06845 on 9 degrees of freedom
+
+Number of iterations to convergence: 6 
+Achieved convergence tolerance: 1.49e-08</code></pre>
+</div>
+</div>
+<p>除此以外，它还提供了只看拟合结果的方式：</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-6_ab75240740c21571517e342d3805629b">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit6400[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>         A_sat      phi_J   theta_J        Rd      LCP  resid_SSs
+k_sat 15.80173 0.06580667 0.3700908 0.1461717 2.234292 0.04216531</code></pre>
+</div>
+</div>
+<p>他们的意义按顺序为：</p>
+<ol type="1">
+<li><p>饱和光下的净光合速率 (A_sat)，</p></li>
+<li><p>表观量子效率 (phi_J),</p></li>
+<li><p>曲线的弯曲程度 (theta_J),</p></li>
+<li><p>暗呼吸速率 (Rd),</p></li>
+<li><p>光补偿点 (LCP),</p></li>
+<li><p>残差的平方和 (resid_SS)。</p></li>
+</ol>
+<p>也可以直接输出图形，只不过要想定制化，还要自己做：</p>
+<div class="cell" data-hash="non-hypo_cache/html/photosynthesis-aq_e717fc6070007d9767e121fa2482f6b0">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit6400[[<span class="dv">3</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="non-hypo_files/figure-html/photosynthesis-aq-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">photosynthesis 软件包的非直角双曲线拟合图形查看</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>如果是 LI-6800，稍微修改一下参数即可，这里不再进行一步一步的演示：</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-8_7c40285ad0a9fd43f5299ddbc962a924">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>aq6800 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/lrc6800.csv"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fit6800 <span class="ot">&lt;-</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_aq_response</span>(aq6800, <span class="at">varnames =</span> <span class="fu">list</span>(<span class="at">A_net =</span> <span class="st">"A"</span>, <span class="at">PPFD =</span> <span class="st">"Qin"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="sec-fiaq" class="level3" data-number="9.2.2">
+<h3 data-number="9.2.2" class="anchored" data-anchor-id="sec-fiaq"><span class="header-section-number">9.2.2</span> 使用 <code>FitAQ</code> 处理</h3>
+<p>安装必须是从 github 安装，当然，如果你和我遇到一样登录 github 困难的话，我把他 fork 到 gitee 上去了：</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-9_2b1dc6d86a4ce7550e7772e022382a70">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_git</span>(<span class="st">"https://gitee.com/zhu_jie_dong/FitAQ"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#或</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"MarkusLoew/FitAQ"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>使用也比较方便，默认这样操作就行了：</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-10_91890a8129a6390ff439c3cb6d498a68">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FitAQ)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">FitAQ</span>(<span class="at">data =</span> lrc, <span class="at">A =</span> Photo, <span class="at">Q =</span> PARi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>         Amax        phi        Rd     theta
+Amax 15.80173 0.06580667 0.1461717 0.3700908</code></pre>
+</div>
+</div>
+<p>如果觉得不满意，还可以手动调整初值，作者考虑的比较周到：</p>
+<div class="cell" data-hash="non-hypo_cache/html/fitaq-plot_be23369d088df7a3bf3ad0d88a6d52f9">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">FitAQ</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> lrc,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">A =</span> Photo,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Q =</span> PARi,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">provide.model =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nlscontrol =</span> <span class="fu">c</span>(<span class="at">maxiter =</span> <span class="dv">500</span>),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">start =</span> <span class="fu">list</span>(</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Amax =</span> <span class="dv">15</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">phi =</span> <span class="fl">0.06</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Rd =</span> <span class="fl">0.14</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta =</span> <span class="fl">0.3</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper =</span> <span class="fu">c</span>(<span class="dv">17</span>, <span class="fl">0.1</span>, <span class="dv">3</span>, <span class="fl">0.5</span>),</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">TRUE</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>  0:     2.6244459:  15.0000 0.0600000 0.140000 0.300000
+  1:   0.021848654:  15.7837 0.0658725 0.146820 0.377608
+  2:   0.021082662:  15.8019 0.0658089 0.146186 0.370045
+  3:   0.021082654:  15.8017 0.0658067 0.146172 0.370090
+  4:   0.021082654:  15.8017 0.0658067 0.146172 0.370091</code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+Formula: A ~ ((phi * Q + Amax - sqrt((phi * Q + Amax)^2 - 4 * theta * 
+    phi * Q * Amax)))/(2 * theta) - Rd
+
+Parameters:
+       Estimate Std. Error t value Pr(&gt;|t|)    
+Amax  15.801730   0.151306 104.435 3.43e-15 ***
+phi    0.065807   0.002022  32.551 1.20e-10 ***
+Rd     0.146172   0.042080   3.474  0.00701 ** 
+theta  0.370091   0.049340   7.501 3.69e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.06845 on 9 degrees of freedom
+
+Algorithm "port", convergence message: relative convergence (4)</code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>predict_range <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Q =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">3000</span>, <span class="at">by =</span> <span class="dv">20</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>addline <span class="ot">&lt;-</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">within</span>(predict_range, A <span class="ot">&lt;-</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>           <span class="fu">predict</span>(fit1, <span class="at">newdata =</span> predict_range))</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  Photo <span class="sc">~</span> PARi,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> lrc,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3000</span>),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">16</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(A <span class="sc">~</span> Q, <span class="at">data =</span> addline, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="fl">3.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="non-hypo_files/figure-html/fitaq-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">FitAQ 的非直角双曲线拟合</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>这里需要说明，<code>FitAQ</code> 作者使用的 base R 的语法，而 <code>photosynthesis</code> 则喜欢 <code>ggplot2</code>，这两个谈不上优劣，只是相比而言，<code>photosynthesis</code> 把一些细节都做了，出结果比较省事，但是要做一些定制化图形的时候没有接口，而 <code>FitAQ</code> 则把细节美化留给用户自己来操作，但出基本结果的时候代码量会大一些。定制程度更高一些。</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+提醒
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>这里做拟合曲线图形的时候用了一个小技巧，与我 <a href="#fig-nrecr">fig.&nbsp;<span>9.1</span></a> 所采用的方式完全不同，我的作图实际上是强行把非线性拟合放到 <code>ggplot2</code> 内，而这里不需要拟合过程，只需要参数带入模型，得出数据点来，只要数据点足够密集，我们用线连接所有数据点后，看上去就是一条平滑的曲线，这种方式虽然是欺骗，但是并没有错误，数据点足够密集，我们根本看不出是点还是线来。</p>
+</div>
+</div>
+<p>饱和点和补偿点的计算也提供了方便的函数：</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-12_eb20e789c55fea9a1662706a35632046">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FitLCP</span>(fit1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>     LCP 
+2.234293 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FitSat</span>(fit1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>     LSP 
+1455.489 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FitSat</span>(fit1, <span class="at">sat.fac =</span> <span class="fl">0.95</span>, <span class="at">range =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3200</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>     LSP 
+2986.574 </code></pre>
+</div>
+</div>
+<p>饱和点也是使用了达到最大饱和光强多少比例时候的值，带入模型求的光强而得到，例如这里修改后使用了 0.95，看上去结果就不不正常了。</p>
+<p>至于 LI-6800 的分析，也是一样，修改光合速率和光合有效辐射两个参数的名称即可：</p>
+<div class="cell" data-hash="non-hypo_cache/html/unnamed-chunk-13_9160872bab6e35d8e7017b1ef0a694a4">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>aq6800 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/lrc6800.csv"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">FitAQ</span>(<span class="at">data =</span> aq6800, <span class="at">A =</span> A, <span class="at">Q =</span> Qin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>         Amax      phi       Rd     theta
+Amax 39.05857 0.063463 3.243814 0.7451511</code></pre>
+</div>
+</div>
+<p>为了减少篇幅，不在展开做过多的介绍，使用方式和上面演示的 LI-6400 一致。</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Thornley1976" class="csl-entry" role="doc-biblioentry">
+Thornley, J H M. 1976. <span>“Mathematical Models in Plant Physiology.”</span> <em>London: Academic Press</em>.
+</div>
+</div>
+</section>
+</section>
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main> <!-- /main -->
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./hyp.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exp.html">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>

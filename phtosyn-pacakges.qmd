@@ -1,0 +1,19 @@
+# 光合专用软件包 {#sec-photo-specific}
+
+因为 `R` 在生态学领域的流行以及一系列 `R` 包制作流程上的改进[^phtosyn-pacakges-1]，专用于生态学领域的 `R` 包也越来越多。例如 @Duursma2015Plantecophys 专用于光合气孔相关模型的 `plantecophys`。@photosynthesispkg 的 `photosynthesis` 和 `plantecowrap`。这一部分内容主要先对他们进行简单的介绍，为后面的相关使用做铺垫。
+
+[^phtosyn-pacakges-1]: https://r-pkgs.org/
+
+## `plantecophys` 介绍 {#plantecophys}
+
+todo
+
+## `plantecowrap` 介绍 {#plantecowraps}
+
+todo
+
+## `photosynthesis` 介绍 {#photosynthesis}
+
+todo
+
+# 通用软件包

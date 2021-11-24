@@ -1,0 +1,410 @@
+# 气孔导度模型的拟合 {#sec-stamotal_sim}
+
+在~~暂时还没时间~~多年没时间整理的情况下，先简单记录一下基本操作。
+
+## `plantecophys` 气孔导度相关函数 {#sec-plantecophys-stamo}
+
+### `fitBB` 函数 {#sec-fitbb-p}
+
+```{r, eval=FALSE}
+fitBB(
+  data,
+  varnames = list(
+    ALEAF = "A",
+    GS = "gsw",
+    VPD = "VPDleaf",
+    Ca = "CO2_s",
+    RH = "RHcham"
+  ),
+  gsmodel = c("BBOpti", "BBLeuning", "BallBerry",
+              "BBOptiFull"),
+  fitg0 = FALSE
+)
+```
+
+
+**参数的意义:**
+
+* data：待分析的数据文件。 
+* varnames：注意，函数默认数据为 6400 格式，因此 6800 的数据文件要按照上文的参数修改。 相对湿度只有在使用  BallBerry 时才需要输入。
+* gsmodel：上述三个模型之一。
+* fitg0：默认不计算g0，若需要，改为TRUE。
+
+**代码示例：**
+
+```{r}
+library(plantecophys)
+
+aci <- read.csv("data/aci.csv")
+aci <- subset(aci, Obs > 0)
+fitBB(
+  aci,
+  varnames = list(
+    ALEAF = "Photo",
+    GS = "Cond",
+    VPD = "VpdL",
+    Ca = "CO2S",
+    RH = "RH_S"
+  ),
+  gsmodel = "BBOpti",
+  fitg0 = TRUE
+)
+```
+
+### `fitBBs` 函数 {#sec-fitbbs}
+
+如果我们有多个物种或分组的数据，那么使用  `fitBBs`  则可以快速拟合多条曲线的数据。我们先整合两次的数据，然后来查看一下运行结果：
+
+```{r}
+aci01 <- read.csv("data/aci01.csv")
+aci01 <- subset(aci01, Obs > 0)
+multiBB <- data.frame(
+  A = c(aci$Photo, aci01$Photo),
+  GS = c(aci$Cond, aci01$Cond),
+  CO2S = c(aci$CO2S, aci01$CO2S),
+  VPD = c(aci$VpdL, aci01$VpdL),
+  RH = c(aci$RH_S, aci01$RH_S),
+  species = c(rep("species1", length(aci$Photo)),
+              rep("species2", length(aci01$Photo)))
+)
+
+mod2 <- fitBBs(
+  multiBB,
+  group = "species",
+  varnames = list(
+    ALEAF = "A",
+    GS = "GS",
+    VPD = "VPD",
+    Ca = "CO2S",
+    RH = "RH"
+  ),
+  gsmodel = "BallBerry",
+  fitg0 = TRUE
+)
+```
+
+结果为：
+
+```{r, eval=FALSE}
+coef(mod2)
+```
+
+```{r}
+#| label: fitbbss
+#| echo: false
+#| tbl-cap:  
+
+kable(coef(mod2), caption = "fitBBs 的结果{#tbl-plt-eco-kab}")
+```
+
+## `photosynthesis` 气孔导度相关函数 {#sec-photosynthesi-stamo}
+
+### 无分组模型的实现过程 {#sec-single-photo-stamo}
+
+内容与上面 的重复，这里不在运行，仅列出代码。
+
+读取数据：
+
+```{r, eval=FALSE}
+library(photosynthesis)
+df <- read.csv("data/A_Ci_Q_data_1.csv")
+```
+
+BallBerry 模型需要相对湿度，而 LI-6800 的相对湿度数据实际上是转换为百分数后的数据，因此需要处理一下，然后这个函数的方便之处是，它可以一次拟合出所有的模型来：
+
+```{r, eval=FALSE}
+df$RH <- df$RHcham / 100
+
+fits <- fit_gs_model(
+  data = df,
+  varnames = list(
+    A_net = "A",
+    C_air = "Ca",
+    g_sw = "gsw",
+    RH = "RH",
+    VPD = "VPDleaf"
+  ),
+  model = c("BallBerry",
+            "Leuning",
+            "Medlyn_partial",
+            "Medlyn_full"),
+  D0 = 3
+)
+
+```
+
+函数的参数其实都比较简单，如果对非线性拟合不满意，也可以传入 `nlsLM` 的参数。
+
+#### 结果的查看 {#sec-photo-stoma-result}
+
+`fit_gs_model` 结果有两个水平，第一层 list 是拟合模型，第二层则是模型相关的参数、图形等，可以通过位置查看：
+
+```{r, eval=FALSE}
+fits[[1]][1]
+fits[[1]][2]
+fits[[1]][3]
+```
+
+也可以通过名称查看：
+
+```{r, eval=FALSE}
+fits$BallBerry$Parameters
+fits$Leuning$Graph
+fits$Medlyn_partial$Parameters
+fits$Medlyn_full$Parameters
+```
+
+### 分组模型的实现 {#sec-multi-photo-stoma}
+
+分组数据处理起来也比较方便，例如下面以光强为分组，`photosynthesis` 提供了两个方便的函数，帮助进行分组数据的操作，`fit_many` 用于选择函数用于分组数据，`compile_data` 用于将 `list` 结果转为 `dataframe`：
+
+```{r, eval=FALSE}
+df$Q_2 <- as.factor(round(df$Qin, digits = 0))
+
+fits <- fit_many(
+  df,
+  varnames = list(
+    A_net = "A",
+    C_air = "Ca",
+    g_sw = "gsw",
+    RH = "RH",
+    VPD = "VPDleaf"
+  ),
+  funct = fit_gs_model,
+  group = "Q_2"
+)
+```
+
+数据的查看比之前又多了一个水平，例如 750 光强下的数据：
+
+```{r, eval=FALSE}
+fits[["750"]][["Medlyn_partial"]][["Parameters"]]
+```
+
+这里转换过程分两部，首先是将所有的参数转为 `list` 形式，转换对象是 1，也就是第一个模型 BallBerry。然后再将这个 `list` 进行一次转换，不同分组的参数 `Parameters`（顺序可参考未分组数据的结果）：
+
+```{r, eval=FALSE}
+bbmods <- compile_data(data = fits,
+                     output_type = "list",
+                     list_element = 1)
+bbpars <- compile_data(data = bbmods,
+                     output_type = "dataframe",
+                     list_element = 2)
+
+bbpars$ID <- as.numeric(bbpars$ID)
+
+plot(g0 ~ ID, bbpars)
+```
+
+最后展示的图形是不同光强下，拟合的截距的差异。多个图形也可以使用这种方式转换，不过存储的类型最好是 `list`（存储的是 `ggplot2` 对象的类）。例如 `vignette` 使用下面的方式查看第三幅图的结果。
+
+
+```{r, eval=FALSE}
+graphs <- compile_data(data = bbmods,
+                       output_type = "list",
+                       list_element = 3)
+
+graphs[[3]]
+```
+
+## 光合最优气孔导度耦合模型 {#stomotal_couple}
+
+@Cowan1977Stomatal 关于最优气孔导度的描述概括如下：
+最优气孔行为理论认为气孔的最优化行为，指的是在某一时间段内， 最大化的进行光合碳固定的同时最小化的进行蒸腾作用，也就是说，对于一定的水分消耗，得到最大化的光合碳固定。即使得：
+
+$$
+A - \lambda E
+$${#eq-weff}
+
+最大化，其中 $\lambda$ 是临界水分利用效率，也即植物损耗单位水分的 C 生产量，单位一般为 $mol \: CO_2 \cdot mol^{-1} H_2O$，可通过光合速率和蒸腾速率的比值计算。`plantecophys` 包含了相关的函数来处理。
+
+### `FARAO` 函数 {#sec-farao}
+
+`FARAO` 函数用于找到最大化 $A - \lambda E$ 解的** Ci **值，这里是利用数值解的形式求解方程。
+
+```{r, eval=FALSE}
+FARAO(lambda = 0.002, Ca = 400, VPD = 1,
+      photo = c("BOTH", "VCMAX","JMAX"), 
+      energybalance = FALSE, C4 = FALSE, 
+      Tair = 25, Wind = 2, Wleaf = 0.02,
+      StomatalRatio = 1, LeafAbs = 0.86, ...)
+
+FARAO2(lambda = 0.002, Ca = 400, 
+       energybalance = FALSE, ...)
+```
+
+其参数同 `fitaci` 和 `Photosyn`，在此不多做介绍，`FARAO` 使用的是 @Cowan1977Stomatal 的方法得到最优化的 Ci 值, `FARAO2` 则更简单或可能更稳定，利用 @Buckley2014Is 的方法来计算, @Medlyn2011Reconciling 的方法是这个数值解的近似值。
+
+## 光合气孔导度耦合模型 {#sec-photo_stomo}
+
+@Duursma2015Plantecophys 对于气体交换耦合模型的简述如下：
+
+* 对于 FvCB 模型有：
+
+$$
+A_n = min(A_c, A_j)-R_d
+$${#eq-minfvcb}
+
+* 在假定 gm 为恒定的前提下：
+
+$$
+C_c = C_i - \frac{A_n}{g_m}
+$${#eq-cgm}
+
+* 根据 Ficker 定理
+
+$$
+A_n = \frac{g_s}{1.6}(C_a - C_i)
+$${#eq-ficker}
+
+以及 BallBerry 气孔导度模型
+$$
+g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
+$${#eq-driver}
+
+整合公式 @eq-minfvcb, @eq-cgm, @eq-ficker 和  @eq-driver 后得到气体交换的耦合模型，气体交换耦合模型有很多更大尺度上的应用，例如 @Duursma2012MAESPA 和 wang1998a，可用于预测 An，gs 和蒸腾速率对主要环境驱动因子的响应（除土壤水分），并包含了主要的叶片性状（g1，V~cmax~, J~max~, R~d~ 以及他们的温度依赖性）。
+
+### `Photosyn` 函数 {#sec-photosyn}
+
+Photosyn 为耦合的光合–气孔导度模型，基于 Farquhar 光合模型和 Ball-Berry 气孔导度模型。
+
+```{r, eval=FALSE}
+Photosyn(VPD = 1.5, Ca = 400, PPFD = 1500,
+         Tleaf = 25, Patm = 100,RH = NULL,
+         gsmodel = c("BBOpti", "BBLeuning", 
+                     "BallBerry", "BBdefine"),
+         g1 = 4, g0 = 0, gk = 0.5, vpdmin = 0.5,
+         D0 = 5, GS = NULL, BBmult = NULL, 
+         alpha = 0.24, theta = 0.85, Jmax = 100,
+         Vcmax = 50, gmeso = NULL, TPU = 1000, 
+         alphag = 0, Rd0 = 0.92, Q10 = 1.92,
+         Rd = NULL, TrefR = 25, Rdayfrac = 1, 
+         EaV = 82620.87, EdVC = 0, delsC = 645.1013, 
+         EaJ = 39676.89, EdVJ = 2e+05, delsJ = 641.3615,
+         GammaStar = NULL, Km = NULL, Ci = NULL, 
+         Tcorrect = TRUE,returnParsOnly = FALSE,
+         whichA = c("Ah", "Amin", "Ac", "Aj"))
+
+Aci(Ci, ...)
+```
+
+因为是光合气孔导度模型的耦合，故而参数与之前的函数相同，参见 @sec-fitbb-p 和 @sec-aci-fitting 部分的内容。
+
+#### `Photosyn` 使用举例 {#sec-photo_exam}
+
+```{r}
+#| label: fig-bpd
+#| fig.cap: "VPD VS. An"
+
+library(plantecophys)
+# 仅使用下面几个参数运行模型
+#（其他参数使用默认值）
+# 利用已测量或计算的参数
+Photosyn(VPD=2, g1=4, Ca=500)
+
+# 部分参数相同，而某一参数或某几个参数不同时，
+# 可以将不同的参数设置为一个序列（vectors）
+r <- Photosyn(VPD=seq(0.5, 4, length=25), 
+              Vcmax=50, Jmax=100)
+with(r, plot(VPD, ALEAF, type='l'))
+```
+
+@fig-vpd 显示了不同 VPD 下的光合速率。
+
+
+```{r}
+#| label: fig-ppfd
+#| fig.cap: "PPFD VS. GS"
+
+# 设定叶肉导度的拟合
+run1 <- Photosyn(PPFD=seq(50,1000,length=25), 
+                 gmeso=0.15, Vcmax=40, Jmax=85)
+with(run1, plot(PPFD, GS, type='l'))
+
+# 运行ACi曲线数据（提供Ci值而不是计算）
+arun1 <- Aci(Ci=seq(50, 1200, length=101), 
+             Vcmax=40, Jmax=85)
+arun2 <- Aci(Ci=seq(50, 1200, length=101), 
+             Vcmax=30, Jmax=70)
+with(arun1, plot(Ci, ALEAF, type='l'))
+with(arun2, points(Ci, ALEAF, type='l', lty=5))
+```
+
+@fig-ppfd 显示不同 C~i~ 下的光合速率。
+
+```{r}
+#| label: fig-supply
+#| fig.cap: "supply VS. demand"
+
+# 找出CO2需求和供给的交叉点
+# 设定部分参数
+gs <- 0.2 # 对水的气孔导度
+Ca <- 400 # 外部CO2
+gctogw <- 1.57 # 转换系数
+gc <- gs / gctogw # 对 CO2 的气孔导度
+# 需求曲线
+p <- Aci(seq(60,500,length=101), Ca=400)
+# 提供气孔导度及交叉点
+g <- Photosyn(GS=gs, Ca=Ca)
+# 交叉点可视化
+par(yaxs="i")
+with(p, plot(Ci, ALEAF, type='l', 
+             ylim=c(0,max(ALEAF))))
+with(g, points(Ci, ALEAF, pch=19, col="red"))
+abline(gc * Ca, -gc, lty=5)
+legend("topleft", c(expression(
+  "Demand:"~~A==f(C[i])),
+   expression("Supply:"~~A==g[c]*(C[a]-C[i])),
+              "Operating point"),
+   lty=c(1,5,-1),pch=c(-1,-1,19),
+   col=c("black","black","red"),
+   bty='n', cex=0.9)
+```
+
+@fig-supply 需求与供给的关系。
+
+### `PhotosynEB` 函数 {#photsyneb}
+
+使用同 `Photosyn`，只不过使用能量平衡法来计算叶温。
+
+:::{.callout-warning}
+
+## 警告
+
+目前版本尚存在bug，不能直接提供 GS 来计算，否则会出现未知错误。
+:::
+
+### `PhotosynTuzet` 函数 {#sec-photosyntuzet}
+
+同样为光合气孔导度耦合模型，只不过基于 @tuzet2003a 的气孔导度模型，现将其描述如下：
+
+$$
+g_{co2} = g_0 + \frac{a A}{C_i - \Gamma} f_{\Psi v}
+$${#eq-tuzet}
+
+其中 g~co2~ 为对 CO~2~ 的气孔导度， g~0~ 是残余导度（residual conductance）(在补偿点时限制 g~CO2~ 的值）， A 为光合速率，C~i~ 为胞间二氧化碳浓度，$\Gamma$ 为 CO~2~ 补偿点，a 是经验系数。
+
+一个根据经验的逻辑方程用于描述气孔对水势的敏感性：
+
+$$
+f_{\Psi v} = \frac{1 + exp(s_f \Psi_f)}{1 + exp(s_f(\Psi_f - \Psi_v))}
+$${#eq-ftuzet}
+
+$\Psi_v$ 是指叶片水势，$\Psi_f$ 是参比势能， 该方程假设在水势接近于 0 时，气孔对叶片水势不敏感，并且气孔随着 $\Psi_v$ 的下降快速关闭。$\Psi_f$ 和 $s_f$ (曲线形状参数) 依赖于不同物种的形态学适应以及生长过程中所处的环境。
+
+#### `PhotosynTuzet` 的参数 {#sec-photosyntuzet_para}
+
+除 @tuzet2003a 模型中使用的参数外，其他参数都继承了 `Photosyn` 的参数
+
+```{r, eval=FALSE}
+PhotosynTuzet(g1 = 8, Ca = 400, psis = 0,
+              kl = 2, sf = 3, psif = -2,
+...)
+```
+
+* g1：斜率参数，要远比 `fitBB` 中的大。
+* Ca：外界大气 CO~2~ 浓度
+* psis，土壤水势（Mpa）。
+* kl：Leaf-speciﬁc hydraulic conductance（叶片导水参数 ($mmol \cdot m^{-2} \cdot s^{-1} \cdot MPa^{-1}$)，叶片蒸腾量、叶片面积及叶片水势计算）。
+* sf：曲线形状参数。
+* 在气孔导度为最大值 50% 时的叶片水势。

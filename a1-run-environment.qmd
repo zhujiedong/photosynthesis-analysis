@@ -1,0 +1,8 @@
+# 运行环境 {#sec-sessioninfo}
+
+本文的运行环境为：
+
+```{r}
+xfun::session_info()
+```
+

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.299">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+  <title>LI-6800 和 LI-6400 光合数据分析指南 - 23&nbsp; 常用统计方法简介</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <link href="./pca.html" rel="next">
+  <link href="./other-stat.html" rel="prev">
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+</head>
+<body class="floating">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/jjallaire/hopr/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+  </div>
+    <div class="px-3 mt-2 flex-shrink-0 align-items-center">
+      <div class="sidebar-search">
+      <div id="quarto-search" class="" title="Search"></div>
+      </div>
+    </div>
+  <div class="sidebar-menu-container"> 
+  <ul class="list-unstyled mt-1">
+      <li class="sidebar-item">
+  <a href="./index.html" class="">欢迎</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./preface.html" class="">序言</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./intro.html" class="">介绍</a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./basics.html" class="">必备工具</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#必备工具-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="必备工具-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./packages.html" class="">光合相关的软件包</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光合相关的软件包-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光合相关的软件包-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./data-prepare.html" class="">数据准备</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#数据准备-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="数据准备-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./light-response.html" class="">光响应曲线简介</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光响应曲线简介-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光响应曲线简介-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#二氧化碳响应曲线概述-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="二氧化碳响应曲线概述-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶绿素荧光数据的处理-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶绿素荧光数据的处理-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶肉与气孔导度-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶肉与气孔导度-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./other-stat.html" class="">其他统计方法</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#其他统计方法-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="其他统计方法-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./common-stat.html" class="active"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <li class="sidebar-item">
+  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#appendices-collapse" aria-expanded="true">
+              <div class="me-auto sidebar-section-item">Appendices</div>
+            <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="appendices-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  </ul>
+  </div>
+</nav>
+<!-- toc -->
+    <nav id="TOC" role="doc-toc" class="sidebar sidebar-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#sec-test-norm" class="nav-link active" data-scroll-target="#sec-test-norm"> <span class="header-section-number">23.1</span> 正态分布检验</a>
+<ul class="collapse">
+<li><a href="#sec-appearance" class="nav-link" data-scroll-target="#sec-appearance"> <span class="header-section-number">23.1.1</span> 肉眼判断</a></li>
+<li><a href="#sec-qqplot" class="nav-link" data-scroll-target="#sec-qqplot"> <span class="header-section-number">23.1.2</span> Q-Q plot</a></li>
+<li><a href="#sec-shapiro-test" class="nav-link" data-scroll-target="#sec-shapiro-test"> <span class="header-section-number">23.1.3</span> 假设检验</a></li>
+<li><a href="#sec-to-normal" class="nav-link" data-scroll-target="#sec-to-normal"> <span class="header-section-number">23.1.4</span> 常用的正态转换方法</a></li>
+</ul></li>
+<li><a href="#sec-t-test-start" class="nav-link" data-scroll-target="#sec-t-test-start"> <span class="header-section-number">23.2</span> t 检验</a>
+<ul class="collapse">
+<li><a href="#sec-one-sample" class="nav-link" data-scroll-target="#sec-one-sample"> <span class="header-section-number">23.2.1</span> 单样本 t 检验</a></li>
+<li><a href="#sec-independent-t" class="nav-link" data-scroll-target="#sec-independent-t"> <span class="header-section-number">23.2.2</span> 独立样本 t 检验</a></li>
+<li><a href="#sec-paired-t" class="nav-link" data-scroll-target="#sec-paired-t"> <span class="header-section-number">23.2.3</span> 配对样本的 t 检验</a></li>
+</ul></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jjallaire/hopr/edit/master/common-stat.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<!-- main -->
+<main class="content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="sec-common-stat" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></span></h1>
+</header>
+
+<section id="sec-test-norm" class="level2" data-number="23.1">
+<h2 data-number="23.1" class="anchored" data-anchor-id="sec-test-norm"><span class="header-section-number">23.1</span> 正态分布检验</h2>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+注意
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>对于是否需要正态分布转换，或怎么判断是不是正态分布，有人提出异议，但这不是我一个不搞科研的人该考虑的，我只提供方法。</p>
+</div>
+</div>
+<p>在进行真正的检验之前，我们很多时候都忽略了进行正态分布的验证。验证是否是正态分布的方法分为两类：</p>
+<ul>
+<li><p>肉眼判断</p></li>
+<li><p>假设检验</p></li>
+</ul>
+<section id="sec-appearance" class="level3" data-number="23.1.1">
+<h3 data-number="23.1.1" class="anchored" data-anchor-id="sec-appearance"><span class="header-section-number">23.1.1</span> 肉眼判断</h3>
+<p>肉眼判断当然是一句玩笑话，我们不能只凭看两眼数据就认定是否符合正态分布了，我们是通过其与正太分布的数据相比较，并不是直接做个大仙，看上一眼就解决问题了。那么怎么和正态分布的数据做比较呢，所谓没有比较就没有伤害，在这里也是适用的，有正态分布数据比着，那就好判断了。</p>
+<section id="sec-histo-density" class="level4">
+<h4 class="anchored" data-anchor-id="sec-histo-density">直方图和密度曲线的比较</h4>
+<p>第一种方法就是对数据做直方图和密度曲线的图，然后看数据是否基本符合正太分布的特征（也就是那个钟形曲线），这里网上关于 R 验证正态分布的时候使用直方图 <code>hist</code>，以及密度曲线要用的 <code>density</code>，其实二者是一回事，我们了解一下核密度估计。</p>
+<p>核密度估计是非参估计的一种，对我们最重要的是不需要先验知识，即可根据数据的本身特点和性质来进行拟合分布，查看数据分布的特点，例如对 iris 的数据的萼片长度的分布进行直方图查看：</p>
+<div class="cell" data-tbl-cap="{}" data-hash="common-stat_cache/html/iris-norm-data_7da316e16948d2d6a558ab94dfc24d21">
+<div class="cell-output-display">
+<table class="table">
+<caption>iris 数据集{#tbl-kable-iris-norm}</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Sepal.Length</th>
+<th style="text-align: right;">Sepal.Width</th>
+<th style="text-align: right;">Petal.Length</th>
+<th style="text-align: right;">Petal.Width</th>
+<th style="text-align: left;">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  iris<span class="sc">$</span>Sepal.Length,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="fl">0.05</span>)),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"breaks = 0.05"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="cn">NULL</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  iris<span class="sc">$</span>Sepal.Length,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="fl">0.3</span>)),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"breaks = 0.3"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="cn">NULL</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  iris<span class="sc">$</span>Sepal.Length,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="fl">0.5</span>)),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"breaks = 0.5"</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Sepal Length"</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  iris<span class="sc">$</span>Sepal.Length,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="fl">0.8</span>)),</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"breaks = 0.8"</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Sepal Length"</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="cn">NULL</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-iris-data-hist-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="common-stat_files/figure-html/fig-iris-data-hist-1.png" class="img-fluid figure-img" data-ref-parent="fig-iris-data-hist" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(a) 0.05 的 bin 长度</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-iris-data-hist-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="common-stat_files/figure-html/fig-iris-data-hist-2.png" class="img-fluid figure-img" data-ref-parent="fig-iris-data-hist" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(b) 0.3 的 bin 长度</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-iris-data-hist-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="common-stat_files/figure-html/fig-iris-data-hist-3.png" class="img-fluid figure-img" data-ref-parent="fig-iris-data-hist" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(c) 0.5 的 bin 长度</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-iris-data-hist-4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="common-stat_files/figure-html/fig-iris-data-hist-4.png" class="img-fluid figure-img" data-ref-parent="fig-iris-data-hist" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(d) 0.8 的 bin 长度</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 23.1: iris 数据集花萼长度使用不同分隔长度的直方图</figcaption><p></p>
+</figure>
+</div>
+</div>
+<p>也就是说，我们划分每组长度的标准（bin 的宽度）不同，肉眼看上去，直方图的形状是有变化的。而且 bin 的宽度不管怎么变化，显示的分布并非是连续的变化，要避免这些问题，就需要引入核密度估计，核密度估计的曲线根据所有点在某个特定位置的权重来计算其在整个分布曲线上的距离，当在某一区域点的数量增加时，估计的概率就会增大。</p>
+<div class="cell" data-hash="common-stat_cache/html/fig-hist-density_fd2d59e048a8430d6127042ff79ae2ac">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  iris<span class="sc">$</span>Sepal.Length,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">freq =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Sepal Length"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Histogram and density of iris sepal length"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(iris<span class="sc">$</span>Sepal.Length), <span class="at">col =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-hist-density" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="common-stat_files/figure-html/fig-hist-density-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 23.2: 添加密度曲线的直方图</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>需要注意的是，不管怎样，我们很难得到非常完美的，或者理论上的分布曲线，只要曲线有一个峰值并且大致两侧对称，我们就认为是正太分布了。</p>
+</section>
+</section>
+<section id="sec-qqplot" class="level3" data-number="23.1.2">
+<h3 data-number="23.1.2" class="anchored" data-anchor-id="sec-qqplot"><span class="header-section-number">23.1.2</span> Q-Q plot</h3>
+<p>相比密度直方图，Q-Q 图可能是更常见更容易理解的一种方式，Q 表示分位点，例如标准的正太分布曲线，0.5 的分位点是零，0.95 的分位点是 1.64。</p>
+<p>它的实现就是使用测量数据和理论分布的数据进行作图，如果测量数据是正态分布，那么很明显，它和理论正态分布所成的散点图应该在一条直线上。</p>
+<p>在 R 里，base plot 可以直接使用 <code>qqnorm</code> 和 <code>qqline</code> 来实现，但 <code>car</code> 包里 <code>qqPlot</code> 的实际上更贴心</p>
+<div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(iris<span class="sc">$</span>Sepal.Length, <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">col =</span> <span class="st">'blue'</span>, <span class="at">main =</span> <span class="st">'qqplot in base plot'</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(iris<span class="sc">$</span>Sepal.Length, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">3</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">qqPlot</span>(iris<span class="sc">$</span>Sepal.Length, <span class="at">main=</span><span class="st">"qqplot in car package"</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">col.lines=</span><span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-stdout quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<pre><code>[1] 132 118</code></pre>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-carqq-normqq-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="common-stat_files/figure-html/fig-carqq-normqq-1.png" class="img-fluid figure-img" data-ref-parent="fig-carqq-normqq" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(a) base R 的 qqplot</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-carqq-normqq-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="common-stat_files/figure-html/fig-carqq-normqq-2.png" class="img-fluid figure-img" data-ref-parent="fig-carqq-normqq" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">(b) car 的 qqplot</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 23.3: 两种 qqplot 的对比</figcaption><p></p>
+</figure>
+</div>
+</div>
+<p><code>car</code> 会贴心的画出 95% 置信区间，以及 outlier（原始数据）。这个与上面提到的一样，不可能完全在一条直线上，大致是在一起就可以了。</p>
+</section>
+<section id="sec-shapiro-test" class="level3" data-number="23.1.3">
+<h3 data-number="23.1.3" class="anchored" data-anchor-id="sec-shapiro-test"><span class="header-section-number">23.1.3</span> 假设检验</h3>
+<p>上面的肉眼判断毕竟太过主观，要客观的评价，还是需要通过假设检验，用的很多，非常有名的方法为：Shapiro-Wilk 检验，它的零假设是样本来自正态分布的母本，这样的话，我们需要 p 值大于 0.05。</p>
+<p>还是上面的数据：</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-5_f26d3f616c30ed6d2221f9fc67d88409">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(iris<span class="sc">$</span>Sepal.Length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  iris$Sepal.Length
+W = 0.97609, p-value = 0.01018</code></pre>
+</div>
+</div>
+<p>非常简单，一行代码搞定，结果让我们非常失望，数据不是正态分布。事实证明，上面的肉眼判断，我的看法是错误的。</p>
+<p>尽管值略有差别，充分体现了主观的判断的不靠谱。那我们只能试试怎么将数据转换为正态分布的方法了。</p>
+</section>
+<section id="sec-to-normal" class="level3" data-number="23.1.4">
+<h3 data-number="23.1.4" class="anchored" data-anchor-id="sec-to-normal"><span class="header-section-number">23.1.4</span> 常用的正态转换方法</h3>
+<p>如果样本量超过了30，或者50更好，正态分布的检验并非十分重要。转换为正态分布的方法比较多，下面的一幅图即可概括：</p>
+<p><img src="img/to-normal.png" id="fig-tonormal-method" class="img-fluid"></p>
+<p>方法这么多，其实也没太多特别的，就是将数据转换一下，例如我们使用最简单的对数转换看一下：</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-6_96c45e9871fb1c397e0fc393f7d3b7eb">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">log10</span>(iris<span class="sc">$</span>Sepal.Length))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  log10(iris$Sepal.Length)
+W = 0.98253, p-value = 0.05388</code></pre>
+</div>
+</div>
+<p>其他方法有需要的可以尝试一下。</p>
+</section>
+</section>
+<section id="sec-t-test-start" class="level2" data-number="23.2">
+<h2 data-number="23.2" class="anchored" data-anchor-id="sec-t-test-start"><span class="header-section-number">23.2</span> t 检验</h2>
+<p>关于t 检验，有的资料上特意强调主要用于样本含量较小（n&lt;30）这一点，实际上 t 检验并非特意需要降低样本量，来自于我多年前本科时候的印象里，样本量小是不得以的选择，好像是啤酒酿造的时候的检验，样本量低，并非是特意控制到较低的数量，我查了一下网上的资料，并没有找到他起源的具体说法，但我已经没有读书时的生物统计课本了，因此只好做罢，各位有来源的可以告知。实际上 t 检验并没有限制样本的数量，资料上反而讲到，t分布是接近标准正态分布的钟型分布，当样本量大于 30 时，通常使用正态分布。也就是说只要是正态分布或近似正态分布，就可以使用 t 检验。</p>
+<p>t检验是用 t 分布理论来推论差异发生的概率，他的检验有三种类型：</p>
+<ul>
+<li>one-sample t-test，用来比较单个样本平均值和一个给定的平均值（理论值）的差异</li>
+</ul>
+<p>例如，假设我们调查了一组男学生的身高，看看他们的平均值是否等于 170 cm。</p>
+<ul>
+<li>independent samples t-test（ unpaired two sample t-test），完全随机设计 (两组独立样本) 两样本均数比较的差异</li>
+</ul>
+<p>例如，我要检查某有机肥是否有促进小麦品质的作用，我选了一组小麦施用该肥料，另一组施用常规化肥，最后我检查某指标之间，二者是否有差异。两组不同的小麦，他们之间是没有关系的，独立的</p>
+<ul>
+<li>paired t-test，用于表两个相关的样本组之间的差异（与 0 比较）</li>
+</ul>
+<p>例如，我要检验某杀虫剂是否有效果，我随机抽取一定样本，记录杀虫前后虫子的量。二者来自同一样本，是密切相关的。</p>
+<p>下面的内容我们就用胡诌的例子和数据来演示相关的分析。</p>
+<section id="sec-one-sample" class="level3" data-number="23.2.1">
+<h3 data-number="23.2.1" class="anchored" data-anchor-id="sec-one-sample"><span class="header-section-number">23.2.1</span> 单样本 t 检验</h3>
+<p>例如，我们制定了一个标准，对于针对某虫害的杀虫剂，以一定的量喷洒 2 h 后，虫子的数量应减少 70%，下面我们来瞎编 16 个样本 2 h 后虫子数据降低量的数据：</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-7_c7b19496cfeb6efe72ed60677d6f0628">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>pct_pesticide <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq</span>(<span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="at">by =</span> <span class="fl">0.02</span>), <span class="dv">16</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>为了满足条件，我们可以用 Q-Q 图看一下数据是否基本符合正态分布 (当然可以使用正态分布的随机数，但是那样有点太假了，我尽量把数据造的接近真实点)：</p>
+<div class="cell" data-hash="common-stat_cache/html/fig-test-qqplot_ced0492c1f3c3cb390b42ba1a2d6dcd1">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(pct_pesticide)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(pct_pesticide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-test-qqplot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="common-stat_files/figure-html/fig-test-qqplot-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 23.4: 检验造假数据是否符合正态分布</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>从图上看，尽管有点散乱，但还是满足我们正态分布的要求的。这里仅作为演示，后面的内容，为节省篇幅，不在针对造的数据验证了。</p>
+<p>下面我们就是来进行检验了，那我们的 0 假设是二者相等，那么备择假设呢，我们可以选择这个药结果比较好，效果大于 0.7：</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-9_b9c8db97aa6d1cd0e13597363bff0dac">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(pct_pesticide, <span class="at">mu =</span> <span class="fl">0.7</span>, <span class="at">alternative =</span> <span class="st">'greater'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  pct_pesticide
+t = 0, df = 15, p-value = 0.5
+alternative hypothesis: true mean is greater than 0.7
+95 percent confidence interval:
+ 0.6684776       Inf
+sample estimates:
+mean of x 
+      0.7 </code></pre>
+</div>
+</div>
+<p>上面的结果是 p 值比较大，我们接受零假设，说明该杀虫剂合格，但他仅仅是刚刚合格，没有接受备择假设。</p>
+<p>那如果我们的备择假设是该药品不合格，低于 0.7，会有差别吗？</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-10_8bd4cc969866ce882f825965c1718d08">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(pct_pesticide, <span class="at">mu =</span> <span class="fl">0.7</span>, <span class="at">alternative =</span> <span class="st">'less'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  pct_pesticide
+t = 0, df = 15, p-value = 0.5
+alternative hypothesis: true mean is less than 0.7
+95 percent confidence interval:
+      -Inf 0.7315224
+sample estimates:
+mean of x 
+      0.7 </code></pre>
+</div>
+</div>
+<p>其实看 p 值我们就明白了，备择假设没有影响我们的这个结果，那我们的备择假设如果选择 two.side，也就是默认选项呢？</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-11_e03f25c44a3206eec0b86848edd9b350">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(pct_pesticide, <span class="at">mu =</span> <span class="fl">0.7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  pct_pesticide
+t = 0, df = 15, p-value = 1
+alternative hypothesis: true mean is not equal to 0.7
+95 percent confidence interval:
+ 0.6616734 0.7383266
+sample estimates:
+mean of x 
+      0.7 </code></pre>
+</div>
+</div>
+<p>对于这个实验，没有影响结果，结论是接受 H0，但我们可以看一下另外的一组数据：</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-12_8983b5d1bc17bf8a6b3d7397399c6b5f">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pct_high <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq</span>(<span class="fl">0.8</span>, <span class="fl">0.96</span>, <span class="at">by =</span> <span class="fl">0.02</span>), <span class="dv">16</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(pct_high, <span class="at">mu =</span> <span class="fl">0.7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  pct_high
+t = 13.027, df = 15, p-value = 1.396e-09
+alternative hypothesis: true mean is not equal to 0.7
+95 percent confidence interval:
+ 0.8547314 0.9152686
+sample estimates:
+mean of x 
+    0.885 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(pct_high, <span class="at">mu =</span> <span class="fl">0.7</span>, <span class="at">alternative =</span> <span class="st">'less'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  pct_high
+t = 13.027, df = 15, p-value = 1
+alternative hypothesis: true mean is less than 0.7
+95 percent confidence interval:
+     -Inf 0.909895
+sample estimates:
+mean of x 
+    0.885 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(pct_high, <span class="at">mu =</span> <span class="fl">0.7</span>, <span class="at">alternative =</span> <span class="st">'greater'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  pct_high
+t = 13.027, df = 15, p-value = 6.979e-10
+alternative hypothesis: true mean is greater than 0.7
+95 percent confidence interval:
+ 0.860105      Inf
+sample estimates:
+mean of x 
+    0.885 </code></pre>
+</div>
+</div>
+<p>可以看到如果是双尾的检验，那么对我们这个例子是不合适的，我们不知道杀虫剂是否合格，对于单尾的检验，备择假设是杀虫剂不合格，它的 p 值是 1，也就意味着我们 100% 不可能选择备择假设，杀虫率不能低于 70%，尽管看上去奇怪，但也能判断结果，最后一个备择假设则是看上去最正常的，说明杀虫剂效果高于我们制定的标准。所以，备择假设是不能随便假设的，以免增加工作量。</p>
+</section>
+<section id="sec-independent-t" class="level3" data-number="23.2.2">
+<h3 data-number="23.2.2" class="anchored" data-anchor-id="sec-independent-t"><span class="header-section-number">23.2.2</span> 独立样本 t 检验</h3>
+<p>独立样本的检验就不造数据了，还是 iris 吧，我们这次改为花萼宽度，看两个种之间有没有明显差别。</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-13_5b9da6f557cd38a5c9bea52c7b3dcfa9">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>iris <span class="ot">&lt;-</span> <span class="fu">data.table</span>(iris)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(iris[Species <span class="sc">==</span> <span class="st">"setosa"</span>, Sepal.Width], iris[Species <span class="sc">==</span> <span class="st">"versicolor"</span>, Sepal.Width])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  iris[Species == "setosa", Sepal.Width] and iris[Species == "versicolor", Sepal.Width]
+t = 9.455, df = 94.698, p-value = 2.484e-15
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.5198348 0.7961652
+sample estimates:
+mean of x mean of y 
+    3.428     2.770 </code></pre>
+</div>
+</div>
+<p>p 值太小，也就是接受备择假设，这两个之间的差异不为 0。</p>
+</section>
+<section id="sec-paired-t" class="level3" data-number="23.2.3">
+<h3 data-number="23.2.3" class="anchored" data-anchor-id="sec-paired-t"><span class="header-section-number">23.2.3</span> 配对样本的 t 检验</h3>
+<p>配对样本和独立样本，最大的区别就是二者是否独立，配对当然是不独立，上个样本有现成的数据，这个我觉得还是再造点看上去真实的数据吧，为了省事，我提高样本量，不检测是不是近似正态分布了：</p>
+<p>假设我在测量高温短时间内对植物光合的影响，我想知道 35 摄氏度和 40 摄氏度对光合速率影响有没有显著差别，为避免其他效应的影响，我控制其他参数不变，植物处于饱和光照射下已经达到稳定状态，我在两个温度下连续测量了两个稳定的光合速率：</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-14_7f70918fbae84e50ffe915667c40d578">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>A35 <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">13</span>, <span class="at">by =</span> <span class="fl">0.1</span>), <span class="dv">50</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>A40 <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq</span>(<span class="dv">7</span>, <span class="dv">10</span>, <span class="at">by =</span> <span class="fl">0.1</span>), <span class="dv">50</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(<span class="fu">data.frame</span>(<span class="at">a35=</span> A35, <span class="at">a40 =</span> A40), <span class="st">"data/photosyn_temp.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>还是用第一次的数据，到处后供 python 继续使用。</p>
+<div class="cell" data-hash="common-stat_cache/html/unnamed-chunk-15_eff9af5be09ee62b1b7eaa612c97b840">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pair_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/photosyn_temp.csv"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(pair_data<span class="sc">$</span>a35, pair_data<span class="sc">$</span>a40, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>
+    Paired t-test
+
+data:  pair_data$a35 and pair_data$a40
+t = 16.747, df = 49, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 2.569619 3.270381
+sample estimates:
+mean of the differences 
+                   2.92 </code></pre>
+</div>
+</div>
+<p>结论符合我故意让他们有差距的目的。</p>
+
+
+</section>
+</section>
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main> <!-- /main -->
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./other-stat.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">其他统计方法</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./pca.html">
+        <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>

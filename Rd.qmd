@@ -1,0 +1,242 @@
+# Rd 呼吸   相关 {#sec-rd-related}
+
+本节标题的翻译足够让我头大，@Farquhar1980A 对 R~d~ 的解释为：
+
+>  The symbol R~d~ represents CO~2~ evolution from mitochondria in the light, other  than that associated with the PCO cycle. Mitochondrial oxygen uptake and electron transport associated with normal dark respiration are likely to be inhibited by illumination but CO~2~ release may continue. For want of a better term we call this  **"dark respiration"**.
+
+然而我不喜欢这个叫法，感觉容易误解。本文的主要目的是使用 `photosynthesis` 来计算有光条件下呼吸，软件包对这个过程的叫法叫做 light respiration，具体说是两个参数，具体的翻译我采用了 @yinC3C4Photosynthesis2009 的表述：
+
+1. $R_d$：通常称之为明呼吸速率，是指无光呼吸的 $CO_2$ 释放。
+2. $\Gamma^*$：在无光呼吸的情况下的基于 $C_c$ 的 $CO_2$ 补偿点。
+
+我作为非专业人士，若觉得我写错了或者难以难以理解，请参考文献原文。
+
+## Laisk 方法概述 {#sec-laisk-method}
+
+
+Laisk 方法参考的文献为 @brooksEffectTemperatureCO21985，基本实验方法和原则是：
+
+在不同的低光条件下测量 $CO_2$ 响应曲线（例如该文采用了四个低光条件），这样寻找这几个响应曲线的交点，也就是四条曲线 A 值相同的点，然后采用该 A 值下的 $C_i$ 值作为对 $\Gamma^*$ 的估计，而 A 值则作为对 $-R_d$ 的估计。
+
+采用的 $C_i$ 范围较小，此范围内响应曲线是近线性的，每个光强下的响应曲线采用的是线性拟合。他们的交点是通过计算获得，从而计算上面的  $\Gamma^*$ 和  $-R_d$。
+
+当然这篇文献里还提到的 $R_n$，这是和 $R_d$ 相对的概念，是我们通常称为暗呼吸速率的参数。测量方式是当光源关闭后，呼吸速率快速下降，然后在 30-45 min 的黑暗处理后，该速率基本停止后作为暗呼吸速率。
+
+@walkerImprovedMethodMeasuring2015a 给出了上述方式的示意图：
+
+
+
+![Laisk 方法示例](img/laisk.png){#fig-laisk-exam}
+
+
+上面的图形使用的是三项式拟合的结果。
+
+### 基本计算方法 {#sec-laisk-cal-method}
+
+@walkerImprovedMethodMeasuring2015a 对于交点的判定给出了详细论述，如上图所示，这几条曲线（或最初的线性）并不是总会完全相交于一点。通常采用的方法是将所有曲线（或直线）的交点进行取均值。实践中，这些点很少收敛于单点，**通常移除某交点或重新测量直到交点的标准差在某范围内**。但总之会存在一定缺陷，因而 @walkerImprovedMethodMeasuring2015a 对上述方法做了一个改变：
+
+$$
+C_i^* = \frac{b1-b2}{m_2 -m_1}
+$${#eq-laisk-walker1}
+
+其中 $C_i^*$ 的意义为上文提到的计算的 $\Gamma^*$, m 表示两条响应曲线线性部分的直线的斜率，b 表示截距。之后再进行计算：
+
+$$
+R_d = m C_i^* + b
+$${#eq-laisk-walker2}
+
+该方法的基本步骤是：
+
+1. 将每条曲线的 m 值作为 x 轴，b 值作为 y 轴，那么对其做一个标准的线性回归，这条回归线的斜率为：
+
+
+$$
+m_{reg} = \frac{b_2-b_1}{m_2 -m_1}
+$${#eq-laisk-walker3}
+
+将其乘以 -1，并整理方程，那么我们可以得到下面的公式：
+
+$$
+b=-C_i^* + b_{reg}
+$${#eq-laisk-walker4}
+
+那么：
+
+$$
+R_d = b_{reg}
+$${#eq-laisk-walker5}
+
+## Kok 方法 {#sec-kok-method}
+
+由于 @kokInhibitionPhotosynthesisIntense1956 的方法是基于氧气的测量，尽管原则一样，但我不想浪费精力学习现在基本抛弃的测量方式，所以下面的描述基于 @wayResponsesRespirationLight2019：
+
+Kok 方法基于在弱光 ( $\lt 100 \mu mol \cdot m^{-2} \cdot m^{-1}$ ) 下测量净光合速率。当光强从低到高渐变时，净光合速率增加，但这个增加的斜率通常存在一个中断。计算 $R_d$ 通常是基于该中断代表了从 $R_n$ 到光下对 $R_n$ 的已知阶段。因此 $R_d$ 可以通过拟合高于该断点的数据点并进行差值后与 y 轴的交点来表示。如下图作者测量了不同温度下的 $R_d$:
+
+
+![Kok 方法示例](img/kok-temp.png){#fig-kok-method-fig}
+
+
+当然该方法存在争论，但是他的测量比较简单，争论内容不在本文讨论之列。
+
+## Yin 方法 {#sec-yin-method}
+
+@yinEvaluatingNewMethod2011 使用 LI-6400 进行光合荧光同步测量来进行，光强的设置为：
+
+$$5,10,15,20,30,50,70,100,150,200$$
+设置 C~a~ 的浓度为 $370 \mu mol \cdot mol$，但外界的 $O_2$ 浓度为 2%。并且为验证光强设置的方向是否影响 $R_d$，单独进行了正向和反向的光强实验。荧光测量遵循了 LI-6400 的测量原则。
+
+
+![Yin 方法测量 Rd 示例](img/yin-rd.png){#fig-yin}
+
+
+$R_d$ 的计算使用了上图的方法，与 Kok 类似，不过横坐标的数值为 $\Phi PSII/4$。该方法只适用于改进的 $R_d$ 的计算。
+
+## 函数简介 {#sec-rd-func-intr}
+
+实际上有三个函数，但他们有共同的参数，道理很简单，他们基于的理论大部分相同：
+
+```{r}
+#| eval: false
+
+
+fit_r_light_kok(
+  data,
+  varnames = list(A_net = "A_net", PPFD = "PPFD"),
+  PPFD_lower = 40,
+  PPFD_upper = 100
+)
+
+fit_r_light_WalkerOrt(
+  data,
+  varnames = list(A_net = "A_net", C_i = "C_i", PPFD = "PPFD"),
+  P = 100,
+  C_i_threshold = 300
+)
+
+fit_r_light_yin(
+  data,
+  varnames = list(A_net = "A_net", PPFD = "PPFD", phi_PSII = "phi_PSII"),
+  PPFD_lower = 40,
+  PPFD_upper = 100
+)
+```
+
+主要的参数，我们通过上面的介绍部分都能看明白，分别是适用于 LI-6400 或 LI-6800 的 `varnames`，以及最小光强或者最大光强，外界气压 `P`，以及部分方法中 $C_i$ 的临界点 `C_i_threshold`。
+
+## 实践 {#sec-in-action}
+
+实践还是采用叶肉导度测试的数据，来自于软件包自带。代码来自于 `vignette`，主要对其中内容做相关解释。
+
+```{r}
+library(photosynthesis)
+data <- read.csv('data/A_Ci_Q_data_1.csv')
+```
+
+加载软件包并读取示例数据。
+
+```{r}
+r_light <- fit_r_light_yin(
+  data = data,
+  varnames = list(
+    A_net = "A",
+    PPFD = "Qin",
+    phi_PSII = "PhiPS2"
+  ),
+  PPFD_lower = 20,
+  PPFD_upper = 250
+)
+```
+
+$R_d$ 为截距：
+
+```{r}
+r_light
+```
+
+当然，Kok 方法与之类似：
+
+```{r}
+r_light <- fit_r_light_kok(
+  data = data,
+  varnames = list(
+    A_net = "A",
+    PPFD = "Qin",
+    phi_PSII = "PhiPS2"
+  ),
+  PPFD_lower = 20,
+  PPFD_upper = 250
+)
+r_light
+```
+
+结果为负值当然表示这是呼吸的意思。
+
+示例程序还演示了不同分组的数据批量的处理，这里的分组是使用了 sample 气路的二氧化碳浓度，首先将其取整，然后转化为 `factor` 后处理，也就是前两行代码所做的处理。之后使用 `Yin` 的方法将所有分组的数据同时处理；
+
+```{r}
+data$C_s <- (round(data$CO2_s, digits = 0))
+data$C_s <- as.factor(round(data$C_s, digits = -1))
+
+
+r_lights <- fit_many(
+  data = data,
+  funct = fit_r_light_yin,
+  group = "C_s",
+  varnames = list(
+    A_net = "A",
+    PPFD = "Qin",
+    phi_PSII = "PhiPS2"
+  ),
+  PPFD_lower = 20,
+  PPFD_upper = 250
+)
+```
+然后将数据整理一下：
+
+```{r}
+group <- names(r_lights)
+r_lights <- do.call("c", r_lights)
+r_light_yin <- data.frame(x = group, y = r_lights, stringsAsFactors = FALSE)
+r_light_yin$x <- as.numeric(r_light_yin$x)
+colnames(r_light_yin) <- c("C_s", "r_light")
+```
+
+首先提取不同的分组，这里是浓度的数据，然后将其转化为一个向量。最终将数据整理为一个数据框，第一列是分组名，第二列是对应的截距，或者说是 $R_d$。最后将数据框的表头修改为所需要的表头，结果为：
+
+```{r}
+#| label: yin-kable
+#| echo: false
+#| tbl-cap:  
+
+kable(r_light_yin, caption = "Yin 的方法测量的结果 {#tbl-yin-kable}")
+```
+
+walker 方法相比来说要复杂一些，因为多求了一个参数：
+
+```{r}
+walker_ort <-
+  fit_r_light_WalkerOrt(data, varnames = list(A_net = "A", C_i = "Ci", PPFD = "Qin"))
+
+summary(walker_ort[[1]])
+```
+
+通过图形才能很好的反应他使用单条线的斜率和截距来计算的情况：
+
+```{r}
+#| label: fig-yin-plot
+#| fig.cap: "图形方式查看 Walker 的测量方法"
+
+walker_ort[[2]]
+```
+
+数据的结果：
+
+```{r}
+#| label: walk-kable
+#| echo: false
+#| tbl-cap:  
+
+kable(walker_ort[[3]], caption = "Walker 的方法测量的结果 {#tbl-walker-kable}")
+```
+
+就是这些内容了，属于比较使用的函数。

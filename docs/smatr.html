@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.299">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+  <title>LI-6800 和 LI-6400 光合数据分析指南 - 25&nbsp; 标准主轴分析介绍</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <link href="./references.html" rel="next">
+  <link href="./pca.html" rel="prev">
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+</head>
+<body class="floating">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/jjallaire/hopr/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+  </div>
+    <div class="px-3 mt-2 flex-shrink-0 align-items-center">
+      <div class="sidebar-search">
+      <div id="quarto-search" class="" title="Search"></div>
+      </div>
+    </div>
+  <div class="sidebar-menu-container"> 
+  <ul class="list-unstyled mt-1">
+      <li class="sidebar-item">
+  <a href="./index.html" class="">欢迎</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./preface.html" class="">序言</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./intro.html" class="">介绍</a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./basics.html" class="">必备工具</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#必备工具-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="必备工具-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./packages.html" class="">光合相关的软件包</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光合相关的软件包-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光合相关的软件包-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./data-prepare.html" class="">数据准备</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#数据准备-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="数据准备-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./light-response.html" class="">光响应曲线简介</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光响应曲线简介-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光响应曲线简介-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#二氧化碳响应曲线概述-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="二氧化碳响应曲线概述-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶绿素荧光数据的处理-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶绿素荧光数据的处理-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶肉与气孔导度-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶肉与气孔导度-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./other-stat.html" class="">其他统计方法</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#其他统计方法-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="其他统计方法-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./smatr.html" class="active"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <li class="sidebar-item">
+  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#appendices-collapse" aria-expanded="true">
+              <div class="me-auto sidebar-section-item">Appendices</div>
+            <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="appendices-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  </ul>
+  </div>
+</nav>
+<!-- toc -->
+    <nav id="TOC" role="doc-toc" class="sidebar sidebar-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#sec-sma-func" class="nav-link active" data-scroll-target="#sec-sma-func"> <span class="header-section-number">25.1</span> <code>sma</code> 函数的参数介绍</a>
+<ul class="collapse">
+<li><a href="#sec-sma-formula" class="nav-link" data-scroll-target="#sec-sma-formula"> <span class="header-section-number">25.1.1</span> formula</a></li>
+</ul></li>
+<li><a href="#sec-sma-example" class="nav-link" data-scroll-target="#sec-sma-example"> <span class="header-section-number">25.2</span> 自带数据的例子</a>
+<ul class="collapse">
+<li><a href="#sec-sma-example-single" class="nav-link" data-scroll-target="#sec-sma-example-single"> <span class="header-section-number">25.2.1</span> 单个样品的分析</a></li>
+<li><a href="#sec-multi-sma-data" class="nav-link" data-scroll-target="#sec-multi-sma-data"> <span class="header-section-number">25.2.2</span> 多个样品的分析</a></li>
+<li><a href="#sec-multi-no-coslope" class="nav-link" data-scroll-target="#sec-multi-no-coslope"> <span class="header-section-number">25.2.3</span> 多个样品无共同斜率</a></li>
+</ul></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jjallaire/hopr/edit/master/smatr.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<!-- main -->
+<main class="content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="sec-sma-intr" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></span></h1>
+</header>
+
+<p>本部分主要来自于对 <span class="citation" data-cites="warton2012smatr">Warton et al. (<a href="references.html#ref-warton2012smatr" role="doc-biblioref">2012</a>)</span> 和 <span class="citation" data-cites="warton2006smatr">Warton et al. (<a href="references.html#ref-warton2006smatr" role="doc-biblioref">2006</a>)</span> 内容的理解。我姑妄言之，各位也就姑妄听之，从一个取巧的角度来讲，我觉得可以从下面的角度理解标准主轴分析：</p>
+<ol type="1">
+<li><p>我们要比较差异，如果没有分组，我们要比较我们数据的斜率或截距是否等于一个值，例如，要研究异速生长关系，那么斜率肯定不能等于 1 吧，不然 y 和 x 是相等的生长速度，哪里来的异速生长？虽然我的文章我应该有 9 年不看了，我记忆里，是否为异速生长，就是拿斜率和 1 来比较，看其是否差异显著，当然，显著差异是我需要的。</p></li>
+<li><p>我们要分析几个分组的数据，单纯的采用线性回归是没法比较的，他们肯定是斜率和解决不同，相同那不就是同一组数据了，这样我们就要检验通过一个主轴的斜率和截距来比较，如果存在共同的斜率，那我们只能在比较截距，如果截距存在差异，某一个要高，就接着分析这个差异可能的因素就行了，这个让我毕业的文章里是用的什么，我就记不清楚了，反正就分析了什么海拔生境之类的得出的结论，我也懒得再看了，反正我用不到了。</p></li>
+</ol>
+<p>根据我多年前的记忆，SMA 的用途可以用下图进行表达：</p>
+<div id="fig-sma-app" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/smatr.png" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 25.1: 图示 SMATR 比较差异的方面</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>单个分组的检验，分为斜率和截距的两种：</p>
+<ul>
+<li>单个分组的斜率：为检验斜率是否等于<strong>某个值 b</strong>，一个简单的方法来检验就是当使用 b 作为斜率时，检验残差和轴的得分是否无关。</li>
+<li>拟合的直线经过样品的中心点 (<span class="math inline">\bar x, \bar y</span>)，计算的截距接近正态分布，使用 t 检验来验证真正的截距是否<strong>等于某个特定值 a</strong>。</li>
+</ul></li>
+<li><p>多个分组（多条直线）检验，是否存在共同斜率和共同截距</p>
+<ul>
+<li><p>共同斜率：共同斜率检验是检验解决是否有偏移的前提，也就是说，根据我的理解，结果存在共同斜率，我们写文章是要找差异的，找不到差异了，我们只能退而求其次，来找其截距的不同。当然，没有共同斜率，比截距也没意义。</p></li>
+<li><p>共同截距：如果存在共同斜率，我们接着要比较其是否存在共同截距。</p></li>
+<li><p>如果上面两个都相同怎么办？那还有一个检验可以来做，那就是其会沿着主轴的方向发生偏移， <span class="citation" data-cites="warton2006smatr">Warton et al. (<a href="references.html#ref-warton2006smatr" role="doc-biblioref">2006</a>)</span> 解释了这种情况，两个物种的叶片性状在主轴方向上偏移，原因是不同营养状况下他们的叶片寿命的差异。</p></li>
+</ul></li>
+</ul>
+<p>虽然 <span class="citation" data-cites="warton2012smatr">Warton et al. (<a href="references.html#ref-warton2012smatr" role="doc-biblioref">2012</a>)</span> (<a href="#fig-sma-app">fig.&nbsp;<span>25.1</span></a>) 的图是彩图，但这个 <span class="citation" data-cites="warton2006smatr">Warton et al. (<a href="references.html#ref-warton2006smatr" role="doc-biblioref">2006</a>)</span> 分开的图形更直观的解释了上面的几种情况：</p>
+<ul>
+<li>A: 检验斜率是否等于特定值</li>
+<li>B：检验斜率是否不同</li>
+<li>C：检验截距是否不同</li>
+<li>D：检验是否沿着主轴方向有偏移</li>
+</ul>
+<div id="fig-smatr2006" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/smatr4.png" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 25.2: 分开展示 SMATR 的不同检验</figcaption><p></p>
+</figure>
+</div>
+<section id="sec-sma-func" class="level2" data-number="25.1">
+<h2 data-number="25.1" class="anchored" data-anchor-id="sec-sma-func"><span class="header-section-number">25.1</span> <code>sma</code> 函数的参数介绍</h2>
+<p>我还是使用软件包自带的数据，然后结合 <span class="citation" data-cites="warton2012smatr">Warton et al. (<a href="references.html#ref-warton2012smatr" role="doc-biblioref">2012</a>)</span> 文章的内容，在尽量详细解释一下参数的意思和返回的结果，期望能使得各位不会的能够看懂。</p>
+<p>这个软件包的最重要的函数为 <code>sma</code>，</p>
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-1_807ab6667b728dd20129cfd6077e8071">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sma</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  formula,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  subset,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  na.action,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">log =</span> <span class="st">""</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"SMA"</span>, <span class="st">"MA"</span>, <span class="st">"OLS"</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"elevation"</span>, <span class="st">"shift"</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">slope.test =</span> <span class="cn">NA</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">elev.test =</span> <span class="cn">NA</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">multcomp =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">multcompmethod =</span> <span class="fu">c</span>(<span class="st">"default"</span>, <span class="st">"adjusted"</span>),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">robust =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">V =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_min =</span> <span class="dv">3</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">quiet =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>其参数的意义下面就分开详细解释</p>
+<section id="sec-sma-formula" class="level3" data-number="25.1.1">
+<h3 data-number="25.1.1" class="anchored" data-anchor-id="sec-sma-formula"><span class="header-section-number">25.1.1</span> formula</h3>
+<p>R 中的 formula 对象，通过不同的写法可以得到不同的目的，具体如下面的叙述。</p>
+<section id="sec-single-sample" class="level4">
+<h4 class="anchored" data-anchor-id="sec-single-sample">单样本检验</h4>
+<p>这里但从名字上即可以看出，这应该属于上图 A 的检验，这里使用的 formula 的形式为：</p>
+<ul>
+<li><p><code>sma(y~x)</code>，拟合 SMA 并构造真正斜率和截距的的置信区间。</p></li>
+<li><p><code>sma(y~x, slope.test = B)</code>，检验 SMA 的斜率是否为 B。</p></li>
+<li><p><code>sma(y~x, elev.test = A)</code>，检验 SMA 的截距是否为 A</p></li>
+<li><p><code>sma(y~x, robust = T)</code>，使用 Huber 的 M 估计进行拟合，我对这种回归不了解，不过应该属于稳健回归的范畴，也就是帮助文档里所讲的，对野点的处理比较好。</p></li>
+<li><p><code>sma(y~x-1)</code>， 强制从原点通过的拟合。也就是这时候没有截距的差异，或者对截距的差异不感兴趣。</p></li>
+</ul>
+</section>
+<section id="sec-multi-sample" class="level4">
+<h4 class="anchored" data-anchor-id="sec-multi-sample">多个样本检验</h4>
+<p>也就是对多个直线进行比较，有多种分组的方式：</p>
+<ul>
+<li><p><code>sma(y~x*groups)</code>，也就是检验所有的分组有没有共同斜率。</p></li>
+<li><p><code>sma(y~x+groups, type = "elevation")</code>，检验具有共同斜率的分组有无共同截距。</p></li>
+<li><p><code>sma(y~x*groups, type = "shift")</code>，检验斜率是否沿着主轴方向有漂移。</p></li>
+<li><p><code>sma(y~x+groups, slope.test = "B")</code>，检验共同斜率是否为 B。</p></li>
+<li><p><code>sma(y~x+groups, elev.test = "A")</code>，建议共同截距是否为 A。</p></li>
+<li><p><code>sma(y~x*groups-1)</code>，同单个样本的检验，也可以检验主轴方向的漂移。</p></li>
+</ul>
+</section>
+<section id="sec-muti-comp-sma" class="level4">
+<h4 class="anchored" data-anchor-id="sec-muti-comp-sma">多重比较</h4>
+<p>当 <code>multcomp = TRUE</code> 时，会进行各个水平间的多重比较，包括斜率、截距和沿着主轴的漂移（取决于使用的 formula）。</p>
+</section>
+<section id="sec-sma-fit-result-para" class="level4">
+<h4 class="anchored" data-anchor-id="sec-sma-fit-result-para">拟合结果</h4>
+<p>讲到这里应该继续讲函数的参数，不过我觉有必要在这里趁热打铁了，因为我觉得讲完了 formula 的几种形式，SMA 就讲完了，我们有必要把拟合结果顺带解释一下：</p>
+<ul>
+<li><p>coef：拟合的参数，如果有多个样品的比较，将返回模型的参数，例如检验共同斜率时各个样品或者分组的斜率</p></li>
+<li><p>nullcoef：零假设的参数。</p></li>
+<li><p>alpha：见下文的参数解释</p></li>
+<li><p>method：拟合使用的方法， ’MA’ 或 ’SMA’。</p></li>
+<li><p>intercept：拟合的线是否强制通过原点。</p></li>
+<li><p>call：调用 ma 或 sma 函数。</p></li>
+<li><p>data: 见下文的参数</p></li>
+<li><p>log： 见下文的参数</p></li>
+<li><p>variables： SMA 的线使用的变量</p></li>
+<li><p>origvariables：如有在拟合前有转换，转换前的变量列表</p></li>
+<li><p>groups：分组变量的水平</p></li>
+<li><p>gt：grouptest 缩写，表示分组测试的类型</p></li>
+<li><p>gtr：分组测试的结果</p></li>
+<li><p>slopetest：斜率假设检验的结果，以列表形式输出，包括 p 值、 检验统计、共同斜率 b 和置信区间 ci。</p></li>
+<li><p>elevtest：截距假设检验的结果，返回 p 值、t检验统计、共同截距和它的置信区间。</p></li>
+<li><p>slopetestdone：是否进行斜率检验</p></li>
+<li><p>evevtestdone：是否进行斜率的检验</p></li>
+<li><p>n：样品的大小</p></li>
+<li><p>r2：决定系数</p></li>
+<li><p>pval：统计结果的 p 值</p></li>
+<li><p>from， to：在作图 <code>plot.sma</code> 作图时使用的拟合线的的端点</p></li>
+<li><p>groupsummary：以数据框整理的分组参数</p></li>
+</ul>
+</section>
+<section id="sec-simple-sma-para" class="level4">
+<h4 class="anchored" data-anchor-id="sec-simple-sma-para">无需详细解释的参数</h4>
+<p><code>sma</code> 中其他无需详细解释的参数：</p>
+<ul>
+<li><p>data： 包含 x 和 y 变量的数据框</p></li>
+<li><p>subset：用于拟合的数据框的子集，非必须选项。</p></li>
+<li><p>na.action: R 中对 na 值处理的方式，例如删除等。</p></li>
+<li><p>log：对变量使用以 10 为底的对数转换。</p></li>
+<li><p>method：如果等于 SMA 为标准主轴分析，MA 为主轴分析，或者选择 OLS，最小二乘法。</p></li>
+<li><p>type：如果多条线进行比较，我们应该选择的选项，如 elevation 或 shift。</p></li>
+<li><p>alpha：我们置信区间里使用的 <span class="math inline">\alpha</span>，默认 0.05。</p></li>
+<li><p>slope.test: 假设检验使用的值，也就是与某一个值差异是否显著时使用。</p></li>
+<li><p>elev.test：与 slope.test 类似，只不过是检验截距。</p></li>
+<li><p>robust：如果为 TRUE，使用文件回归分析，目前仅针对单样本检验。</p></li>
+<li><p>V：测量误差的变异矩阵，默认无。</p></li>
+<li><p>n_min：一个分组最小的样品数量</p></li>
+<li><p>quiet：如果为 TRUE，不提示任何信息</p></li>
+<li><p>multcomp：如果为 TRUE，则进行多重比较</p></li>
+<li><p>multcompmethod： 多重比较 p 值的方法。</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="sec-sma-example" class="level2" data-number="25.2">
+<h2 data-number="25.2" class="anchored" data-anchor-id="sec-sma-example"><span class="header-section-number">25.2</span> 自带数据的例子</h2>
+<p>安装从 CRAN 上进行即可：</p>
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-2_8bdb4b4e0401ce682b5d69c66fb8943e">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'smatr'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>我们来使用自带的数据进行分析示例，先加载需要的软件包和数据：</p>
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-3_b415d795b94e4916b8aad6e6305219e6">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(smatr)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(leaflife)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>对于我们生态学人来说，数据浅显易懂，地点，降雨量，土壤 P 含量，叶片寿命、比叶面积几个数据：</p>
+<div class="cell" data-tbl-cap="{}" data-hash="smatr_cache/html/kabel-sma-data_7f26ee83997c67bf2af38dac4fbd20b2">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(leaflife), <span class="at">caption =</span> <span class="st">"示例数据{#tbl-sma-data}"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table">
+<caption>示例数据{#tbl-sma-data}</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">site</th>
+<th style="text-align: left;">rain</th>
+<th style="text-align: left;">soilp</th>
+<th style="text-align: right;">longev</th>
+<th style="text-align: right;">lma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: right;">1.1145511</td>
+<td style="text-align: right;">125.48736</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: right;">0.5161786</td>
+<td style="text-align: right;">82.28108</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: right;">0.9718517</td>
+<td style="text-align: right;">71.02316</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: right;">0.6722023</td>
+<td style="text-align: right;">94.66730</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: right;">1.0947123</td>
+<td style="text-align: right;">119.70161</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: left;">high</td>
+<td style="text-align: right;">2.0606299</td>
+<td style="text-align: right;">205.82589</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="sec-sma-example-single" class="level3" data-number="25.2.1">
+<h3 data-number="25.2.1" class="anchored" data-anchor-id="sec-sma-example-single"><span class="header-section-number">25.2.1</span> 单个样品的分析</h3>
+<p>我感觉单个样品的分析用的比较少，但不排除有些情况适用，我们看一下下面的结果</p>
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-5_3fd2eacc32db89b3e2a3b98ac93f882c">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 单个样品分析 --------------------------------------------------------</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 仅使用降雨和营养都是低的数据</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>leaf_low <span class="ot">&lt;-</span> <span class="fu">subset</span>(leaflife, soilp <span class="sc">==</span> <span class="st">'low'</span> <span class="sc">&amp;</span> rain <span class="sc">==</span> <span class="st">'low'</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 仅拟合 SMA 的斜率和截距，实际很少单独用</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sma</span>(longev <span class="sc">~</span> lma, <span class="at">log=</span><span class="st">'xy'</span>, <span class="at">data=</span>leaflife)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Call: sma(formula = longev ~ lma, data = leaflife, log = "xy") 
+
+Fit using Standardized Major Axis 
+
+These variables were log-transformed before fitting: xy 
+
+Confidence intervals (CI) are at 95%
+
+------------------------------------------------------------
+Coefficients:
+            elevation    slope
+estimate    -2.698800 1.315031
+lower limit -3.224305 1.096261
+upper limit -2.173295 1.577457
+
+H0 : variables uncorrelated
+R-squared : 0.4544809 
+P-value : 4.0171e-10 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检验斜率是否与 1 差异显著</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ma_test <span class="ot">&lt;-</span> <span class="fu">ma</span>(longev <span class="sc">~</span> lma, <span class="at">log=</span><span class="st">'xy'</span>, <span class="at">slope.test=</span><span class="dv">1</span>, <span class="at">data=</span>leaflife)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ma_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Call: sma(formula = ..1, data = ..4, log = "xy", method = "MA", slope.test = 1) 
+
+Fit using Major Axis 
+
+These variables were log-transformed before fitting: xy 
+
+Confidence intervals (CI) are at 95%
+
+------------------------------------------------------------
+Coefficients:
+            elevation    slope
+estimate    -3.085214 1.492616
+lower limit -3.968020 1.146777
+upper limit -2.202407 2.001084
+
+H0 : variables uncorrelated
+R-squared : 0.4544809 
+P-value : 4.0171e-10 
+
+------------------------------------------------------------
+H0 : slope not different from 1 
+Test statistic : r= 0.3515 with 65 degrees of freedom under H0
+P-value : 0.0035393 </code></pre>
+</div>
+</div>
+<p>上面的结果 H0 的 p 值仅为 0.003，也就是发生的概率太小，我们拒绝 H0，有显著差异，实际上斜率为 1.49，也很明显。</p>
+</section>
+<section id="sec-multi-sma-data" class="level3" data-number="25.2.2">
+<h3 data-number="25.2.2" class="anchored" data-anchor-id="sec-multi-sma-data"><span class="header-section-number">25.2.2</span> 多个样品的分析</h3>
+<p>我们先对降雨量低的数据的性状进行分析：</p>
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-6_29de9f6734597bbc3e1157cbe69155d0">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>low_rain <span class="ot">&lt;-</span> <span class="fu">subset</span>(leaflife, rain <span class="sc">==</span> <span class="st">'low'</span>) </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># SMA 单独拟合不同降雨区的数据，检验其有无共同斜率</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>diff_rain <span class="ot">&lt;-</span> <span class="fu">sma</span>(longev<span class="sc">~</span>lma<span class="sc">*</span>soilp, <span class="at">log=</span><span class="st">"xy"</span>, <span class="at">data =</span> low_rain)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(diff_rain)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Call: sma(formula = longev ~ lma * soilp, data = low_rain, log = "xy") 
+
+Fit using Standardized Major Axis 
+
+These variables were log-transformed before fitting: xy 
+
+Confidence intervals (CI) are at 95%
+
+------------------------------------------------------------
+Results of comparing lines among groups.
+
+H0 : slopes are equal.
+Likelihood ratio statistic : 3.943 with 1 degrees of freedom
+P-value : 0.047076 
+------------------------------------------------------------
+
+Coefficients by group in variable "soilp"
+
+Group: high 
+            elevation     slope
+estimate    -2.523634 1.1825381
+lower limit -3.135266 0.9398479
+upper limit -1.912003 1.4878965
+
+H0 : variables uncorrelated.
+R-squared : 0.7392636 
+P-value : 1.462e-07 
+
+Group: low 
+            elevation    slope
+estimate    -3.837710 1.786551
+lower limit -5.291926 1.257257
+upper limit -2.383495 2.538672
+
+H0 : variables uncorrelated.
+R-squared : 0.80651 
+P-value : 0.00041709 </code></pre>
+</div>
+</div>
+<p>我们看到 H0 : slopes are equal 的概率是 0.047，也就是无共同斜率，图形也佐证了该点：</p>
+<div class="cell" data-hash="smatr_cache/html/fig-multi-sma-plot_3137c9112ab45f124aa824b60afe4bf3">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(diff_rain)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-multi-sma-plot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="smatr_files/figure-html/fig-multi-sma-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 25.3: 多个分组无共同斜率</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>我们就无需在检验截距和延主轴的漂移了，差异足够明显。</p>
+</section>
+<section id="sec-multi-no-coslope" class="level3" data-number="25.2.3">
+<h3 data-number="25.2.3" class="anchored" data-anchor-id="sec-multi-no-coslope"><span class="header-section-number">25.2.3</span> 多个样品无共同斜率</h3>
+<p>下面的数据时无共同斜率的情况，我就不一一解释了：</p>
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-8_7cab1922f1cbd68488ce010e7be77511">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查共同斜率 --------------------------------------</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看低土壤营养的数据</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>low_soilp <span class="ot">&lt;-</span> <span class="fu">subset</span>(leaflife, soilp <span class="sc">==</span> <span class="st">'low'</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 以降雨的高低为分组，分别拟合，检验是否有共同斜率</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>com_test <span class="ot">&lt;-</span> <span class="fu">sma</span>(longev<span class="sc">~</span>lma<span class="sc">*</span>rain, <span class="at">log=</span><span class="st">"xy"</span>, <span class="at">data=</span>low_soilp )</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(com_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Call: sma(formula = longev ~ lma * rain, data = low_soilp, log = "xy") 
+
+Fit using Standardized Major Axis 
+
+These variables were log-transformed before fitting: xy 
+
+Confidence intervals (CI) are at 95%
+
+------------------------------------------------------------
+Results of comparing lines among groups.
+
+H0 : slopes are equal.
+Likelihood ratio statistic : 2.367 with 1 degrees of freedom
+P-value : 0.12395 
+------------------------------------------------------------
+
+Coefficients by group in variable "rain"
+
+Group: high 
+            elevation     slope
+estimate    -2.321737 1.1768878
+lower limit -3.475559 0.7631512
+upper limit -1.167915 1.8149286
+
+H0 : variables uncorrelated.
+R-squared : 0.3407371 
+P-value : 0.013891 
+
+Group: low 
+            elevation    slope
+estimate    -3.837710 1.786551
+lower limit -5.291926 1.257257
+upper limit -2.383495 2.538672
+
+H0 : variables uncorrelated.
+R-squared : 0.80651 
+P-value : 0.00041709 </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="smatr_cache/html/fig-with-com-slop_97fcfb430dd7efa93d4f6a92a70920f0">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(com_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-with-com-slop" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="smatr_files/figure-html/fig-with-com-slop-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 25.4: 具有共同斜率的图形</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>结论: H0 : slopes are equal. P 为 0.13，也就是接受 h0</p>
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-10_0720b6568a6fa03980e7b337355c5745">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查斜率与 1 是否差异显著 -------------------------------------------------------------</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>low_soilp_b <span class="ot">&lt;-</span> <span class="fu">sma</span>(longev<span class="sc">~</span>lma<span class="sc">*</span>rain, <span class="at">log=</span><span class="st">"xy"</span>, <span class="at">slope.test=</span><span class="dv">1</span>, <span class="at">data=</span>low_soilp)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(low_soilp_b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Call: sma(formula = longev ~ lma * rain, data = low_soilp, log = "xy", 
+    slope.test = 1) 
+
+Fit using Standardized Major Axis 
+
+These variables were log-transformed before fitting: xy 
+
+Confidence intervals (CI) are at 95%
+
+------------------------------------------------------------
+Results of comparing lines among groups.
+
+H0 : slopes are equal.
+Likelihood ratio statistic : 2.367 with 1 degrees of freedom
+P-value : 0.12395 
+------------------------------------------------------------
+
+H0 : common slope not different from 1 
+Likelihood ratio statistic = 8.677 with 2 degrees of freedom under H0
+P-value : 0.013057 
+
+Coefficients by group in variable "rain"
+
+Group: high 
+            elevation     slope
+estimate    -2.321737 1.1768878
+lower limit -3.475559 0.7631512
+upper limit -1.167915 1.8149286
+
+H0 : variables uncorrelated.
+R-squared : 0.3407371 
+P-value : 0.013891 
+
+H0 : slope not different from 1 
+Test statistic: r= 0.1975 with 15 degrees of freedom under H0
+P-value : 0.44733 
+
+Group: low 
+            elevation    slope
+estimate    -3.837710 1.786551
+lower limit -5.291926 1.257257
+upper limit -2.383495 2.538672
+
+H0 : variables uncorrelated.
+R-squared : 0.80651 
+P-value : 0.00041709 
+
+H0 : slope not different from 1 
+Test statistic: r= 0.8126 with 8 degrees of freedom under H0
+P-value : 0.0042704 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 结论： H0 : slope not different from 1 ，p 为 0.004，拒绝 h0</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查共同截距 -------------------------------------------------------------</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>low_soilp_elev <span class="ot">&lt;-</span> <span class="fu">sma</span>(longev<span class="sc">~</span>lma<span class="sc">+</span>rain, <span class="at">log=</span><span class="st">"xy"</span>, <span class="at">type =</span> <span class="st">"elevation"</span>, <span class="at">data=</span>low_soilp)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(low_soilp_elev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Call: sma(formula = longev ~ lma + rain, data = low_soilp, log = "xy", 
+    type = "elevation") 
+
+Fit using Standardized Major Axis 
+
+These variables were log-transformed before fitting: xy 
+
+Confidence intervals (CI) are at 95%
+
+------------------------------------------------------------
+Results of comparing lines among groups.
+
+H0 : slopes are equal.
+Likelihood ratio statistic : 2.367 with 1 degrees of freedom
+P-value : 0.12395 
+------------------------------------------------------------
+
+H0 : no difference in elevation.
+Wald statistic: 6.566 with 1 degrees of freedom
+P-value : 0.010393 
+------------------------------------------------------------
+
+Coefficients by group in variable "rain"
+
+Group: high 
+            elevation    slope
+estimate    -3.140896 1.551400
+lower limit -4.079825 1.109374
+upper limit -2.201966 2.011726
+
+H0 : variables uncorrelated.
+R-squared : 0.3407371 
+P-value : 0.013891 
+
+Group: low 
+            elevation    slope
+estimate    -3.304865 1.551400
+lower limit -4.353328 1.109374
+upper limit -2.256403 2.011726
+
+H0 : variables uncorrelated.
+R-squared : 0.80651 
+P-value : 0.00041709 </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="smatr_cache/html/fig-no-com-inter_06596ce49c1e65d04fd8b0c88279279b">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(low_soilp_elev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-no-com-inter" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="smatr_files/figure-html/fig-no-com-inter-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 25.5: 共同截距差异显著的图形</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>结论： H0 : no difference in elevation. p 为 0.01 共同截距有显著差异</p>
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-12_f97a8a58ebf8747c3d5447a08b6ec127">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查延主轴有无漂移 -------------------------------------------------------------</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>low_soilp_shift <span class="ot">&lt;-</span>  <span class="fu">sma</span>(longev<span class="sc">~</span>lma<span class="sc">+</span>rain, <span class="at">log=</span><span class="st">"xy"</span>, <span class="at">type=</span><span class="st">"shift"</span>, <span class="at">data=</span>low_soilp)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(low_soilp_shift)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Call: sma(formula = longev ~ lma + rain, data = low_soilp, log = "xy", 
+    type = "shift") 
+
+Fit using Standardized Major Axis 
+
+These variables were log-transformed before fitting: xy 
+
+Confidence intervals (CI) are at 95%
+
+------------------------------------------------------------
+Results of comparing lines among groups.
+
+H0 : slopes are equal.
+Likelihood ratio statistic : 2.367 with 1 degrees of freedom
+P-value : 0.12395 
+------------------------------------------------------------
+
+H0 : no shift along common axis.
+Wald statistic: 0.2091 with 1 degrees of freedom
+P-value : 0.64745 
+------------------------------------------------------------
+
+Coefficients by group in variable "rain"
+
+Group: high 
+            elevation    slope
+estimate    -3.140896 1.551400
+lower limit -3.475559 1.109374
+upper limit -1.167915 2.011726
+
+H0 : variables uncorrelated.
+R-squared : 0.3407371 
+P-value : 0.013891 
+
+Group: low 
+            elevation    slope
+estimate    -3.304865 1.551400
+lower limit -5.291926 1.109374
+upper limit -2.383495 2.011726
+
+H0 : variables uncorrelated.
+R-squared : 0.80651 
+P-value : 0.00041709 </code></pre>
+</div>
+</div>
+<p>结论： H0 : no shift along common axis. p 为 0.64，接受 h0，无延主轴方向的漂移。</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-warton2012smatr" class="csl-entry" role="doc-biblioentry">
+Warton, David I, Remko A Duursma, Daniel S Falster, and Sara Taskinen. 2012. <span>“Smatr 3– an r Package for Estimation and Inference about Allometric Lines.”</span> <em>Methods in Ecology and Evolution</em> 3 (2): 257–59.
+</div>
+<div id="ref-warton2006smatr" class="csl-entry" role="doc-biblioentry">
+Warton, David I, Ian J Wright, Daniel S Falster, and Mark Westoby. 2006. <span>“Bivariate Line‐fitting Methods for Allometry.”</span> <em>Biological Reviews</em> 81 (2): 259–91.
+</div>
+</div>
+</section>
+</section>
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main> <!-- /main -->
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./pca.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html">
+        <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>

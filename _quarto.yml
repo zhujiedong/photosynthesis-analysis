@@ -1,0 +1,98 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "LI-6800 和 LI-6400 光合数据分析指南"
+  author: "祝介东"
+  date: "2021/11/13"
+  description: | 
+    介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主，
+    有时候为方便或者作为比较，会涉及 python 和其他工具。
+  cover-image: img/cover.png
+  site-url: https://rstudio-education.github.io/hopr/
+  repo-url: https://github.com/jjallaire/hopr/
+  repo-branch: master
+  repo-actions: [edit]
+  chapters:
+    - index.qmd
+    - preface.qmd
+    - intro.qmd
+    - part: basics.qmd
+      chapters:
+        - rbasics.qmd
+        - python-basics.qmd
+    - part: packages.qmd
+      chapters:
+        - phtosyn-pacakges.qmd
+        - general-packages.qmd
+    - part: data-prepare.qmd
+      chapters:
+        - data-import.qmd
+        - batch-method.qmd
+    - part: light-response.qmd
+      chapters:
+        - nls-start.qmd
+        - hyp.qmd
+        - non-hypo.qmd
+        - exp.qmd
+        - hyp-rev.qmd
+        - aq-choose.qmd
+        - big-leaf.qmd
+        
+    - part: aci-curve.qmd
+      chapters:
+        - aci.qmd
+        - DAT-vs-racir.qmd
+        - plantecowraps.qmd
+        - Rd.qmd
+        - C4-related.qmd
+    
+    - part: fluorescence.qmd
+      chapters:
+        - jiptest.qmd
+        - other-fluor.qmd
+   
+    - part: gm-gs.qmd
+      chapters:
+        - gs.qmd
+        - gm.qmd
+    
+    - part: other-stat.qmd
+      chapters:
+        - common-stat.qmd
+        - pca.qmd
+        - smatr.qmd
+    - references.qmd
+  
+  appendices:
+    - a1-run-environment.qmd
+
+
+format:
+  html: 
+    theme: cosmo
+    cover-image: /img/cover.png
+    code-link: true
+    toc: true
+    toc-depth: 3
+    number-depth: 3
+    number-sections: true
+    code-fold: show
+    code-copy: true
+    html-math-method: katex
+    highlight-style: ayu-dark
+    code-background: true
+    code-border-left: "#31BAE9"
+    #lang: zh
+
+#editor: visual
+comments:
+  hypothesis: true
+  
+execute:
+  warning: false
+  message: false
+  cache: true
+    
+bibliography: references.bib

@@ -1,0 +1,3 @@
+# 其他统计方法 {#sec-other-stat-methdo}
+
+todo  其他常用统计方法记录

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.299">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+  <title>LI-6800 和 LI-6400 光合数据分析指南 - 1&nbsp; R 相关的准备</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <link href="./python-basics.html" rel="next">
+  <link href="./basics.html" rel="prev">
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+</head>
+<body class="floating">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/jjallaire/hopr/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+  </div>
+    <div class="px-3 mt-2 flex-shrink-0 align-items-center">
+      <div class="sidebar-search">
+      <div id="quarto-search" class="" title="Search"></div>
+      </div>
+    </div>
+  <div class="sidebar-menu-container"> 
+  <ul class="list-unstyled mt-1">
+      <li class="sidebar-item">
+  <a href="./index.html" class="">欢迎</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./preface.html" class="">序言</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./intro.html" class="">介绍</a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./basics.html" class="">必备工具</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#必备工具-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="必备工具-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./rbasics.html" class="active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./packages.html" class="">光合相关的软件包</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光合相关的软件包-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光合相关的软件包-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./data-prepare.html" class="">数据准备</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#数据准备-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="数据准备-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./light-response.html" class="">光响应曲线简介</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光响应曲线简介-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光响应曲线简介-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#二氧化碳响应曲线概述-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="二氧化碳响应曲线概述-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶绿素荧光数据的处理-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶绿素荧光数据的处理-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶肉与气孔导度-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶肉与气孔导度-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./other-stat.html" class="">其他统计方法</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#其他统计方法-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="其他统计方法-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <li class="sidebar-item">
+  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#appendices-collapse" aria-expanded="true">
+              <div class="me-auto sidebar-section-item">Appendices</div>
+            <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="appendices-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  </ul>
+  </div>
+</nav>
+<!-- toc -->
+    <nav id="TOC" role="doc-toc" class="sidebar sidebar-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#r-install" class="nav-link active" data-scroll-target="#r-install"> <span class="header-section-number">1.1</span> 安装 R</a></li>
+<li><a href="#rtool-install" class="nav-link" data-scroll-target="#rtool-install"> <span class="header-section-number">1.2</span> 安装 Rtools</a></li>
+<li><a href="#use-rstudio" class="nav-link" data-scroll-target="#use-rstudio"> <span class="header-section-number">1.3</span> 使用 Rstudio</a>
+<ul class="collapse">
+<li><a href="#rstudio-basic-use" class="nav-link" data-scroll-target="#rstudio-basic-use"> <span class="header-section-number">1.3.1</span> 基本使用</a></li>
+</ul></li>
+<li><a href="#rstudio-project" class="nav-link" data-scroll-target="#rstudio-project"> <span class="header-section-number">1.4</span> 新建项目文件</a></li>
+<li><a href="#rstudio-hotkeys" class="nav-link" data-scroll-target="#rstudio-hotkeys"> <span class="header-section-number">1.5</span> 一些基本操作</a></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jjallaire/hopr/edit/master/rbasics.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<!-- main -->
+<main class="content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="rbasic" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></span></h1>
+</header>
+
+<p>R 自诞生以来就是为统计而生的，而它的语法又相对而言比较简单易上手，而且它是 <a href="http://www.gnu.org/">GNU</a> 项目的一部分，开源和免费。 对于多数没有计算机相关背景的生态学领域的研究者来讲，这有足够的吸引力。不但如此，它有完善的相对易用的软件包制作的一系列的工具，这就使得在 R 基础功能之上进行功能的扩展十分方便，也就是有完善的生态系统，多数分析工作都有已有的工具包来简化工作流程，非常方便。据我的了解，部分学校的生态学相关专业里已经开设了 <code>R</code> 相关课程，这也对其使用来讲是个好消息，因为自学有时候很简单的一点问题，要找答案也是非常磨人的，这是来自一个过来人的经验，但好处可能就是记忆会比较深刻。</p>
+<section id="r-install" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="r-install"><span class="header-section-number">1.1</span> 安装 R</h2>
+<p>R 的安装主要是需要有一下几点需要注意：</p>
+<ol type="1">
+<li><p>首先不要着急下载，要先选择一个国内<a href="https://cran.r-project.org/mirrors.html">镜像</a>，简单来说，默认的软件存放地址在国外的服务器上，那样下载会比较慢，所以我们先找一个国内的服务。从上面链接的镜像网址中的 China 列表内，找到距离所在地最近的服务器，例如北方东部地区，<a href="https://mirrors.tuna.tsinghua.edu.cn/CRAN/">清华</a> 的开源镜像服务一般是一个比较好的选择。这样在网速一般的情况下，我们相对快速的完成几十兆文件的下载。</p></li>
+<li><p>下载哪个文件的问题。按照上面的方式进入镜像后，会在最上方看到下载系统相关软件的链接，可能多数人都是使用 <a href="https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/windows/">Windows</a>。直接点开后又面临了好多个下载的选择，如果你对他这几个选择毫无概念，那么不要犹豫，<a href="https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/windows/base/">base</a> 就是你最好的选择。</p></li>
+<li><p>安装过程本身很普通，但是为避免一些莫名其妙的问题，我建议安装路径需要满足两点：<strong>路径最好是英文字符；路径中不要带空格</strong>，多数情况下不按照这两点做是不影响使用的，但是少数情况下莫名其妙的报错很有可能来源于不按照这两点来操作。</p></li>
+</ol>
+<p>做好上面几点，应该不至于再出一些与安装相关的问题。安装好后我们多数时间是无需再打开 <code>R</code> 来操作了。所以这里我压根不准备给它留一张放图的空间，偶尔有需要在这里升级软件包或 <code>R</code> 的操作，也是几行代码的问题，实在没必要了解太多。</p>
+</section>
+<section id="rtool-install" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="rtool-install"><span class="header-section-number">1.2</span> 安装 Rtools</h2>
+<p>在 <code>R</code> 下载页面，有一个 <a href="https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/windows/Rtools/">Rtools</a> 下载页面。这个工具在某些情况下是需要的。它本身的用途异常单一，用于编译 C/C++/Fortran 代码用的。但这并不意味着我们不需要，哪怕我们没有写自己的软件包的需求，在有些情况下，有些软件包是需要从源代码进行编译的，所以为避免以后出问题了不知道原因，不如直接装上，不知道什么原因软件包就工作了好。它的安装只有一个注意事项: <strong>不要更改安装路径！不要更改安装路径！！不要更改安装路径！！！</strong></p>
+</section>
+<section id="use-rstudio" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="use-rstudio"><span class="header-section-number">1.3</span> 使用 Rstudio</h2>
+<p>R 虽好，原生的 GUI 着实简陋了一些。因此，用户对使用一个方便的编辑器的追求从未停止过。在我的印象里，最初我用 <code>notepad++</code> 和 <code>gedit</code>，这个相对简单易操作一些。大神们喜欢使用 <code>vim</code> 或 <code>emacs</code>（印象里谢益辉有一次报告还介绍了使用 <code>emacs</code> 来写代码），功能确实强大，但不论编辑器之神还是神之编辑器，入门门槛着实高了一些。直到 Rstudio 的横空出世，彻底解决了平凡人等写代码没有顺手工具的难题，这里用了这么多话来引出 <code>Rstudio</code>，着实是用户的生产力得到了极大的解放。本节的大部分笔墨将介绍它最基本的使用。</p>
+<section id="rstudio-basic-use" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="rstudio-basic-use"><span class="header-section-number">1.3.1</span> 基本使用</h3>
+<p>安装也没太多可以介绍的，但我还是建议和 <code>R</code> 一样，安装路径最好是没有空格的英文。安装好后直接打开，就能看到一个界面 ：</p>
+<div id="fig-newscreen" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/rstudio-start.png" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1.1: <code>Rsutdio</code> 界面</figcaption><p></p>
+</figure>
+</div>
+<p>我修改了默认主题，因为我喜欢黑色背景，感觉注意力很容易被吸引到屏幕上，而且不刺眼。这个开始屏幕是什么也做不了的，我们至少需要打开或新建一个脚本文件来写代码：</p>
+<div id="fig-new-script" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/new-script.gif" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1.2: 新建一个脚本文件并运行</figcaption><p></p>
+</figure>
+</div>
+<p><code>R</code> 的代码文件称为脚本（script），这里我们新建一个脚本文件用于我们写代码，我们看到在打字的过程中，响应的函数会有提示，这样有些比较长的名字或变量，其实我们不用输完，即使记不清楚函数的名字，也可以尝试在这里输入，那么说不定我们看到 <code>Rstudio</code> 给的提示就记起来了，如果要运行当前行或者选中行的代码，有一个快捷键为 <code>Ctr+Enter</code>，我这里就是这么做的，运行完成后。我们会在 <code>plot</code> 那个窗口看到图形，而 <code>plot</code> 的出现也使得 <code>Console</code> 窗口缩小，实际上 <code>Console</code> 就是 <code>Rstudio</code> 调用 <code>R</code> 的窗口。这里需要在下面的菜单里设定：</p>
+<p>Tools –&gt; Global Options… –&gt; General –&gt; R version:</p>
+<p>例如我的设置为：</p>
+<div id="fig-r-path" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/R-path.png" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1.3: <code>R</code> 的安装路径</figcaption><p></p>
+</figure>
+</div>
+<p>这里主要为说明另一个问题，正常我们安装的顺序为先安装 <code>R</code>，再安装 <code>Rstudio</code>，一般这里不会出现找不到 <code>R</code> 之类的报错提示，但是我还是遇到过有人反馈这个问题，如果出现了这种情况，就看一下这个位置是不是安装 <code>R</code> 的路径没有找到，只要你按照上面讲的方式安装了，那么即使遇到这种问题了，也可以手动在这里指定安装路径。</p>
+<p>正常我们新建完成之后是保存这个脚本文件的，<code>R</code> 的脚本文件就是以 <code>.R</code> 结尾的，我们可以直接利用快捷键 <code>CTR+S</code> 保存，这是我们所熟悉的操作，就不浪费时间解释和演示了。</p>
+</section>
+</section>
+<section id="rstudio-project" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="rstudio-project"><span class="header-section-number">1.4</span> 新建项目文件</h2>
+<p>即使是日常练习，我们一般也不会随便创建一个文件，通常会把相关数据和脚本文件放在一个文件夹内，这是避免自己电脑太乱的好方法，但是对 <code>Rstudio</code> 来讲，这并不是最佳方案，因为一旦我们文件夹路径稍微复杂一些，那么使用起来并不方便。使用 <code>setwd</code> 固然可以设置当前路径，但终归不是很方便，<code>Rstudio</code> 给出了新的方案，创建新的项目来解决这个问题：</p>
+<div id="new-project" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/new-project.gif" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">新建一个项目文件</figcaption><p></p>
+</figure>
+</div>
+<p>新建项目有三个选项，如果是刚入门的话，通常只会用到前面两个，例如上面我们选择第一项的目的是在选中的路径下，创建一个 test 文件夹，点击 Create Project 后就会完成相关创建，在这个文件夹内就会生成一个 <code>test.Rproj</code> 文件，我们每次要在这个目录内工作，双击打开这个文件即可，那时候的目录就可以使用相对路径的方式，相对路径的含义我解释一下：</p>
+<p>例如我上面创建的路径是 <code>D:/test</code>，数据里有一个文件夹是 <code>data</code>，存放了一个数据文件叫做 <code>aci-test.csv</code>，即数据文件的路径为：<code>D:/test/data/aci-test.csv</code>，那么我要读取他通过相对路径的方式为：</p>
+<div class="cell" data-hash="rbasics_cache/html/unnamed-chunk-1_50dc760626ded47309b7ac4315f76da1">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">"data/acitest.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>而绝对路径则麻烦一些：</p>
+<div class="cell" data-hash="rbasics_cache/html/unnamed-chunk-2_80ed39b373c3fb8e5b0991ebd4a83edb">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">"D:/test/data/aci-test.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>而且如果我们的目录下有多个代码文件，我们完全可以通过另一个窗口来查看并直接打开，根本无需进入文件夹操作：</p>
+<div id="project-files" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/project-files.png" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">项目所在文件夹的所有文件</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="rstudio-hotkeys" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="rstudio-hotkeys"><span class="header-section-number">1.5</span> 一些基本操作</h2>
+<ul>
+<li><p>脚本文件里的代码提示：我们每次输入相关代码，例如函数名字，变量名字，<code>Rstudio</code> 会自动弹出提示，这就是所谓的代码补全，我们看到下面一长串字符的时候，其实不用着急用方向键来选择，我们继续输入字母就好了，例如我们要输入 <code>plot.funcition</code> 之后与其输入完 <code>plot.</code> 之后按方向键在那一长串函数下选择，不如继续输入 <code>plot.f</code>，这样子我们需要的 <code>plot.function</code> 就自动跑到第一个候选项来了，这时候只要按 <code>Tab</code> 或 <code>Enter</code> 那么自动输入的字符为 <code>plot.function()</code>，连括号都给写了。</p></li>
+<li><p>友好一点的帮助文档查看方式，<code>Rstudio</code> 好是好，但有些窗口对于笔记本电脑着实小了一些，例如查看帮助文档，笔记本都要看不清楚了，那么可以这么操作:</p></li>
+</ul>
+<div id="rstudio-help" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/rstudio-help.gif" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">查看帮助文档</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p><code>&lt;-</code> 可以通过 <code>Alt + -</code> 来快速输入。</p></li>
+<li><p><code>Ctr + Enter</code> 来运行当前行或选中行的代码。</p></li>
+<li><p><code>Ctr + A + Enter</code> 来运行所有代码。</p></li>
+<li><p><code>Ctr + Shift + F10</code> 来重启 R，这对于程序运行错乱时非常有用，跟安装软件出现莫名其妙不起作用的时候重启电脑一样好用。</p></li>
+<li><p><code>Ctr + Shift + C</code> 来批量注释或者去掉注释代码。</p></li>
+</ul>
+
+
+</section>
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main> <!-- /main -->
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./basics.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">必备工具</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./python-basics.html">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>

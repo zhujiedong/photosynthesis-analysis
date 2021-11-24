@@ -1,0 +1,12 @@
+# 必备工具 {#tools-sum}
+
+本书计划使用的工具有 [R 软件](https://cran.r-project.org/) [@rcore]，[Python 软件](https://www.python.org/) 以及一款支持 `bash` 的终端。这其中前两款是可以直接免费下载安装的，而 `bash` 只是 `shell` 语言 [^basics-1] 的一种，如果使用 Mac 或 linux，那么天然自带，如果使用 Windows，那么我推荐使用 [WSL2](https://docs.microsoft.com/en-us/windows/wsl/compare-versions)。
+
+[^basics-1]: https://searchdatacenter.techtarget.com/definition/shell
+
+对于编程来讲，一款好的 IDE 能够节省我们大量的时间，并且节省很多配置的繁琐步骤。对于 `R` 的 IDE，我还是强烈推荐使用 [Rstudio](https://www.rstudio.com)，我后面会介绍入门所必须的一些操作。对于 `Python`，新手尤其是做数据科学的新手，我推荐使用 [Anaconda](https://www.anaconda.com/)，当然了，这并不是一个 IDE，二是针对数据科学的一揽子解决方案，对初学者来讲，比较省心，会让我们跨过所有的系统变量，常用数据分析软件包的安装等的配置，让我们直接进入实战阶段。`Python` 的 IDE 比较有名的事 `Pycharm`，但是它是收费的，虽然听说功能很强大，但我也不清楚，我主要用 `VScode`，这个是微软自家的王牌产品，直接在引用商店搜索即可。但实际上 `Rstudio` 也越来越重视对 `Python` 的支持，可以无缝切换两种语言 [reticulate](https://rstudio.github.io/reticulate/articles/rstudio_ide.html)。
+
+本部分的内容主要介绍相关软件的安装和基本使用。
+
+
+

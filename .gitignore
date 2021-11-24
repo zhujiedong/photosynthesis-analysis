@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.tex
+.Rprofile
+
+*_cache
+/.quarto/

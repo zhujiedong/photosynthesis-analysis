@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.299">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+  <title>LI-6800 和 LI-6400 光合数据分析指南 - 14&nbsp; Aci 曲线拟合相关</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <link href="./DAT-vs-racir.html" rel="next">
+  <link href="./aci-curve.html" rel="prev">
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+</head>
+<body class="floating">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/jjallaire/hopr/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+  </div>
+    <div class="px-3 mt-2 flex-shrink-0 align-items-center">
+      <div class="sidebar-search">
+      <div id="quarto-search" class="" title="Search"></div>
+      </div>
+    </div>
+  <div class="sidebar-menu-container"> 
+  <ul class="list-unstyled mt-1">
+      <li class="sidebar-item">
+  <a href="./index.html" class="">欢迎</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./preface.html" class="">序言</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./intro.html" class="">介绍</a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./basics.html" class="">必备工具</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#必备工具-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="必备工具-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./packages.html" class="">光合相关的软件包</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光合相关的软件包-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光合相关的软件包-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./data-prepare.html" class="">数据准备</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#数据准备-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="数据准备-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./light-response.html" class="">光响应曲线简介</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光响应曲线简介-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光响应曲线简介-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#二氧化碳响应曲线概述-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="二氧化碳响应曲线概述-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./aci.html" class="active"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶绿素荧光数据的处理-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶绿素荧光数据的处理-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶肉与气孔导度-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶肉与气孔导度-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./other-stat.html" class="">其他统计方法</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#其他统计方法-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="其他统计方法-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <li class="sidebar-item">
+  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#appendices-collapse" aria-expanded="true">
+              <div class="me-auto sidebar-section-item">Appendices</div>
+            <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="appendices-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  </ul>
+  </div>
+</nav>
+<!-- toc -->
+    <nav id="TOC" role="doc-toc" class="sidebar sidebar-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#sec-fitaci" class="nav-link active" data-scroll-target="#sec-fitaci"> <span class="header-section-number">14.1</span> <code>plantecophys</code> 拟合</a>
+<ul class="collapse">
+<li><a href="#sec-fitaci_intro" class="nav-link" data-scroll-target="#sec-fitaci_intro"> <span class="header-section-number">14.1.1</span> fitaci 函数介绍</a></li>
+<li><a href="#sec-use-fitaci" class="nav-link" data-scroll-target="#sec-use-fitaci"> <span class="header-section-number">14.1.2</span> <code>fitaci</code> 的使用</a></li>
+<li><a href="#sec-onepoint" class="nav-link" data-scroll-target="#sec-onepoint"> <span class="header-section-number">14.1.3</span> fitmethod = “onepoint” 介绍</a></li>
+<li><a href="#sec-onpoint_fit" class="nav-link" data-scroll-target="#sec-onpoint_fit"> <span class="header-section-number">14.1.4</span> 使用 ‘onepoint’ 单独计算 V<sub>cmax</sub> 和 J<sub>max</sub></a></li>
+<li><a href="#sec-transition" class="nav-link" data-scroll-target="#sec-transition"> <span class="header-section-number">14.1.5</span> <code>findCiTransition</code> 函数</a></li>
+</ul></li>
+<li><a href="#sec-photosynthesis-aci" class="nav-link" data-scroll-target="#sec-photosynthesis-aci"> <span class="header-section-number">14.2</span> <code>photosynthesis</code> 拟合</a></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jjallaire/hopr/edit/master/aci.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<!-- main -->
+<main class="content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="sec-aci-fitting" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></span></h1>
+</header>
+
+<p>ACi 曲线的拟合，有三个软件包来实现，分别是 <code>plantecophys, plantecowraps, photosynthesis</code> （<a href="phtosyn-pacakges.html">sec.&nbsp;<span>3</span></a>）。我们分别来看一下他们的实现方式。</p>
+<section id="sec-fitaci" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="sec-fitaci"><span class="header-section-number">14.1</span> <code>plantecophys</code> 拟合</h2>
+<p><code>plantecophys</code> (<a href="phtosyn-pacakges.html">sec.&nbsp;<span>3</span></a>) 里拟合二氧化碳的函数本质上只有一个 <code>fitaci</code>，只不过为了一次拟合多个处理的数据，在其基础上将 <code>fitaci</code> 扩展为了 <code>fitacis</code>。</p>
+<section id="sec-fitaci_intro" class="level3" data-number="14.1.1">
+<h3 data-number="14.1.1" class="anchored" data-anchor-id="sec-fitaci_intro"><span class="header-section-number">14.1.1</span> fitaci 函数介绍</h3>
+<p><code>fitaci</code> 的用法如下<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>：</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-1_6d184825ab81fa1adf2502c5c8a29cf3">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitaci</span>(data, <span class="at">varnames =</span> <span class="fu">list</span>(<span class="at">ALEAF =</span> <span class="st">"Photo"</span>, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Tleaf =</span> <span class="st">"Tleaf"</span>, <span class="at">Ci =</span> <span class="st">"Ci"</span>, <span class="at">PPFD =</span> <span class="st">"PARi"</span>, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Rd =</span> <span class="st">"Rd"</span>), <span class="at">Tcorrect =</span> <span class="cn">TRUE</span>, <span class="at">Patm =</span> <span class="dv">100</span>, </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">citransition =</span> <span class="cn">NULL</span>, <span class="at">quiet =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">startValgrid =</span> <span class="cn">TRUE</span>, <span class="at">fitmethod =</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"default"</span>, <span class="st">"bilinear"</span>, <span class="st">"onepoint"</span>), </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">algorithm =</span> <span class="st">"default"</span>, <span class="at">fitTPU =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">useRd =</span> <span class="cn">FALSE</span>, <span class="at">PPFD =</span> <span class="cn">NULL</span>, <span class="at">Tleaf =</span> <span class="cn">NULL</span>, </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.24</span>, <span class="at">theta =</span> <span class="fl">0.85</span>, <span class="at">gmeso =</span> <span class="cn">NULL</span>, </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">EaV =</span> <span class="fl">82620.87</span>, <span class="at">EdVC =</span> <span class="dv">0</span>, <span class="at">delsC =</span> <span class="fl">645.1013</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">EaJ =</span> <span class="fl">39676.89</span>, <span class="at">EdVJ =</span> <span class="fl">2e+05</span>, </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">delsJ =</span> <span class="fl">641.3615</span>, <span class="at">GammaStar =</span> <span class="cn">NULL</span>, </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Km =</span> <span class="cn">NULL</span>, <span class="at">id =</span> <span class="cn">NULL</span>, ...)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="do">## S3 method for class 'acifit'</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, <span class="at">what =</span> <span class="fu">c</span>(<span class="st">"data"</span>, <span class="st">"model"</span>, <span class="st">"none"</span>),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="cn">NULL</span>, <span class="at">ylim =</span> <span class="cn">NULL</span>, <span class="at">whichA =</span> <span class="fu">c</span>(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>       <span class="st">"Ac"</span>, <span class="st">"Aj"</span>, <span class="st">"Amin"</span>, <span class="st">"Ap"</span>), <span class="at">add =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">pch =</span> <span class="dv">19</span>, <span class="at">addzeroline =</span> <span class="cn">TRUE</span>, <span class="at">addlegend =</span> </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="sc">!</span>add, <span class="at">legendbty =</span> <span class="st">"o"</span>,<span class="at">transitionpoint =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="at">linecols =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"blue"</span>, <span class="st">"red"</span>), <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">1</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span>), ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><em>主要参数注释：</em></p>
+<ul>
+<li><p>data：需要分析的数据，必须为 <code>.data.frame</code>。 格式。</p></li>
+<li><p>varnames：数据的表头，此处函数默认的表头为 LI-6400 的表头，分析 LI-6400 的数据时可以不用填写，直接使用默认的参数即可<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。</p></li>
+<li><p>Tcorrect：如果为 TRUE，那么 <span class="math inline">J_{max}</span>、<span class="math inline">V_{cmax}</span> 的结果为温度校正结果，若 Tcorrect = FALSE，则为测量温度下的结果。</p></li>
+<li><p>Patm：为外界大气压。</p></li>
+<li><p>citransition：参见详，若提供该选项，则 <span class="math inline">J_{max}</span>、<span class="math inline">V_{cmax}</span> 的区域则分别拟合<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>。</p></li>
+<li><p>fitmethod：参见详解。</p></li>
+<li><p>fitTPU：是否拟合 TPU 限制，默认为 FALSE，参见详解。</p></li>
+<li><p>x：对于plot.acifit，x 为fitaci返回的对象，简单理解为 将 fitaci 函数拟合结果赋值给一个变量，此处plot函数实际上为plot.acifit。</p></li>
+<li><p>what：利用基础做图工具，默认为对数据和模型进行作图。</p></li>
+<li><p>whichA：默认为对所有的光合速率进行作图（Aj=Jmax-limited (蓝色), Ac=Vcmax- limited (红色), Hyperbolic minimum (黑色)), TPU-limited rate (Ap, 如果模型有计算结果）。</p></li>
+</ul>
+<p>其余参数请参考 FvCB 模型 <span class="citation" data-cites="Farquhar1980A">Farquhar, Caemmerer, and Berry (<a href="references.html#ref-Farquhar1980A" role="doc-biblioref">1980</a>)</span> 及查看 plantecophys 的帮助文档。</p>
+<section id="fitaci_detail" class="level4">
+<h4 class="anchored" data-anchor-id="fitaci_detail">fitaci函数详解</h4>
+<ul>
+<li><p>默认为非线性拟合，详见 <span class="citation" data-cites="Duursma2015Plantecophys">Duursma (<a href="references.html#ref-Duursma2015Plantecophys" role="doc-biblioref">2015</a>)</span>。</p></li>
+<li><p>bilinear 方法使用两次线性拟合方法首先拟合 V<span class="math inline">_{cmax}</span> 和 R<span class="math inline">_{d}</span>，然后再拟合J<span class="math inline">_{max}</span>，过渡点的选择为对所有数据拟合最适的点，类似 <span class="citation" data-cites="Gu2010Reliable">Gu et al. (<a href="references.html#ref-Gu2010Reliable" role="doc-biblioref">2010</a>)</span> 的方法。该方法的优势时无论如何，都会返回拟合结果，尤其是非线性拟合失败时使用该方法，但若默认方法失败时，需首先检查是否数据存在问题。两种拟合方法的结果有轻微的差别<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>。</p></li>
+<li><p>onepoint 参考 <span class="citation" data-cites="De2016A">De Kauwe et al. (<a href="references.html#ref-De2016A" role="doc-biblioref">2016</a>)</span>。该方法不同于前面所提到的 ACi 曲线测量，有一系列的前提，但测量比较快。</p></li>
+<li><p>citransition 使用时，数据将被区分为 V<span class="math inline">_{cmax}</span> 限制（Ci &lt; citransition ）区域，以及 J<span class="math inline">_{max}</span> 限制 (Ci &gt; citransition) 区域。</p></li>
+<li><p>fitTPU：如果要计算TPU，要设置 fitTPU = TRUE，并且 fittingmethod = “bilinear”。但需要注意，当 TPU 被计算时，没有 J<span class="math inline">_{max}</span> 限制的点的存在是可能的。TPU限制的发生是在A值不随 CO<span class="math inline">_{2}</span> 的增加而增加时发生的，因此计算 TPU 是否有返回值，取决于测量数据是否有此情况出现。</p></li>
+</ul>
+</section>
+</section>
+<section id="sec-use-fitaci" class="level3" data-number="14.1.2">
+<h3 data-number="14.1.2" class="anchored" data-anchor-id="sec-use-fitaci"><span class="header-section-number">14.1.2</span> <code>fitaci</code> 的使用</h3>
+<p>首先安装 <code>plantecophys</code>:</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-2_28f95d5c6d3c79247b45d7d985849662">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"plantecophys"</span>, <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>如果使用 LI-6800，为方便起见，可以使用我修改后的 <code>plantecophys2</code>:</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-3_4d8d2e47eb81aa5cda9fb42ef50ec357">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_git</span>(<span class="st">"https://gitee.com/zhu_jie_dong/plantecophys2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>我们先看一个使用 LI-6400 的例子：</p>
+<div class="cell" data-hash="aci_cache/html/fitaci-eg_2f76bb638711b4845994826f075bf8d1">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"plantecophys"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 利用read.csv读取数据文件，</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 我的路径为当前工作路径的data文件夹内</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>aci <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/aci.csv"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 防止可能出现的NA值</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>aci <span class="ot">&lt;-</span> <span class="fu">subset</span>(aci, Obs <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 不修改默认参数对数据进行拟合</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>acifit <span class="ot">&lt;-</span> <span class="fu">fitaci</span>(aci)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看拟合结果</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(acifit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Result of fitaci.
+
+Data and predictions:
+           Ci      Ameas     Amodel         Ac        Aj   Ap       Rd VPD
+5    53.47985 -0.6575974 -0.5146882 -0.3552036  0.000000 1000 0.159449 1.5
+4    85.82530  1.7971569  1.9292621  2.0888575  5.068534 1000 0.159449 1.5
+3   150.67623  6.4525814  6.4176037  6.5777528 12.755502 1000 0.159449 1.5
+2   217.32002 10.6562220 10.5354626 10.6965875 17.519644 1000 0.159449 1.5
+1   286.39751 14.2848912 14.3365887 14.4993980 20.749310 1000 0.159449 1.5
+6   292.56161 15.4296572 14.9749157 15.1383702 20.852616 1000 0.159449 1.5
+7   292.96456 15.7134791 15.0564801 15.2200522 20.831098 1000 0.159449 1.5
+8   450.64285 22.2659015 23.0115187 23.1975997 25.186939 3000 0.159449 1.5
+9   622.03873 26.5135040 27.6485003 30.4281393 27.837462 3000 0.159449 1.5
+10  992.08737 30.3898585 30.6300461 42.3998173 30.797660 3000 0.159449 1.5
+11 1558.96968 33.6267056 32.6638021 54.9948264 32.828110 3000 0.159449 1.5
+12 1756.16396 33.3152783 33.0981490 58.5844507 33.261965 3000 0.159449 1.5
+      Tleaf         Cc     PPFD Patm Ci_original
+5  31.12332   53.47934 1800.490  100    53.47985
+4  30.99093   85.82723 1800.558  100    85.82530
+3  30.82872  150.68265 1800.140  100   150.67623
+2  30.63983  217.33057 1800.524  100   217.32002
+1  30.46890  286.41186 1800.701  100   286.39751
+6  31.26338  292.57660 1799.923  100   292.56161
+7  31.41866  292.97963 1799.975  100   292.96456
+8  31.54122  450.66588 1799.826  100   450.64285
+9  31.63493  622.06640 1799.578  100   622.03873
+10 31.73910  992.11803 1800.055  100   992.08737
+11 31.86938 1559.00238 1800.022  100  1558.96968
+12 31.96654 1756.19709 1799.585  100  1756.16396
+
+Root mean squared error:  1.889701 
+
+Estimated parameters:
+        Estimate Std. Error
+Vcmax  49.261616  1.5152405
+Jmax  126.620537  2.2816267
+Rd      0.159449  0.4001302
+Note: Vcmax, Jmax are at 25C, Rd is at measurement T.
+
+Curve was fit using method:  default 
+
+Parameter settings:
+Patm = 100
+ alpha = 0.24
+ theta = 0.85
+ EaV = 82620.87
+ EdVC = 0
+ delsC = 645.1013
+ EaJ = 39676.89
+ EdVJ = 2e+05
+ delsJ = 641.3615
+
+Estimated from Tleaf (shown at mean Tleaf):
+GammaStar =  58.61138 
+Km =  1223.279 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>acifit_linear <span class="ot">&lt;-</span> <span class="fu">fitaci</span>(aci,  <span class="at">fitmethod =</span> <span class="st">"bilinear"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(acifit_linear)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Result of fitaci.
+
+Data and predictions:
+           Ci      Ameas     Amodel         Ac        Aj   Ap        Rd VPD
+5    53.47985 -0.6575974 -0.7389447 -0.3560483  0.000000 1000 0.3828608 1.5
+4    85.82530  1.7971569  1.7108198  2.0938246  5.138366 1000 0.3828608 1.5
+3   150.67623  6.4525814  6.2098476  6.5933940 12.931333 1000 0.3828608 1.5
+2   217.32002 10.6562220 10.3375299 10.7220229 17.761317 1000 0.3828608 1.5
+1   286.39751 14.2848912 14.1477696 14.5338762 21.035722 1000 0.3828608 1.5
+6   292.56161 15.4296572 14.7876514 15.1743678 21.139657 1000 0.3828608 1.5
+7   292.96456 15.7134791 14.8694171 15.2562440 21.117718 1000 0.3828608 1.5
+8   450.64285 22.2659015 22.8464806 23.2527613 25.533374 3000 0.3828608 1.5
+9   622.03873 26.5135040 27.8030690 30.5004944 28.220254 3000 0.3828608 1.5
+10  992.08737 30.3898585 30.8295808 42.5006398 31.221072 3000 0.3828608 1.5
+11 1558.96968 33.6267056 32.8913778 55.1255986 33.279305 3000 0.3828608 1.5
+12 1756.16396 33.3152783 33.3316070 58.7237587 33.719013 3000 0.3828608 1.5
+      Tleaf         Cc     PPFD Patm Ci_original
+5  31.12332   53.47911 1800.490  100    53.47985
+4  30.99093   85.82701 1800.558  100    85.82530
+3  30.82872  150.68244 1800.140  100   150.67623
+2  30.63983  217.33037 1800.524  100   217.32002
+1  30.46890  286.41167 1800.701  100   286.39751
+6  31.26338  292.57641 1799.923  100   292.56161
+7  31.41866  292.97944 1799.975  100   292.96456
+8  31.54122  450.66572 1799.826  100   450.64285
+9  31.63493  622.06656 1799.578  100   622.03873
+10 31.73910  992.11823 1800.055  100   992.08737
+11 31.86938 1559.00260 1800.022  100  1558.96968
+12 31.96654 1756.19733 1799.585  100  1756.16396
+
+Root mean squared error:  2.013045 
+
+Estimated parameters:
+         Estimate Std. Error
+Vcmax  49.3787547  3.4815555
+Jmax  128.5546403         NA
+Rd      0.3828608  0.4697008
+Note: Vcmax, Jmax are at 25C, Rd is at measurement T.
+
+Curve was fit using method:  bilinear 
+
+Parameter settings:
+Patm = 100
+ alpha = 0.24
+ theta = 0.85
+ EaV = 82620.87
+ EdVC = 0
+ delsC = 645.1013
+ EaJ = 39676.89
+ EdVJ = 2e+05
+ delsJ = 641.3615
+
+Estimated from Tleaf (shown at mean Tleaf):
+GammaStar =  58.61138 
+Km =  1223.279 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 仅查看拟合参数, 比较两种拟合参数的差异</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(acifit_linear)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>      Vcmax        Jmax          Rd 
+ 49.3787547 128.5546403   0.3828608 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(acifit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>     Vcmax       Jmax         Rd 
+ 49.261616 126.620537   0.159449 </code></pre>
+</div>
+</div>
+<p>需要注意，<code>plantecophys</code> 的 Rd 不需要带负号，即上面的仅仅表示呼吸速率的值。</p>
+<div class="cell" data-hash="aci_cache/html/fig-fitaci6400_f59e5013c67247e89e512d6243a03ad9">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 设置作图参数，图形的边距及分为1行两列输出图形</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">no.readonly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">4.5</span>, <span class="fl">4.5</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 对两种拟合参数的结果作图，查看模型拟合是否正常</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acifit, <span class="at">addlegend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="at">x =</span> <span class="dv">500</span>, <span class="at">y =</span> <span class="dv">10</span>, </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(A[c])), </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                <span class="fu">expression</span>(<span class="fu">paste</span>(A[j])),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Limiting rate"</span>),</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span><span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"black"</span>) </span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">" fitmethod = 'default' "</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acifit_linear, <span class="at">addlegend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="at">x =</span> <span class="dv">500</span>, <span class="at">y =</span> <span class="dv">10</span>, </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(A[c])), </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">expression</span>(<span class="fu">paste</span>(A[j])),</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Limiting rate"</span>),</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span><span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"black"</span>) </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"fitmethod = 'bilinear' "</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>par <span class="ot">&lt;-</span> op</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-fitaci6400" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="aci_files/figure-html/fig-fitaci6400-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.1: fitmethod 为非线性和线性拟合的差异</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>如果需要导出数据做他用，使用 Rstudio 的话，其自动补全的功能在选择数据上更方便 (即输入拟合的名称 + $ 符号后，自动补全会弹出提示)。例如导出预测值和系数分别使用如下方式：</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-6_d44395ea60d5a4e8f0c300fd99b7b9d0">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 将模型拟合结果中df（即计算数据）赋给predictaci，</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 并用write.csv导出</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>predictaci <span class="ot">&lt;-</span> acifit<span class="sc">$</span>df</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(acifit<span class="sc">$</span>df, <span class="at">file =</span> <span class="st">"acipredict.csv"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(<span class="fu">coef</span>(acifit), <span class="at">file =</span> <span class="st">"coefaci.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><strong>需要注意的是</strong>，因为非线性拟合需要一个初值，因此，使用默认方式（非线性拟合）的时候，会存在可能的拟合失败现象，此时可以使用 <code>fitmethod = "bilinear"</code>，二者结果略有差别。</p>
+<section id="sec-multi_curve" class="level4">
+<h4 class="anchored" data-anchor-id="sec-multi_curve">一次拟合多条 ACi 曲线</h4>
+<p>fitacis 函数实际上是 fitaci 函数的扩展，方便一次拟合多条曲线<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>。函数的参数如下：</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-7_a4b059f983806cdb0081782b90affb30">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitacis</span>(data, group, <span class="at">fitmethod =</span> <span class="fu">c</span>(<span class="st">"default"</span>, </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">"bilinear"</span>),<span class="at">progressbar =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">quiet =</span> <span class="cn">FALSE</span>, <span class="at">id =</span> <span class="cn">NULL</span>, ...)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="do">## S3 method for class 'acifits'</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, <span class="at">how =</span> <span class="fu">c</span>(<span class="st">"manyplots"</span>, <span class="st">"oneplot"</span>), </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">highlight =</span> <span class="cn">NULL</span>, <span class="at">ylim =</span> <span class="cn">NULL</span>, </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="cn">NULL</span>, <span class="at">add =</span> <span class="cn">FALSE</span>, <span class="at">what =</span> <span class="fu">c</span>(<span class="st">"model"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>     <span class="st">"data"</span>, <span class="st">"none"</span>), ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><strong>主要参数详解：</strong></p>
+<p>实际上 fitacis 与 fitaci 模型算法完全一致，只不过增加了一个 group 参数，用于区分不同测量的数据，具体请参考举例内容。</p>
+</section>
+<section id="sec-fitacis_exa" class="level4">
+<h4 class="anchored" data-anchor-id="sec-fitacis_exa">fitacis 函数应用举例</h4>
+<p>下文代码根据 plantecophys 中的示例代码修改，进行演示，原代码请参考其帮助文档。</p>
+<div class="cell" data-hash="aci_cache/html/fig-fitacisr_902e20b72a7e5eb5a73e141f5a34fb6f">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecophys)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 只提取前10个不同测量的数据，节省时间进行举例</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>manyacidat2 <span class="ot">&lt;-</span> <span class="fu">droplevels</span>(manyacidat[manyacidat<span class="sc">$</span>Curve <span class="sc">%in%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="fu">levels</span>(manyacidat<span class="sc">$</span>Curve)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>],])</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 对多条曲线进行拟合，使用bilinear方法，</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 仅仅因为其比非线性拟合节省时间</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">&lt;-</span> <span class="fu">fitacis</span>(manyacidat2, <span class="at">group =</span> <span class="st">"Curve"</span>, <span class="at">fitmethod=</span><span class="st">"bilinear"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 拟合结果为list，我们可以只提取第一个的拟合结果</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>fits[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>Result of fitaci.
+
+Data and predictions:
+           Ci      Ameas     Amodel         Ac        Aj   Ap        Rd VPD
+2    53.23129 -0.4401082  0.1014381  0.9601119  2.548123 1000 0.8586158 1.5
+3    79.47367  2.4824630  2.1937702  3.0526198  7.036734 1000 0.8586158 1.5
+4   116.74688  5.4531712  4.9419337  5.8011511 11.392394 1000 0.8586158 1.5
+5   188.00801  9.7099879  9.5705964 10.4310194 16.447715 1000 0.8586158 1.5
+6   278.44662 14.8225766 14.4261545 15.2897486 19.977583 1000 0.8586158 1.5
+7   343.03259 17.7982155 17.4602014 18.3289218 21.639847 1000 0.8586158 1.5
+1   344.72152 17.9244012 17.3165146 18.1849643 21.534276 1000 0.8586158 1.5
+14  344.74839 16.7933747 17.6853306 18.5545917 21.774261 1000 0.8586158 1.5
+8   588.08078 23.8925326 24.1309683 27.0327638 25.020148 3000 0.8586158 1.5
+9   833.25547 26.5674409 25.7783026 33.0856065 26.647921 3000 0.8586158 1.5
+10 1136.99222 25.9787890 26.8108335 38.1296944 27.676768 3000 0.8586158 1.5
+11 1436.86370 26.6110657 27.5409345 42.0628463 28.405453 3000 0.8586158 1.5
+12 1536.46772 27.4018784 27.7965881 43.3773689 28.660781 3000 0.8586158 1.5
+13 1731.76400 28.6752069 28.0952804 45.2475932 28.959041 3000 0.8586158 1.5
+      Tleaf         Cc     PPFD Patm Ci_original
+2  24.55873   53.23139 1799.959  100    53.23129
+3  24.58292   79.47586 1799.590  100    79.47367
+4  24.71278  116.75183 1799.819  100   116.74688
+5  24.73687  188.01759 1800.371  100   188.00801
+6  24.67508  278.46106 1800.233  100   278.44662
+7  24.76596  343.05006 1799.575  100   343.03259
+1  24.51593  344.73886 1800.356  100   344.72152
+14 24.94098  344.76609 1799.964  100   344.74839
+8  24.83785  588.10494 1799.477  100   588.08078
+9  24.91185  833.28127 1799.969  100   833.25547
+10 24.87314 1137.01906 1799.525  100  1136.99222
+11 24.95914 1436.89126 1799.615  100  1436.86370
+12 25.04542 1536.49554 1799.784  100  1536.46772
+13 25.07566 1731.79212 1799.160  100  1731.76400
+
+Root mean squared error:  2.196037 
+
+Estimated parameters:
+         Estimate Std. Error
+Vcmax  65.0009909  1.3720635
+Jmax  131.7980133         NA
+Rd      0.8586158  0.2876248
+Note: Vcmax, Jmax are at 25C, Rd is at measurement T.
+
+Curve was fit using method:  bilinear 
+
+Parameter settings:
+Patm = 100
+ alpha = 0.24
+ theta = 0.85
+ EaV = 82620.87
+ EdVC = 0
+ delsC = 645.1013
+ EaJ = 39676.89
+ EdVJ = 2e+05
+ delsJ = 641.3615
+
+Estimated from Tleaf (shown at mean Tleaf):
+GammaStar =  42.31453 
+Km =  698.2084 </code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用sapply提取拟合结果的RMSE(均方根误差)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>rmses <span class="ot">&lt;-</span> <span class="fu">sapply</span>(fits, <span class="st">"[["</span>, <span class="st">"RMSE"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rmses, <span class="at">type=</span><span class="st">'h'</span>, <span class="at">ylab=</span><span class="st">"RMSE"</span>, <span class="at">xlab=</span><span class="st">"Curve nr"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 对最差的拟合结果进行作图</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fits[[<span class="fu">which.max</span>(rmses)]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-fitacisr" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="aci_files/figure-html/fig-fitacisr-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.2: fitacis作图结果</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div id="fig-fitacisr" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="aci_files/figure-html/fig-fitacisr-2.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 14.3: fitacis作图结果</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>可以看出，<code>fitaci</code> 和 <code>fitacis</code> 用法基本一致，各行代码均已经注释，更详细用法请参函数考帮助。</p>
+</section>
+</section>
+<section id="sec-onepoint" class="level3" data-number="14.1.3">
+<h3 data-number="14.1.3" class="anchored" data-anchor-id="sec-onepoint"><span class="header-section-number">14.1.3</span> fitmethod = “onepoint” 介绍</h3>
+<p><span class="citation" data-cites="De2016A">De Kauwe et al. (<a href="references.html#ref-De2016A" role="doc-biblioref">2016</a>)</span> 发表了关于 one point 方法计算 <span class="math inline">V_{cmax}</span> 和 <span class="math inline">J_{max}</span> 的文章，在 2017 年 11 月的更新中，plantecophys 将对应的 <code>python</code> 代码移植到了 <code>plantecophys</code>， 该方法并非使用一个点计算 <span class="math inline">V_{cmax}</span> 和 <span class="math inline">J_{max}</span>，而是对数据集中的每一个点的值进行估计，使用的方法为逆向了光合作用方程。输出则是将原始数据中加入了 <span class="math inline">V_{cmax}</span> 和 <span class="math inline">J_{max}</span> 的计算结果，当然一如既往的可以使用温度校准的方法。为提升测量的准确性，最佳方案是有测量的 Rd 值。<strong>也就是 useRd 被默认启用。它的假设是在外部环境 CO<sub>2</sub> 浓度和饱和光下。</strong></p>
+<p>基于上面的描述，他们的模型如下：</p>
+<p><span id="eq-inverseA"><span class="math display">
+\hat{V}_{cmax} = (A_{sat} + R_{day}) \frac{C_i + K_m}{C_i - \Gamma^*} 
+ \qquad(14.1)</span></span></p>
+<p>其中：K<sub>m</sub> 为米氏常数，其计算为：</p>
+<p>$$ K_m = K_c (1 + )</p>
+<p>$$ {#eq-km}</p>
+<p>未知参数均由文献中的方法进行计算，具体可参考 <span class="citation" data-cites="De2016A">De Kauwe et al. (<a href="references.html#ref-De2016A" role="doc-biblioref">2016</a>)</span> 的原文,但上述方法的缺陷是还需要 R<sub>day</sub>，因此作者使用了1.5% V<sub>cmax</sub> 作为 R<sub>day</sub>，因此公式 <span class="quarto-unresolved-ref">?eq-inversea</span> 可变换为：</p>
+<p><span id="eq-onepoint"><span class="math display">
+\hat{V}_{cmax} = A_{sat} (\frac{C_i + K_m}{C_i - \Gamma^*} - 0.015)
+ \qquad(14.2)</span></span></p>
+<p>另一个重要的模型的假设为 J<sub>max</sub> 与 V<sub>cmax</sub> 是成比例的， J<sub>max</sub> 的计算是通过 C<sub>i</sub> transition point 来实现的，文章中的比值均值为 1.9，范围在 1.68 ~ 2.14 之间。</p>
+</section>
+<section id="sec-onpoint_fit" class="level3" data-number="14.1.4">
+<h3 data-number="14.1.4" class="anchored" data-anchor-id="sec-onpoint_fit"><span class="header-section-number">14.1.4</span> 使用 ‘onepoint’ 单独计算 V<sub>cmax</sub> 和 J<sub>max</sub></h3>
+<p>目前我手头没有相应数据，仅有使用 LI-6400 测试 auto log 2 时的一个数据，我们用这个来示范该方法的使用：</p>
+<div class="cell" data-hash="aci_cache/html/onepointdata_95a57dde580b48c0086c32d0b39e41c8">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>one_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/onepoint.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-tbl-cap="{}" data-hash="aci_cache/html/one_pointdata_203a421a3e0a5b1fdc99deea20d7d081">
+<div class="cell-output-display">
+<div id="tbl-one_point" class="anchored">
+<table class="table">
+<caption>Table 14.1: onepoint 使用的数据 </caption>
+<colgroup>
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Obs</th>
+<th style="text-align: left;">HHMMSS</th>
+<th style="text-align: right;">FTime</th>
+<th style="text-align: right;">EBal.</th>
+<th style="text-align: right;">Photo</th>
+<th style="text-align: right;">Cond</th>
+<th style="text-align: right;">Ci</th>
+<th style="text-align: right;">Trmmol</th>
+<th style="text-align: right;">VpdL</th>
+<th style="text-align: right;">CTleaf</th>
+<th style="text-align: right;">Area</th>
+<th style="text-align: right;">BLC_1</th>
+<th style="text-align: right;">StmRat</th>
+<th style="text-align: right;">BLCond</th>
+<th style="text-align: right;">Tair</th>
+<th style="text-align: right;">Tleaf</th>
+<th style="text-align: right;">TBlk</th>
+<th style="text-align: right;">CO2R</th>
+<th style="text-align: right;">CO2S</th>
+<th style="text-align: right;">H2OR</th>
+<th style="text-align: right;">H2OS</th>
+<th style="text-align: right;">RH_R</th>
+<th style="text-align: right;">RH_S</th>
+<th style="text-align: right;">Flow</th>
+<th style="text-align: right;">PARi</th>
+<th style="text-align: right;">PARo</th>
+<th style="text-align: right;">Press</th>
+<th style="text-align: right;">CsMch</th>
+<th style="text-align: right;">HsMch</th>
+<th style="text-align: right;">CsMchSD</th>
+<th style="text-align: right;">HsMchSD</th>
+<th style="text-align: right;">CrMchSD</th>
+<th style="text-align: right;">HrMchSD</th>
+<th style="text-align: right;">StableF</th>
+<th style="text-align: right;">BLCslope</th>
+<th style="text-align: right;">BLCoffst</th>
+<th style="text-align: right;">f_parin</th>
+<th style="text-align: right;">f_parout</th>
+<th style="text-align: right;">alphaK</th>
+<th style="text-align: right;">Status</th>
+<th style="text-align: right;">fda</th>
+<th style="text-align: right;">Trans</th>
+<th style="text-align: right;">Tair_K</th>
+<th style="text-align: right;">Twall_K</th>
+<th style="text-align: right;">R.W.m2.</th>
+<th style="text-align: right;">Tl.Ta</th>
+<th style="text-align: right;">SVTleaf</th>
+<th style="text-align: right;">h2o_i</th>
+<th style="text-align: right;">h20diff</th>
+<th style="text-align: right;">CTair</th>
+<th style="text-align: right;">SVTair</th>
+<th style="text-align: right;">CndTotal</th>
+<th style="text-align: right;">vp_kPa</th>
+<th style="text-align: right;">VpdA</th>
+<th style="text-align: right;">CndCO2</th>
+<th style="text-align: right;">Ci_Pa</th>
+<th style="text-align: right;">Ci.Ca</th>
+<th style="text-align: right;">RHsfc</th>
+<th style="text-align: right;">C2sfc</th>
+<th style="text-align: right;">AHs.Cs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">14:12:43</td>
+<td style="text-align: right;">347.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10.519216</td>
+<td style="text-align: right;">0.1369336</td>
+<td style="text-align: right;">263.0905</td>
+<td style="text-align: right;">1.963046</td>
+<td style="text-align: right;">1.445782</td>
+<td style="text-align: right;">25.89411</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.42</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.84</td>
+<td style="text-align: right;">25.86572</td>
+<td style="text-align: right;">25.89411</td>
+<td style="text-align: right;">25.86697</td>
+<td style="text-align: right;">412.5374</td>
+<td style="text-align: right;">398.9832</td>
+<td style="text-align: right;">16.98853</td>
+<td style="text-align: right;">19.29724</td>
+<td style="text-align: right;">50.16200</td>
+<td style="text-align: right;">56.97891</td>
+<td style="text-align: right;">500.3231</td>
+<td style="text-align: right;">1198.761</td>
+<td style="text-align: right;">7.497697</td>
+<td style="text-align: right;">98.84273</td>
+<td style="text-align: right;">2.011996</td>
+<td style="text-align: right;">-0.3824501</td>
+<td style="text-align: right;">0.1618589</td>
+<td style="text-align: right;">0.0039255</td>
+<td style="text-align: right;">0.1864786</td>
+<td style="text-align: right;">0.0030409</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">-0.2195652</td>
+<td style="text-align: right;">2.737392</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">111115</td>
+<td style="text-align: right;">0.8338718</td>
+<td style="text-align: right;">0.0019630</td>
+<td style="text-align: right;">299.0441</td>
+<td style="text-align: right;">299.0157</td>
+<td style="text-align: right;">191.8018</td>
+<td style="text-align: right;">1.191025</td>
+<td style="text-align: right;">3.353173</td>
+<td style="text-align: right;">33.92433</td>
+<td style="text-align: right;">14.62709</td>
+<td style="text-align: right;">25.87991</td>
+<td style="text-align: right;">3.350355</td>
+<td style="text-align: right;">0.1306349</td>
+<td style="text-align: right;">1.907392</td>
+<td style="text-align: right;">1.442964</td>
+<td style="text-align: right;">0.0821903</td>
+<td style="text-align: right;">26.00458</td>
+<td style="text-align: right;">0.6594024</td>
+<td style="text-align: right;">57.74196</td>
+<td style="text-align: right;">393.9829</td>
+<td style="text-align: right;">0.0154169</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">14:13:04</td>
+<td style="text-align: right;">369.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10.361122</td>
+<td style="text-align: right;">0.1357092</td>
+<td style="text-align: right;">264.1135</td>
+<td style="text-align: right;">1.946022</td>
+<td style="text-align: right;">1.445559</td>
+<td style="text-align: right;">25.89542</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.42</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.84</td>
+<td style="text-align: right;">25.86854</td>
+<td style="text-align: right;">25.89542</td>
+<td style="text-align: right;">25.86977</td>
+<td style="text-align: right;">412.5459</td>
+<td style="text-align: right;">399.1890</td>
+<td style="text-align: right;">17.01363</td>
+<td style="text-align: right;">19.30231</td>
+<td style="text-align: right;">50.22723</td>
+<td style="text-align: right;">56.98380</td>
+<td style="text-align: right;">500.3223</td>
+<td style="text-align: right;">1198.748</td>
+<td style="text-align: right;">7.486364</td>
+<td style="text-align: right;">98.84175</td>
+<td style="text-align: right;">2.018435</td>
+<td style="text-align: right;">-0.3787848</td>
+<td style="text-align: right;">0.2174792</td>
+<td style="text-align: right;">0.0025482</td>
+<td style="text-align: right;">0.2455426</td>
+<td style="text-align: right;">0.0025012</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">-0.2195652</td>
+<td style="text-align: right;">2.737392</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">111115</td>
+<td style="text-align: right;">0.8338705</td>
+<td style="text-align: right;">0.0019460</td>
+<td style="text-align: right;">299.0454</td>
+<td style="text-align: right;">299.0185</td>
+<td style="text-align: right;">191.7997</td>
+<td style="text-align: right;">1.199722</td>
+<td style="text-align: right;">3.353433</td>
+<td style="text-align: right;">33.92729</td>
+<td style="text-align: right;">14.62498</td>
+<td style="text-align: right;">25.88198</td>
+<td style="text-align: right;">3.350765</td>
+<td style="text-align: right;">0.1295200</td>
+<td style="text-align: right;">1.907874</td>
+<td style="text-align: right;">1.442891</td>
+<td style="text-align: right;">0.0814842</td>
+<td style="text-align: right;">26.10544</td>
+<td style="text-align: right;">0.6616252</td>
+<td style="text-align: right;">57.73418</td>
+<td style="text-align: right;">394.2638</td>
+<td style="text-align: right;">0.0151724</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">14:13:25</td>
+<td style="text-align: right;">373.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10.207166</td>
+<td style="text-align: right;">0.1342114</td>
+<td style="text-align: right;">264.8348</td>
+<td style="text-align: right;">1.925734</td>
+<td style="text-align: right;">1.445717</td>
+<td style="text-align: right;">25.89660</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.42</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.84</td>
+<td style="text-align: right;">25.87186</td>
+<td style="text-align: right;">25.89660</td>
+<td style="text-align: right;">25.87317</td>
+<td style="text-align: right;">412.5393</td>
+<td style="text-align: right;">399.3762</td>
+<td style="text-align: right;">17.03833</td>
+<td style="text-align: right;">19.30316</td>
+<td style="text-align: right;">50.29006</td>
+<td style="text-align: right;">56.97489</td>
+<td style="text-align: right;">500.3188</td>
+<td style="text-align: right;">1198.737</td>
+<td style="text-align: right;">7.489428</td>
+<td style="text-align: right;">98.84142</td>
+<td style="text-align: right;">2.018435</td>
+<td style="text-align: right;">-0.3787848</td>
+<td style="text-align: right;">0.2174792</td>
+<td style="text-align: right;">0.0025482</td>
+<td style="text-align: right;">0.2455426</td>
+<td style="text-align: right;">0.0025012</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">-0.2195652</td>
+<td style="text-align: right;">2.737392</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">111115</td>
+<td style="text-align: right;">0.8338647</td>
+<td style="text-align: right;">0.0019257</td>
+<td style="text-align: right;">299.0466</td>
+<td style="text-align: right;">299.0219</td>
+<td style="text-align: right;">191.7980</td>
+<td style="text-align: right;">1.210137</td>
+<td style="text-align: right;">3.353668</td>
+<td style="text-align: right;">33.92979</td>
+<td style="text-align: right;">14.62663</td>
+<td style="text-align: right;">25.88423</td>
+<td style="text-align: right;">3.351212</td>
+<td style="text-align: right;">0.1281551</td>
+<td style="text-align: right;">1.907951</td>
+<td style="text-align: right;">1.443261</td>
+<td style="text-align: right;">0.0806199</td>
+<td style="text-align: right;">26.17665</td>
+<td style="text-align: right;">0.6631213</td>
+<td style="text-align: right;">57.71117</td>
+<td style="text-align: right;">394.5242</td>
+<td style="text-align: right;">0.0149311</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">14:13:41</td>
+<td style="text-align: right;">389.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9.547416</td>
+<td style="text-align: right;">0.1281947</td>
+<td style="text-align: right;">269.6337</td>
+<td style="text-align: right;">1.854272</td>
+<td style="text-align: right;">1.454248</td>
+<td style="text-align: right;">25.94020</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.42</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.84</td>
+<td style="text-align: right;">25.91845</td>
+<td style="text-align: right;">25.94020</td>
+<td style="text-align: right;">25.92104</td>
+<td style="text-align: right;">413.8090</td>
+<td style="text-align: right;">401.4666</td>
+<td style="text-align: right;">17.12559</td>
+<td style="text-align: right;">19.30638</td>
+<td style="text-align: right;">50.40359</td>
+<td style="text-align: right;">56.82203</td>
+<td style="text-align: right;">500.3162</td>
+<td style="text-align: right;">1199.245</td>
+<td style="text-align: right;">7.449210</td>
+<td style="text-align: right;">98.83208</td>
+<td style="text-align: right;">2.018435</td>
+<td style="text-align: right;">-0.3787848</td>
+<td style="text-align: right;">0.2174792</td>
+<td style="text-align: right;">0.0025482</td>
+<td style="text-align: right;">0.2455426</td>
+<td style="text-align: right;">0.0025012</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">-0.2195652</td>
+<td style="text-align: right;">2.737392</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">111115</td>
+<td style="text-align: right;">0.8338604</td>
+<td style="text-align: right;">0.0018543</td>
+<td style="text-align: right;">299.0902</td>
+<td style="text-align: right;">299.0684</td>
+<td style="text-align: right;">191.8792</td>
+<td style="text-align: right;">1.247158</td>
+<td style="text-align: right;">3.362337</td>
+<td style="text-align: right;">34.02071</td>
+<td style="text-align: right;">14.71433</td>
+<td style="text-align: right;">25.92933</td>
+<td style="text-align: right;">3.360173</td>
+<td style="text-align: right;">0.1226580</td>
+<td style="text-align: right;">1.908089</td>
+<td style="text-align: right;">1.452084</td>
+<td style="text-align: right;">0.0771402</td>
+<td style="text-align: right;">26.64846</td>
+<td style="text-align: right;">0.6716216</td>
+<td style="text-align: right;">57.48324</td>
+<td style="text-align: right;">396.9282</td>
+<td style="text-align: right;">0.0138266</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">14:16:16</td>
+<td style="text-align: right;">540.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10.288968</td>
+<td style="text-align: right;">0.1376602</td>
+<td style="text-align: right;">267.9198</td>
+<td style="text-align: right;">2.009217</td>
+<td style="text-align: right;">1.471788</td>
+<td style="text-align: right;">26.01813</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.42</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.84</td>
+<td style="text-align: right;">26.01478</td>
+<td style="text-align: right;">26.01813</td>
+<td style="text-align: right;">26.02164</td>
+<td style="text-align: right;">413.9044</td>
+<td style="text-align: right;">400.5999</td>
+<td style="text-align: right;">16.92567</td>
+<td style="text-align: right;">19.28878</td>
+<td style="text-align: right;">49.53554</td>
+<td style="text-align: right;">56.44850</td>
+<td style="text-align: right;">500.3043</td>
+<td style="text-align: right;">1200.785</td>
+<td style="text-align: right;">7.497018</td>
+<td style="text-align: right;">98.81870</td>
+<td style="text-align: right;">2.018435</td>
+<td style="text-align: right;">-0.3787848</td>
+<td style="text-align: right;">0.2174792</td>
+<td style="text-align: right;">0.0025482</td>
+<td style="text-align: right;">0.2455426</td>
+<td style="text-align: right;">0.0025012</td>
+<td style="text-align: right;">0.6666667</td>
+<td style="text-align: right;">-0.2195652</td>
+<td style="text-align: right;">2.737392</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">111115</td>
+<td style="text-align: right;">0.8338405</td>
+<td style="text-align: right;">0.0020092</td>
+<td style="text-align: right;">299.1681</td>
+<td style="text-align: right;">299.1648</td>
+<td style="text-align: right;">192.1257</td>
+<td style="text-align: right;">1.174669</td>
+<td style="text-align: right;">3.377880</td>
+<td style="text-align: right;">34.18260</td>
+<td style="text-align: right;">14.89382</td>
+<td style="text-align: right;">26.01646</td>
+<td style="text-align: right;">3.377546</td>
+<td style="text-align: right;">0.1312960</td>
+<td style="text-align: right;">1.906093</td>
+<td style="text-align: right;">1.471453</td>
+<td style="text-align: right;">0.0826090</td>
+<td style="text-align: right;">26.47549</td>
+<td style="text-align: right;">0.6687965</td>
+<td style="text-align: right;">57.30143</td>
+<td style="text-align: right;">395.7090</td>
+<td style="text-align: right;">0.0148991</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">14:16:32</td>
+<td style="text-align: right;">555.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10.178603</td>
+<td style="text-align: right;">0.1381995</td>
+<td style="text-align: right;">269.5898</td>
+<td style="text-align: right;">2.016100</td>
+<td style="text-align: right;">1.471138</td>
+<td style="text-align: right;">26.01657</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.42</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.84</td>
+<td style="text-align: right;">26.02212</td>
+<td style="text-align: right;">26.01657</td>
+<td style="text-align: right;">26.02939</td>
+<td style="text-align: right;">413.6639</td>
+<td style="text-align: right;">400.4885</td>
+<td style="text-align: right;">16.92345</td>
+<td style="text-align: right;">19.29468</td>
+<td style="text-align: right;">49.49181</td>
+<td style="text-align: right;">56.42595</td>
+<td style="text-align: right;">500.2979</td>
+<td style="text-align: right;">1200.879</td>
+<td style="text-align: right;">7.569045</td>
+<td style="text-align: right;">98.80596</td>
+<td style="text-align: right;">2.018435</td>
+<td style="text-align: right;">-0.3787848</td>
+<td style="text-align: right;">0.2174792</td>
+<td style="text-align: right;">0.0025482</td>
+<td style="text-align: right;">0.2455426</td>
+<td style="text-align: right;">0.0025012</td>
+<td style="text-align: right;">0.6666667</td>
+<td style="text-align: right;">-0.2195652</td>
+<td style="text-align: right;">2.737392</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">111115</td>
+<td style="text-align: right;">0.8338298</td>
+<td style="text-align: right;">0.0020161</td>
+<td style="text-align: right;">299.1666</td>
+<td style="text-align: right;">299.1721</td>
+<td style="text-align: right;">192.1406</td>
+<td style="text-align: right;">1.172561</td>
+<td style="text-align: right;">3.377567</td>
+<td style="text-align: right;">34.18384</td>
+<td style="text-align: right;">14.88916</td>
+<td style="text-align: right;">26.01934</td>
+<td style="text-align: right;">3.378122</td>
+<td style="text-align: right;">0.1317865</td>
+<td style="text-align: right;">1.906429</td>
+<td style="text-align: right;">1.471693</td>
+<td style="text-align: right;">0.0829197</td>
+<td style="text-align: right;">26.63708</td>
+<td style="text-align: right;">0.6731525</td>
+<td style="text-align: right;">57.32389</td>
+<td style="text-align: right;">395.6501</td>
+<td style="text-align: right;">0.0147473</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><a href="#tbl-one_point">tbl.&nbsp;<span>14.1</span></a> 数据为同一个叶片连续记录数据，故所有的光合速率十分接近。</p>
+<p>使用方法：</p>
+<div class="cell" data-hash="aci_cache/html/start_onepoint_cb90d12772cd7fb5d46d30d61cd861bc">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecophys)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>one_data <span class="ot">&lt;-</span> <span class="fu">subset</span>(one_data, Obs <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>one_data<span class="sc">$</span>Rd <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>aci_fit <span class="ot">&lt;-</span> <span class="fu">fitaci</span>(one_data, <span class="at">fitmethod =</span> <span class="st">"onepoint"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="aci_cache/html/onepoint-result_47324feb2ee2866c956d15266d8592e3">
+<div class="cell-output-display">
+<div id="tbl-onekable-result" class="anchored">
+<table class="table">
+<caption>Table 14.2: onepoint 法计算的结果 </caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">aci_fit.Photo</th>
+<th style="text-align: right;">aci_fit.Vcmax</th>
+<th style="text-align: right;">aci_fit.Jmax</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">10.519216</td>
+<td style="text-align: right;">47.06893</td>
+<td style="text-align: right;">71.73759</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.361122</td>
+<td style="text-align: right;">46.22091</td>
+<td style="text-align: right;">70.51059</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.207166</td>
+<td style="text-align: right;">45.44617</td>
+<td style="text-align: right;">69.35838</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.547416</td>
+<td style="text-align: right;">41.86217</td>
+<td style="text-align: right;">64.24400</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.288968</td>
+<td style="text-align: right;">45.09335</td>
+<td style="text-align: right;">69.36954</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.178603</td>
+<td style="text-align: right;">44.37360</td>
+<td style="text-align: right;">68.41628</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.348184</td>
+<td style="text-align: right;">45.61262</td>
+<td style="text-align: right;">69.98563</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.088908</td>
+<td style="text-align: right;">43.96870</td>
+<td style="text-align: right;">67.78267</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.382970</td>
+<td style="text-align: right;">45.83416</td>
+<td style="text-align: right;">70.28272</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.314660</td>
+<td style="text-align: right;">45.32629</td>
+<td style="text-align: right;">69.64235</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.249137</td>
+<td style="text-align: right;">44.86035</td>
+<td style="text-align: right;">69.04578</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.263942</td>
+<td style="text-align: right;">45.03290</td>
+<td style="text-align: right;">69.23316</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.276372</td>
+<td style="text-align: right;">45.06777</td>
+<td style="text-align: right;">69.30476</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.310315</td>
+<td style="text-align: right;">45.41163</td>
+<td style="text-align: right;">69.69375</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.257607</td>
+<td style="text-align: right;">45.10509</td>
+<td style="text-align: right;">69.26665</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.268318</td>
+<td style="text-align: right;">45.10636</td>
+<td style="text-align: right;">69.30563</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.249136</td>
+<td style="text-align: right;">45.08506</td>
+<td style="text-align: right;">69.22086</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.286432</td>
+<td style="text-align: right;">45.23213</td>
+<td style="text-align: right;">69.46825</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.304019</td>
+<td style="text-align: right;">45.40981</td>
+<td style="text-align: right;">69.66987</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.232778</td>
+<td style="text-align: right;">44.93236</td>
+<td style="text-align: right;">69.04323</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.211444</td>
+<td style="text-align: right;">44.87301</td>
+<td style="text-align: right;">68.92133</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.261779</td>
+<td style="text-align: right;">45.27150</td>
+<td style="text-align: right;">69.41197</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.372243</td>
+<td style="text-align: right;">45.88799</td>
+<td style="text-align: right;">70.28733</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.865629</td>
+<td style="text-align: right;">42.90010</td>
+<td style="text-align: right;">66.16012</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.494170</td>
+<td style="text-align: right;">46.74011</td>
+<td style="text-align: right;">71.39036</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.218001</td>
+<td style="text-align: right;">45.02652</td>
+<td style="text-align: right;">69.06497</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.059445</td>
+<td style="text-align: right;">44.09354</td>
+<td style="text-align: right;">67.77443</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.428858</td>
+<td style="text-align: right;">46.47593</td>
+<td style="text-align: right;">70.95132</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.250793</td>
+<td style="text-align: right;">45.30113</td>
+<td style="text-align: right;">69.39661</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.912939</td>
+<td style="text-align: right;">43.36453</td>
+<td style="text-align: right;">66.68832</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.199344</td>
+<td style="text-align: right;">45.25700</td>
+<td style="text-align: right;">69.18076</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.391926</td>
+<td style="text-align: right;">46.39390</td>
+<td style="text-align: right;">70.75653</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.160686</td>
+<td style="text-align: right;">44.88657</td>
+<td style="text-align: right;">68.75316</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.024682</td>
+<td style="text-align: right;">44.18376</td>
+<td style="text-align: right;">67.72287</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.129775</td>
+<td style="text-align: right;">44.92784</td>
+<td style="text-align: right;">68.67708</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.141083</td>
+<td style="text-align: right;">45.00936</td>
+<td style="text-align: right;">68.78099</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.001353</td>
+<td style="text-align: right;">44.25706</td>
+<td style="text-align: right;">67.69872</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.292306</td>
+<td style="text-align: right;">45.99487</td>
+<td style="text-align: right;">70.09022</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.107537</td>
+<td style="text-align: right;">44.81090</td>
+<td style="text-align: right;">68.50677</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.045704</td>
+<td style="text-align: right;">44.52225</td>
+<td style="text-align: right;">68.06286</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.020921</td>
+<td style="text-align: right;">44.45621</td>
+<td style="text-align: right;">67.92429</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.110870</td>
+<td style="text-align: right;">45.11312</td>
+<td style="text-align: right;">68.75747</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.002926</td>
+<td style="text-align: right;">44.42129</td>
+<td style="text-align: right;">67.83392</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.084427</td>
+<td style="text-align: right;">45.05038</td>
+<td style="text-align: right;">68.61609</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.997523</td>
+<td style="text-align: right;">44.53516</td>
+<td style="text-align: right;">67.90526</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10.031004</td>
+<td style="text-align: right;">44.79683</td>
+<td style="text-align: right;">68.22931</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.067866</td>
+<td style="text-align: right;">45.01510</td>
+<td style="text-align: right;">68.53037</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.913409</td>
+<td style="text-align: right;">44.05520</td>
+<td style="text-align: right;">67.23265</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10.021746</td>
+<td style="text-align: right;">44.87409</td>
+<td style="text-align: right;">68.25803</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.913314</td>
+<td style="text-align: right;">44.20530</td>
+<td style="text-align: right;">67.35073</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.993697</td>
+<td style="text-align: right;">44.80203</td>
+<td style="text-align: right;">68.10315</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.851695</td>
+<td style="text-align: right;">44.01827</td>
+<td style="text-align: right;">66.98918</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.736275</td>
+<td style="text-align: right;">43.13847</td>
+<td style="text-align: right;">65.89470</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.797319</td>
+<td style="text-align: right;">43.98036</td>
+<td style="text-align: right;">66.76973</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.626554</td>
+<td style="text-align: right;">42.91998</td>
+<td style="text-align: right;">65.34117</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.471773</td>
+<td style="text-align: right;">41.68336</td>
+<td style="text-align: right;">63.83331</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.646700</td>
+<td style="text-align: right;">42.87917</td>
+<td style="text-align: right;">65.37916</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.644842</td>
+<td style="text-align: right;">42.99673</td>
+<td style="text-align: right;">65.46524</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.758413</td>
+<td style="text-align: right;">43.70607</td>
+<td style="text-align: right;">66.41972</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.553852</td>
+<td style="text-align: right;">42.50445</td>
+<td style="text-align: right;">64.76295</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.662671</td>
+<td style="text-align: right;">43.28157</td>
+<td style="text-align: right;">65.75264</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.563656</td>
+<td style="text-align: right;">42.70328</td>
+<td style="text-align: right;">64.95411</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.672595</td>
+<td style="text-align: right;">43.52788</td>
+<td style="text-align: right;">65.98331</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.548987</td>
+<td style="text-align: right;">42.64583</td>
+<td style="text-align: right;">64.85665</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.597028</td>
+<td style="text-align: right;">43.06762</td>
+<td style="text-align: right;">65.35629</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.564234</td>
+<td style="text-align: right;">42.91240</td>
+<td style="text-align: right;">65.11967</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.528271</td>
+<td style="text-align: right;">42.77665</td>
+<td style="text-align: right;">64.88887</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.516492</td>
+<td style="text-align: right;">42.83815</td>
+<td style="text-align: right;">64.89806</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.473123</td>
+<td style="text-align: right;">42.62617</td>
+<td style="text-align: right;">64.58091</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.448475</td>
+<td style="text-align: right;">42.51675</td>
+<td style="text-align: right;">64.41002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.456234</td>
+<td style="text-align: right;">42.55351</td>
+<td style="text-align: right;">64.46375</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.480095</td>
+<td style="text-align: right;">42.94755</td>
+<td style="text-align: right;">64.86062</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.363030</td>
+<td style="text-align: right;">42.21889</td>
+<td style="text-align: right;">63.88107</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.311755</td>
+<td style="text-align: right;">41.93995</td>
+<td style="text-align: right;">63.48342</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.459983</td>
+<td style="text-align: right;">43.05099</td>
+<td style="text-align: right;">64.87112</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.483853</td>
+<td style="text-align: right;">43.30531</td>
+<td style="text-align: right;">65.15723</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.027537</td>
+<td style="text-align: right;">40.30433</td>
+<td style="text-align: right;">61.22108</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.476729</td>
+<td style="text-align: right;">43.44072</td>
+<td style="text-align: right;">65.23563</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.280183</td>
+<td style="text-align: right;">42.12853</td>
+<td style="text-align: right;">63.52291</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.261344</td>
+<td style="text-align: right;">42.17840</td>
+<td style="text-align: right;">63.49744</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.334307</td>
+<td style="text-align: right;">42.85683</td>
+<td style="text-align: right;">64.28533</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.051123</td>
+<td style="text-align: right;">41.06857</td>
+<td style="text-align: right;">61.90318</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.270810</td>
+<td style="text-align: right;">42.51712</td>
+<td style="text-align: right;">63.79523</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.330762</td>
+<td style="text-align: right;">43.01265</td>
+<td style="text-align: right;">64.39291</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.218163</td>
+<td style="text-align: right;">42.26923</td>
+<td style="text-align: right;">63.41804</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.085934</td>
+<td style="text-align: right;">41.60645</td>
+<td style="text-align: right;">62.44411</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.083060</td>
+<td style="text-align: right;">41.74496</td>
+<td style="text-align: right;">62.54482</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.132510</td>
+<td style="text-align: right;">42.02581</td>
+<td style="text-align: right;">62.93301</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.131158</td>
+<td style="text-align: right;">42.10676</td>
+<td style="text-align: right;">62.99170</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.145548</td>
+<td style="text-align: right;">42.35821</td>
+<td style="text-align: right;">63.24067</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.059605</td>
+<td style="text-align: right;">41.85986</td>
+<td style="text-align: right;">62.55140</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9.091451</td>
+<td style="text-align: right;">42.25809</td>
+<td style="text-align: right;">62.97554</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9.070366</td>
+<td style="text-align: right;">42.19632</td>
+<td style="text-align: right;">62.85631</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.943521</td>
+<td style="text-align: right;">41.35936</td>
+<td style="text-align: right;">61.76031</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.975535</td>
+<td style="text-align: right;">41.65581</td>
+<td style="text-align: right;">62.10145</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.973756</td>
+<td style="text-align: right;">41.81212</td>
+<td style="text-align: right;">62.22232</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.962861</td>
+<td style="text-align: right;">41.76093</td>
+<td style="text-align: right;">62.14239</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.904978</td>
+<td style="text-align: right;">41.49087</td>
+<td style="text-align: right;">61.73147</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.918707</td>
+<td style="text-align: right;">41.60684</td>
+<td style="text-align: right;">61.86895</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.968677</td>
+<td style="text-align: right;">42.07851</td>
+<td style="text-align: right;">62.41156</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.759890</td>
+<td style="text-align: right;">40.74396</td>
+<td style="text-align: right;">60.64875</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.821386</td>
+<td style="text-align: right;">41.29744</td>
+<td style="text-align: right;">61.29504</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.896446</td>
+<td style="text-align: right;">41.92053</td>
+<td style="text-align: right;">62.04190</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.847126</td>
+<td style="text-align: right;">41.57371</td>
+<td style="text-align: right;">61.60003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.841565</td>
+<td style="text-align: right;">41.74028</td>
+<td style="text-align: right;">61.71268</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.832967</td>
+<td style="text-align: right;">41.80729</td>
+<td style="text-align: right;">61.73844</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.847937</td>
+<td style="text-align: right;">41.85192</td>
+<td style="text-align: right;">61.82163</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.728196</td>
+<td style="text-align: right;">40.98872</td>
+<td style="text-align: right;">60.72970</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.789579</td>
+<td style="text-align: right;">41.72098</td>
+<td style="text-align: right;">61.52023</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.720803</td>
+<td style="text-align: right;">41.30092</td>
+<td style="text-align: right;">60.95505</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.793964</td>
+<td style="text-align: right;">41.82089</td>
+<td style="text-align: right;">61.60873</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.740789</td>
+<td style="text-align: right;">41.45169</td>
+<td style="text-align: right;">61.13431</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.912781</td>
+<td style="text-align: right;">42.54266</td>
+<td style="text-align: right;">62.58591</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.641433</td>
+<td style="text-align: right;">41.15567</td>
+<td style="text-align: right;">60.56410</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.716064</td>
+<td style="text-align: right;">41.68926</td>
+<td style="text-align: right;">61.24072</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.826706</td>
+<td style="text-align: right;">42.15912</td>
+<td style="text-align: right;">61.99019</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.835380</td>
+<td style="text-align: right;">42.38866</td>
+<td style="text-align: right;">62.20246</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8.795586</td>
+<td style="text-align: right;">42.17302</td>
+<td style="text-align: right;">61.89721</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8.791231</td>
+<td style="text-align: right;">42.11367</td>
+<td style="text-align: right;">61.83223</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>需要注意，为保证结果的精确，如果不设定 Rd, 也即文献中的 Rday， 模型是无法计算的，因此 <a href="#tbl-onekable-result">tbl.&nbsp;<span>14.2</span></a> 的示例中虚构了一个。</p>
+</section>
+<section id="sec-transition" class="level3" data-number="14.1.5">
+<h3 data-number="14.1.5" class="anchored" data-anchor-id="sec-transition"><span class="header-section-number">14.1.5</span> <code>findCiTransition</code> 函数</h3>
+<p>对于计算不同 ACi 限制阶段过渡点的方式，可以使用 CiTransition 的函数，第一点为 Ac ~ Aj，第二点为 Aj ~ Ap，并且仅在计算 TPU 的前提下才会有第二点出现。</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-13_3b3581e731e2c6c68dcb6e2e914bdcd8">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findCiTransition</span>(object, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>参数使用，object 为 fitaci 函数对象，或者整个的 <code>Photosyn</code> 函数。 … 为使用 <code>Photosyn</code> 时可传递的参数。默认的 <code>fitaci</code> 对象作图会标记该点，如图 <a href="#fig-fitaci6400">fig.&nbsp;<span>14.1</span></a>。 数据的计算也非常简单：</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-14_a2998b7f9e03549dc4b6db84f01761ca">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findCiTransition</span>(acifit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>   Ac_Aj    Aj_Ap 
+538.0701       NA </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-photosynthesis-aci" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="sec-photosynthesis-aci"><span class="header-section-number">14.2</span> <code>photosynthesis</code> 拟合</h2>
+<p>相比<code>plantecophys</code>， <code>photosynthesis</code> (<a href="phtosyn-pacakges.html">sec.&nbsp;<span>3</span></a>) 做了一些改进，但基本使用非常相似。我们使用和 <code>plantecophys</code> 相同的数据集进行演示。</p>
+<p>这里官方文档说是温度使用的摄氏度，但是 vignette 使用的是 K，经过验证，应该是 K 才能拟合。。</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-15_d5e8ef4a6c0a96bd952cbe433793ca6b">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>aci<span class="sc">$</span>TLEAF <span class="ot">&lt;-</span> aci<span class="sc">$</span>Tleaf <span class="sc">+</span> <span class="fl">273.15</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_aci_response</span>(aci,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">varnames =</span> <span class="fu">list</span>(</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">A_net =</span> <span class="st">"Photo"</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">T_leaf =</span> <span class="st">"TLEAF"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">C_i =</span> <span class="st">"Ci"</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">PPFD =</span> <span class="st">"PARi"</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                   ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>我们先观察拟合结果：</p>
+<div class="cell" data-hash="aci_cache/html/unnamed-chunk-16_5d2e5b00fa74f36a6c3fcdf7b2774bb6">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>reshape2<span class="sc">::</span><span class="fu">melt</span>(fit[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-tbl-cap="{}" data-hash="aci_cache/html/photosyn-fitaci-_a207ae2764e9d7eda121e832a3744f91">
+<div class="cell-output-display">
+<div id="tbl-photosyn-fitaci" class="anchored">
+<table class="table">
+<caption>Table 14.3: 使用 photosynthesis 来拟合 ACi 曲线的结果 </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Num</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">V_cmax</td>
+<td style="text-align: right;">98.7962878</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">V_cmax_se</td>
+<td style="text-align: right;">2.1338711</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">J_max</td>
+<td style="text-align: right;">157.4297453</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">J</td>
+<td style="text-align: right;">146.2105728</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">J_se</td>
+<td style="text-align: right;">0.5587627</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">V_TPU</td>
+<td style="text-align: right;">1000.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">V_TPU_se</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R_d</td>
+<td style="text-align: right;">-0.1030324</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R_d_se</td>
+<td style="text-align: right;">0.2816426</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cost</td>
+<td style="text-align: right;">1.9502380</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">citransition1</td>
+<td style="text-align: right;">536.3407882</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">citransition2</td>
+<td style="text-align: right;">1757.1639630</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">V_cmax_pts</td>
+<td style="text-align: right;">8.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">J_max_pts</td>
+<td style="text-align: right;">4.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">V_TPU_pts</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">alpha</td>
+<td style="text-align: right;">0.2400000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">alpha_g</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gamma_star25</td>
+<td style="text-align: right;">42.7500000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ea_gamma_star</td>
+<td style="text-align: right;">37830.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">K_M25</td>
+<td style="text-align: right;">718.4000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ea_K_M</td>
+<td style="text-align: right;">65508.2800000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">g_mc25</td>
+<td style="text-align: right;">0.0870100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ea_g_mc</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oconc</td>
+<td style="text-align: right;">21.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">theta_J</td>
+<td style="text-align: right;">0.8500000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>上面使用 <code>melt</code> 纯粹是因为横排数据太长，并非必须。其实也能看出来它拟合 <code>ACi</code> 和非直角双曲线光响应模型是一样的展示结果的方式，图形查看为：</p>
+<div class="cell" data-hash="aci_cache/html/photosyn-fitaci-plot_e9dbaa02a9c3ea8782ca436e7b3b8f13">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fit[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="aci_files/figure-html/photosyn-fitaci-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">使用 photosynthesis 来拟合 ACi 曲线的图形查看</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>此外，它也有 <code>fit_many</code> 函数用于多组数据的拟合，这个没太大变化，主要是注意分组参数 <code>group</code>，以及使用函数的参数 <code>funct</code> 为 <code>fit_aci_response</code>，此处不再展开介绍。</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+关于 LI-6800 数据分析示例
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>为减少单个单元的代码量，同时也为了方便，将 LI-6800 数据分析代码演示放在了 RACiR 单元内演示。</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-De2016A" class="csl-entry" role="doc-biblioentry">
+De Kauwe, Martin G, Yan Shih Lin, Ian J Wright, Belinda E Medlyn, Kristine Y Crous, David S Ellsworth, Vincent Maire, I Colin Prentice, Owen K Atkin, and Alistair Rogers. 2016. <span>“A Test of the One Point Method for Estimating Maximum Carboxlation Capacity from Field Measured, Light Saturated Photosynthesis.”</span> <em>New Phytologist</em> 210 (3): 1130.
+</div>
+<div id="ref-Duursma2015Plantecophys" class="csl-entry" role="doc-biblioentry">
+Duursma, Remko A. 2015. <span>“Plantecophys-an r Package for Analysing and Modelling Leaf Gas Exchange Data.”</span> <em>Plos One</em> 10 (11): e0143346.
+</div>
+<div id="ref-Farquhar1980A" class="csl-entry" role="doc-biblioentry">
+Farquhar, G. D., S. Von Caemmerer, and J. A. Berry. 1980. <span>“A Biochemical Model of Photosynthetic CO<span class="math inline">_2</span> Assimilation in Leaves of C3 Species.”</span> <em>Planta</em> 149 (1): 78–90.
+</div>
+<div id="ref-Gu2010Reliable" class="csl-entry" role="doc-biblioentry">
+Gu, Lianhong, Stephen G Pallardy, Kevin Tu, Beverly E Law, and Stan D Wullschleger. 2010. <span>“Reliable Estimation of Biochemical Parameters from c-3 Leaf Photosynthesis-Intercellular Carbon Dioxide Response Curves.”</span> <em>Plant Cell &amp; Environment</em> 33 (11): 1852–74.
+</div>
+</div>
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2>Footnotes</h2>
+
+<ol>
+<li id="fn1" role="doc-endnote"><p>仅针对 C3 植物<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>在 R 中，使用参数的值为默认值时可以不用填写该参数，例如使用默认选项分析 LI-6400 数据时，可只填写 data 项，具体参考 R 的相关入门手册<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>为Rubisco和RuBP限制的Ci转换点，物种间差异较大，可以通过预实验确定<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>若默认拟合方法失败，数据也无问题，那么是非线性拟合初始值设定的原因<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>需要注意，此时fitmethod一般推荐使用bilinear。<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main> <!-- /main -->
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./aci-curve.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">二氧化碳响应曲线概述</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./DAT-vs-racir.html">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>

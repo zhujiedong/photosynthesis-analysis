@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.299">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+  <title>LI-6800 和 LI-6400 光合数据分析指南 - 叶肉与气孔导度</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <link href="./gs.html" rel="next">
+  <link href="./other-fluor.html" rel="prev">
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+</head>
+<body class="floating">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">叶肉与气孔导度</h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/jjallaire/hopr/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+  </div>
+    <div class="px-3 mt-2 flex-shrink-0 align-items-center">
+      <div class="sidebar-search">
+      <div id="quarto-search" class="" title="Search"></div>
+      </div>
+    </div>
+  <div class="sidebar-menu-container"> 
+  <ul class="list-unstyled mt-1">
+      <li class="sidebar-item">
+  <a href="./index.html" class="">欢迎</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./preface.html" class="">序言</a>
+</li>
+      <li class="sidebar-item">
+  <a href="./intro.html" class="">介绍</a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./basics.html" class="">必备工具</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#必备工具-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="必备工具-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./packages.html" class="">光合相关的软件包</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光合相关的软件包-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光合相关的软件包-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./data-prepare.html" class="">数据准备</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#数据准备-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="数据准备-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./light-response.html" class="">光响应曲线简介</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#光响应曲线简介-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="光响应曲线简介-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#二氧化碳响应曲线概述-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="二氧化碳响应曲线概述-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶绿素荧光数据的处理-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶绿素荧光数据的处理-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./gm-gs.html" class="active">叶肉与气孔导度</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#叶肉与气孔导度-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="叶肉与气孔导度-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+          <div class="d-inline-flex w-100 sidebar-section-item">
+            <div class="sidebar-section-link me-auto">
+            <a href="./other-stat.html" class="">其他统计方法</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#其他统计方法-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="其他统计方法-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
+</li>
+          <li class="sidebar-item">
+  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <li class="sidebar-item">
+  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
+</li>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#appendices-collapse" aria-expanded="true">
+              <div class="me-auto sidebar-section-item">Appendices</div>
+            <div><i class="bi bi-chevron-right ms-2"></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="appendices-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  </ul>
+  </div>
+</nav>
+<!-- toc -->
+    <nav id="TOC" role="doc-toc" class="sidebar sidebar-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#sec-stamotal-related" class="nav-link active" data-scroll-target="#sec-stamotal-related">气孔导度相关</a>
+<ul class="collapse">
+<li><a href="#sec-plant-intro" class="nav-link" data-scroll-target="#sec-plant-intro">气孔导度模型简介</a></li>
+<li><a href="#sec-bbleuning" class="nav-link" data-scroll-target="#sec-bbleuning">BBLeuning 模型</a></li>
+<li><a href="#sec-bboptifull" class="nav-link" data-scroll-target="#sec-bboptifull">BBOptiFull 模型</a></li>
+</ul></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jjallaire/hopr/edit/master/gm-gs.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<!-- main -->
+<main class="content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="sec-gsgm" class="quarto-section-identifier d-none d-lg-block">叶肉与气孔导度</span></h1>
+</header>
+
+<p>本章主要介绍气孔导度和叶肉导度。</p>
+<section id="sec-stamotal-related" class="level2">
+<h2 class="anchored" data-anchor-id="sec-stamotal-related">气孔导度相关</h2>
+<p>todo <code>plantecophys</code> 和 <code>photosynthesis</code> 使用的气孔导度模型</p>
+<section id="sec-plant-intro" class="level3">
+<h3 class="anchored" data-anchor-id="sec-plant-intro">气孔导度模型简介</h3>
+<p>气孔导度模型的拟合是通过 <code>fitBB</code> 来实现的，可以拟合三个 <strong>Ball-Berry 类型的气孔导度模型</strong>，共有下面几个参数：</p>
+<ul>
+<li>气孔导度 (gs),</li>
+<li>光合 (A),</li>
+<li>外界 CO<sub>2</sub> 浓度 (Ca)</li>
+<li>水气压亏缺 (VPD).</li>
+</ul>
+<p>其三个模型的简介如下：</p>
+<section id="sec-ballberry" class="level4">
+<h4 class="anchored" data-anchor-id="sec-ballberry">BallBerry 模型</h4>
+<p><span class="citation" data-cites="Ball1987A">J. T. Ball, Woodrow, and Berry (<a href="references.html#ref-Ball1987A" role="doc-biblioref">1987</a>)</span> 发表的文章中的模型：</p>
+<p><span id="eq-ballberry"><span class="math display">
+g_s = g0 + g1(\frac{A h_r}{C_a})
+ \qquad(1)</span></span></p>
+<p>其中 A 为净光合速率，g<sub>0</sub> 和 g<sub>1</sub> 为拟合参数，h<sub>r</sub> 为叶片表面的相对湿度，C<sub>a</sub> 为叶片处CO<sub>2</sub>浓度。</p>
+</section>
+</section>
+<section id="sec-bbleuning" class="level3">
+<h3 class="anchored" data-anchor-id="sec-bbleuning">BBLeuning 模型</h3>
+<p><span class="citation" data-cites="leuning1995a">R. Leuning (<a href="references.html#ref-leuning1995a" role="doc-biblioref">1995a</a>)</span> 发表的文章中的模型：</p>
+<p><span id="eq-BBLeuning"><span class="math display">
+g_s = g_0 + g_1(\frac{A}{(C_a - \Gamma)(1 + \frac{D}{D_0})})
+ \qquad(2)</span></span></p>
+<p>其中 <span class="math inline">\Gamma</span> 为 CO<sub>2</sub> 补偿点，g<sub>0</sub>、g<sub>1</sub> 和 D<sub>0</sub> 为拟合参数。</p>
+</section>
+<section id="sec-bboptifull" class="level3">
+<h3 class="anchored" data-anchor-id="sec-bboptifull">BBOptiFull 模型</h3>
+<p><span class="citation" data-cites="Medlyn2011Reconciling">Medlyn et al. (<a href="references.html#ref-Medlyn2011Reconciling" role="doc-biblioref">2011</a>)</span> 发表的文章中的模型：</p>
+<p><span id="eq-BBOptiFull"><span class="math display">
+g_s^* \approx g_0 + g_1(1 + \frac{g_1}{D}) \frac{A}{C_a}
+ \qquad(3)</span></span></p>
+<p>额外的参数 g<sub>k</sub> 来自于 <span class="citation" data-cites="Duursma2013Near">Duursma et al. (<a href="references.html#ref-Duursma2013Near" role="doc-biblioref">2013b</a>)</span></p>
+<p><span id="eq-Duursm"><span class="math display">
+g_s = g_0 + 1.6(1 + \frac{g_1}{D}(1-g_k)) \frac{A}{C_a}
+ \qquad(4)</span></span></p>
+<section id="sec-Medlyn_partial" class="level4">
+<h4 class="anchored" data-anchor-id="sec-Medlyn_partial">Medlyn 模型 (Medlyn_partial)</h4>
+<p><span class="citation" data-cites="ball_model_1987">J. Ball, Woodrow, and Berry (<a href="references.html#ref-ball_model_1987" role="doc-biblioref">1987</a>)</span> 和 <span class="citation" data-cites="leuning_critical_1995">R. Leuning (<a href="references.html#ref-leuning_critical_1995" role="doc-biblioref">1995b</a>)</span> 模型最为人批判的地方是他们都是经验模型，也就意味着对于他们参数的预测和解释并无理论依据。因而 <span class="citation" data-cites="Medlyn2011Reconciling">Medlyn et al. (<a href="references.html#ref-Medlyn2011Reconciling" role="doc-biblioref">2011</a>)</span> 提出了基于最优气控模型的方法来解决这个问题。也就是根据：</p>
+<p><span id="eq-medlyn-paritial"><span class="math display">
+\frac{\partial E}{\partial A} = \lambda
+ \qquad(5)</span></span></p>
+<p>得到查看临界水分利用效率或者说植物损耗单位水分的碳生产量。然后将其考虑在模型内，两个基本的计算依据是：</p>
+<p>简化关系，使得 g0 等于零，确定胞间二氧化碳浓度和外界二氧化碳浓度的关系为：</p>
+<p><span id="eq-medlyn-parital1"><span class="math display">
+\frac{C_i}{C_a} \approx \frac{g_1}{g_1 + \sqrt{D}}
+ \qquad(6)</span></span> 而 A 与 E 之间的关系（ITE）表示为：</p>
+<p><span id="eq-medlyn-parital2"><span class="math display">
+\frac{A}{E} = \frac{C_a P}{g_1\sqrt{D}+D}
+ \qquad(7)</span></span></p>
+<p>最终得到的，考虑了最优气孔导度模型的模型为：</p>
+<p><span id="eq-medlyn-parital3"><span class="math display">
+g_s^* \approx g_0 + 1.6 \Bigg( 1 + \frac{g_1}{\sqrt{D}} \Bigg) A/C_a
+ \qquad(8)</span></span> 这里 P 为大气压，单位是 kPa。文献附加材料里有详细推导说明，需要的可以参考一下。</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+注意
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>不同的作者喜欢不同的参数名称，但本质上是一样的，例如 判的地方是他们都是经验模型，也就意味着对于他们参数的预测和解释并无理论依据。因而 <span class="citation" data-cites="Medlyn2011Reconciling">Medlyn et al. (<a href="references.html#ref-Medlyn2011Reconciling" role="doc-biblioref">2011</a>)</span> 将 <span class="citation" data-cites="ball_model_1987">J. Ball, Woodrow, and Berry (<a href="references.html#ref-ball_model_1987" role="doc-biblioref">1987</a>)</span> 的模型写为 <a href="#eq-medlyn-parital3">eq.&nbsp;<span>9</span></a></p>
+</div>
+</div>
+<p><span id="eq-medlyn-parital3"><span class="math display">
+g_s = g_0 +g_1(A h_r/C_a)
+ \qquad(9)</span></span></p>
+</section>
+<section id="sec-Medlyn_full" class="level4">
+<h4 class="anchored" data-anchor-id="sec-Medlyn_full">Medlyn 模型 (Medlyn_full)</h4>
+<p><span class="citation" data-cites="duursma_near-optimal_2013">Duursma et al. (<a href="references.html#ref-duursma_near-optimal_2013" role="doc-biblioref">2013a</a>)</span> 考虑了同化速率对温度的响应，最终模型的形式（我们选择了 <code>plantecophys</code> 中 <code>fitBB</code> 函数的写法）：</p>
+<p><span id="eq-medlyn-full"><span class="math display">
+g_s = g_0 + 1.6(1+\frac{g_1}{D}(1-g_k))\frac{A}{C_a}
+ \qquad(10)</span></span></p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Ball1987A" class="csl-entry" role="doc-biblioentry">
+Ball, J. Timothy, Ian E. Woodrow, and Joseph A. Berry. 1987. <em>A Model Predicting Stomatal Conductance and Its Contribution to the Control of Photosynthesis Under Different Environmental Conditions</em>. Springer Netherlands.
+</div>
+<div id="ref-ball_model_1987" class="csl-entry" role="doc-biblioentry">
+Ball, John, Ian Woodrow, and Joseph Berry. 1987. <span>“A <span>Model</span> <span>Predicting</span> <span>Stomatal</span> <span>Conductance</span> and <span>Its</span> <span>Contribution</span> to the <span>Control</span> of <span>Photosynthesis</span> <span>Under</span> <span>Different</span> <span>Environmental</span> <span>Conditions</span>.”</span> <em>Progress in Photosynthesis Research</em> 4 (January): 221–24. <a href="https://doi.org/10.1007/978-94-017-0519-6_48">https://doi.org/10.1007/978-94-017-0519-6_48</a>.
+</div>
+<div id="ref-duursma_near-optimal_2013" class="csl-entry" role="doc-biblioentry">
+Duursma, Remko A., Paxton Payton, Michael P. Bange, Katrina J. Broughton, Renee A. Smith, Belinda E. Medlyn, and David T. Tissue. 2013a. <span>“Near-Optimal Response of Instantaneous Transpiration Efficiency to Vapour Pressure Deficit, Temperature and [<span>Co2</span>] in Cotton (<span>Gossypium</span> Hirsutum <span>L</span>.).”</span> <em>Agricultural and Forest Meteorology</em> 168: 168–76. <a href="https://doi.org/10.1016/j.agrformet.2012.09.005">https://doi.org/10.1016/j.agrformet.2012.09.005</a>.
+</div>
+<div id="ref-Duursma2013Near" class="csl-entry" role="doc-biblioentry">
+———. 2013b. <span>“Near-Optimal Response of Instantaneous Transpiration Efficiency to Vapour Pressure Deficit, Temperature and CO<span class="math inline">_2</span> in Cotton (Gossypium Hirsutum l.).”</span> <em>Agricultural &amp; Forest Meteorology</em> 168 (1): 168–76.
+</div>
+<div id="ref-leuning1995a" class="csl-entry" role="doc-biblioentry">
+Leuning, R. 1995a. <span>“A Critical Appraisal of a Combined Stomatal‐photosynthesis Model for C3 Plants.”</span> <em>Plant Cell and Environment</em> 18 (4): 339–55.
+</div>
+<div id="ref-leuning_critical_1995" class="csl-entry" role="doc-biblioentry">
+Leuning, R. 1995b. <span>“A Critical Appraisal of a Combined Stomatal-Photosynthesis Model for C3 Plants.”</span> <em>Plant, Cell &amp; Environment</em> 18 (4): 339–55. https://doi.org/<a href="https://doi.org/10.1111/j.1365-3040.1995.tb00370.x">https://doi.org/10.1111/j.1365-3040.1995.tb00370.x</a>.
+</div>
+<div id="ref-Medlyn2011Reconciling" class="csl-entry" role="doc-biblioentry">
+Medlyn, Belinda E., Remko A. Duursma, Derek Eamus, David S. Ellsworth, I. Colin Prentice, Craig V. M. Barton, Kristine Y. Crous, Paolo De Angelis, Michael Freeman, and Lisa Wingate. 2011. <span>“Reconciling the Optimal and Empirical Approaches to Modelling Stomatal Conductance.”</span> <em>Global Change Biology</em> 17 (6): 2134–44.
+</div>
+</div>
+</section>
+</section>
+</section>
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main> <!-- /main -->
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./other-fluor.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./gs.html">
+        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>

@@ -1,0 +1,306 @@
+# 标准主轴分析介绍 {#sec-sma-intr}
+
+本部分主要来自于对 @warton2012smatr 和 @warton2006smatr 内容的理解。我姑妄言之，各位也就姑妄听之，从一个取巧的角度来讲，我觉得可以从下面的角度理解标准主轴分析：
+
+1. 我们要比较差异，如果没有分组，我们要比较我们数据的斜率或截距是否等于一个值，例如，要研究异速生长关系，那么斜率肯定不能等于 1 吧，不然 y 和 x 是相等的生长速度，哪里来的异速生长？虽然我的文章我应该有 9 年不看了，我记忆里，是否为异速生长，就是拿斜率和 1 来比较，看其是否差异显著，当然，显著差异是我需要的。
+
+2. 我们要分析几个分组的数据，单纯的采用线性回归是没法比较的，他们肯定是斜率和解决不同，相同那不就是同一组数据了，这样我们就要检验通过一个主轴的斜率和截距来比较，如果存在共同的斜率，那我们只能在比较截距，如果截距存在差异，某一个要高，就接着分析这个差异可能的因素就行了，这个让我毕业的文章里是用的什么，我就记不清楚了，反正就分析了什么海拔生境之类的得出的结论，我也懒得再看了，反正我用不到了。
+
+
+根据我多年前的记忆，SMA 的用途可以用下图进行表达：
+
+![图示 SMATR 比较差异的方面](img/smatr.png){#fig-sma-app}
+
+
+- 单个分组的检验，分为斜率和截距的两种：
+  - 单个分组的斜率：为检验斜率是否等于**某个值 b**，一个简单的方法来检验就是当使用 b 作为斜率时，检验残差和轴的得分是否无关。
+  - 拟合的直线经过样品的中心点 ($\bar x, \bar y$)，计算的截距接近正态分布，使用 t 检验来验证真正的截距是否**等于某个特定值 a**。
+
+- 多个分组（多条直线）检验，是否存在共同斜率和共同截距
+
+  - 共同斜率：共同斜率检验是检验解决是否有偏移的前提，也就是说，根据我的理解，结果存在共同斜率，我们写文章是要找差异的，找不到差异了，我们只能退而求其次，来找其截距的不同。当然，没有共同斜率，比截距也没意义。
+  
+  - 共同截距：如果存在共同斜率，我们接着要比较其是否存在共同截距。
+  
+  - 如果上面两个都相同怎么办？那还有一个检验可以来做，那就是其会沿着主轴的方向发生偏移， @warton2006smatr 解释了这种情况，两个物种的叶片性状在主轴方向上偏移，原因是不同营养状况下他们的叶片寿命的差异。
+  
+虽然 @warton2012smatr (@fig-sma-app) 的图是彩图，但这个 @warton2006smatr 分开的图形更直观的解释了上面的几种情况：
+
+- A: 检验斜率是否等于特定值
+- B：检验斜率是否不同
+- C：检验截距是否不同
+- D：检验是否沿着主轴方向有偏移
+
+![分开展示 SMATR 的不同检验](img/smatr4.png){#fig-smatr2006}
+  
+
+## `sma` 函数的参数介绍 {#sec-sma-func}
+
+我还是使用软件包自带的数据，然后结合 @warton2012smatr 文章的内容，在尽量详细解释一下参数的意思和返回的结果，期望能使得各位不会的能够看懂。
+
+这个软件包的最重要的函数为 `sma`，
+
+```{r, eval=FALSE}
+sma(
+  formula,
+  data,
+  subset,
+  na.action,
+  log = "",
+  method = c("SMA", "MA", "OLS"),
+  type = c("elevation", "shift"),
+  alpha = 0.05,
+  slope.test = NA,
+  elev.test = NA,
+  multcomp = FALSE,
+  multcompmethod = c("default", "adjusted"),
+  robust = FALSE,
+  V = matrix(0, 2, 2),
+  n_min = 3,
+  quiet = FALSE,
+  ...
+)
+```
+
+其参数的意义下面就分开详细解释
+
+### formula {#sec-sma-formula}
+
+R 中的 formula 对象，通过不同的写法可以得到不同的目的，具体如下面的叙述。
+
+#### 单样本检验 {#sec-single-sample}
+
+这里但从名字上即可以看出，这应该属于上图 A 的检验，这里使用的 formula 的形式为：
+
+- `sma(y~x)`，拟合 SMA 并构造真正斜率和截距的的置信区间。
+
+- `sma(y~x, slope.test = B)`，检验 SMA 的斜率是否为 B。
+
+- `sma(y~x, elev.test = A)`，检验 SMA 的截距是否为 A
+
+- `sma(y~x, robust = T)`，使用 Huber 的 M 估计进行拟合，我对这种回归不了解，不过应该属于稳健回归的范畴，也就是帮助文档里所讲的，对野点的处理比较好。
+
+- `sma(y~x-1)`， 强制从原点通过的拟合。也就是这时候没有截距的差异，或者对截距的差异不感兴趣。
+
+#### 多个样本检验 {#sec-multi-sample}
+
+也就是对多个直线进行比较，有多种分组的方式：
+
+- `sma(y~x*groups)`，也就是检验所有的分组有没有共同斜率。
+
+
+- `sma(y~x+groups, type = "elevation")`，检验具有共同斜率的分组有无共同截距。
+
+
+- `sma(y~x*groups, type = "shift")`，检验斜率是否沿着主轴方向有漂移。
+
+- `sma(y~x+groups, slope.test = "B")`，检验共同斜率是否为 B。
+
+- `sma(y~x+groups, elev.test = "A")`，建议共同截距是否为 A。
+
+- `sma(y~x*groups-1)`，同单个样本的检验，也可以检验主轴方向的漂移。
+
+#### 多重比较 {#sec-muti-comp-sma}
+
+当 `multcomp = TRUE` 时，会进行各个水平间的多重比较，包括斜率、截距和沿着主轴的漂移（取决于使用的 formula）。
+
+#### 拟合结果 {#sec-sma-fit-result-para}
+
+讲到这里应该继续讲函数的参数，不过我觉有必要在这里趁热打铁了，因为我觉得讲完了 formula 的几种形式，SMA 就讲完了，我们有必要把拟合结果顺带解释一下：
+
+- coef：拟合的参数，如果有多个样品的比较，将返回模型的参数，例如检验共同斜率时各个样品或者分组的斜率
+
+- nullcoef：零假设的参数。
+
+- alpha：见下文的参数解释
+
+- method：拟合使用的方法， ’MA’ 或 ’SMA’。
+
+- intercept：拟合的线是否强制通过原点。
+
+- call：调用 ma 或 sma 函数。
+
+- data: 见下文的参数
+
+- log： 见下文的参数
+
+- variables： SMA 的线使用的变量
+
+- origvariables：如有在拟合前有转换，转换前的变量列表
+
+- groups：分组变量的水平
+
+- gt：grouptest 缩写，表示分组测试的类型
+
+- gtr：分组测试的结果
+
+- slopetest：斜率假设检验的结果，以列表形式输出，包括 p 值、 检验统计、共同斜率 b 和置信区间 ci。
+
+- elevtest：截距假设检验的结果，返回 p 值、t检验统计、共同截距和它的置信区间。
+
+- slopetestdone：是否进行斜率检验
+
+- evevtestdone：是否进行斜率的检验
+
+- n：样品的大小
+
+- r2：决定系数
+
+- pval：统计结果的 p 值
+
+- from， to：在作图 `plot.sma` 作图时使用的拟合线的的端点
+
+- groupsummary：以数据框整理的分组参数
+
+#### 无需详细解释的参数 {#sec-simple-sma-para}
+
+`sma` 中其他无需详细解释的参数：
+
+- data： 包含 x 和 y 变量的数据框
+
+- subset：用于拟合的数据框的子集，非必须选项。
+
+- na.action: R 中对 na 值处理的方式，例如删除等。
+
+- log：对变量使用以 10 为底的对数转换。
+
+- method：如果等于 SMA 为标准主轴分析，MA 为主轴分析，或者选择 OLS，最小二乘法。
+
+- type：如果多条线进行比较，我们应该选择的选项，如 elevation 或 shift。
+
+- alpha：我们置信区间里使用的 $\alpha$，默认 0.05。
+
+- slope.test: 假设检验使用的值，也就是与某一个值差异是否显著时使用。
+
+- elev.test：与 slope.test 类似，只不过是检验截距。
+
+- robust：如果为 TRUE，使用文件回归分析，目前仅针对单样本检验。
+
+- V：测量误差的变异矩阵，默认无。
+
+- n_min：一个分组最小的样品数量
+
+- quiet：如果为 TRUE，不提示任何信息
+
+- multcomp：如果为 TRUE，则进行多重比较
+
+- multcompmethod： 多重比较 p 值的方法。
+
+
+## 自带数据的例子 {#sec-sma-example}
+
+安装从 CRAN 上进行即可：
+
+```{r, eval=FALSE}
+install.packages('smatr')
+```
+
+我们来使用自带的数据进行分析示例，先加载需要的软件包和数据：
+
+```{r}
+library(smatr)
+data(leaflife)
+```
+
+对于我们生态学人来说，数据浅显易懂，地点，降雨量，土壤 P 含量，叶片寿命、比叶面积几个数据：
+
+```{r}
+#| label: kabel-sma-data
+#| tbl-cap: 
+
+
+kable(head(leaflife), caption = "示例数据{#tbl-sma-data}")
+```
+
+
+### 单个样品的分析 {#sec-sma-example-single}
+
+我感觉单个样品的分析用的比较少，但不排除有些情况适用，我们看一下下面的结果
+
+```{r}
+# 单个样品分析 --------------------------------------------------------
+# 仅使用降雨和营养都是低的数据
+leaf_low <- subset(leaflife, soilp == 'low' & rain == 'low')
+# 仅拟合 SMA 的斜率和截距，实际很少单独用
+sma(longev ~ lma, log='xy', data=leaflife)
+# 检验斜率是否与 1 差异显著
+ma_test <- ma(longev ~ lma, log='xy', slope.test=1, data=leaflife)
+summary(ma_test)
+```
+上面的结果 H0 的 p 值仅为 0.003，也就是发生的概率太小，我们拒绝 H0，有显著差异，实际上斜率为 1.49，也很明显。
+
+
+### 多个样品的分析 {#sec-multi-sma-data}
+
+我们先对降雨量低的数据的性状进行分析：
+
+```{r}
+low_rain <- subset(leaflife, rain == 'low') 
+
+# SMA 单独拟合不同降雨区的数据，检验其有无共同斜率
+diff_rain <- sma(longev~lma*soilp, log="xy", data = low_rain)
+summary(diff_rain)
+```
+
+我们看到 H0 : slopes are equal 的概率是 0.047，也就是无共同斜率，图形也佐证了该点：
+
+```{r}
+#| label: fig-multi-sma-plot
+#| fig.cap: "多个分组无共同斜率"
+plot(diff_rain)
+```
+
+我们就无需在检验截距和延主轴的漂移了，差异足够明显。
+
+
+### 多个样品无共同斜率 {#sec-multi-no-coslope}
+
+下面的数据时无共同斜率的情况，我就不一一解释了：
+
+```{r}
+# 检查共同斜率 --------------------------------------
+# 查看低土壤营养的数据
+low_soilp <- subset(leaflife, soilp == 'low')
+
+# 以降雨的高低为分组，分别拟合，检验是否有共同斜率
+com_test <- sma(longev~lma*rain, log="xy", data=low_soilp )
+summary(com_test)
+```
+
+```{r}
+#| label: fig-with-com-slop
+#| fig.cap: "具有共同斜率的图形"
+plot(com_test)
+```
+
+结论: H0 : slopes are equal. P 为 0.13，也就是接受 h0
+
+```{r}
+# 检查斜率与 1 是否差异显著 -------------------------------------------------------------
+low_soilp_b <- sma(longev~lma*rain, log="xy", slope.test=1, data=low_soilp)
+summary(low_soilp_b)
+# 结论： H0 : slope not different from 1 ，p 为 0.004，拒绝 h0
+
+
+# 检查共同截距 -------------------------------------------------------------
+low_soilp_elev <- sma(longev~lma+rain, log="xy", type = "elevation", data=low_soilp)
+summary(low_soilp_elev)
+
+```
+
+
+```{r}
+#| label: fig-no-com-inter
+#| fig.cap: "共同截距差异显著的图形"
+plot(low_soilp_elev)
+```
+
+结论： H0 : no difference in elevation. p 为 0.01 共同截距有显著差异
+
+```{r}
+# 检查延主轴有无漂移 -------------------------------------------------------------
+low_soilp_shift <-  sma(longev~lma+rain, log="xy", type="shift", data=low_soilp)
+summary(low_soilp_shift)
+```
+
+结论： H0 : no shift along common axis. p 为 0.64，接受 h0，无延主轴方向的漂移。

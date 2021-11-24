@@ -1,0 +1,343 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11]{scrreport}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={LI-6800 和 LI-6400 光合数据分析指南},
+  pdfauthor={祝介东},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage{tcolorbox}}
+\@ifpackageloaded{fontawesome}{}{\usepackage{fontawesome}}
+\definecolor{quarto-callout-color}{HTML}{acacac}
+\definecolor{quarto-callout-note-color}{HTML}{4582ec}
+\definecolor{quarto-callout-important-color}{HTML}{d9534f}
+\definecolor{quarto-callout-warning-color}{HTML}{f0ad4e}
+\definecolor{quarto-callout-tip-color}{HTML}{02b875}
+\definecolor{quarto-callout-caution-color}{HTML}{fd7e14}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\renewcommand*\figurename{Figure}
+\renewcommand*\tablename{Table}
+}
+\AtBeginDocument{%
+\renewcommand*\listfigurename{List of Figures}
+\renewcommand*\listtablename{List of Tables}
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subfig}{}{\usepackage{subfig}}
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{LI-6800 和 LI-6400 光合数据分析指南}
+\author{祝介东}
+\date{2021/11/13}
+
+\begin{document}
+\maketitle
+
+\renewcommand*\contentsname{On this page}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{welcome}{%
+\chapter*{欢迎}\label{welcome}}
+\addcontentsline{toc}{chapter}{欢迎}
+
+本文是希望介绍一套完整的 LI-6800 和 LI-6400
+数据分析的流程，期望涵盖的工具有
+\texttt{R,\ Python,\ CLI(command\ line\ interface)}
+等。本书目前还在创作中（更新日期标记： 2021-11-15），最初以 R 代码为主。
+
+\hypertarget{preface}{%
+\chapter*{序言}\label{preface}}
+\addcontentsline{toc}{chapter}{序言}
+
+姑且算这是一本书吧，毕竟这是按照一本书的格式进行排版的。但他离我的要求差距有点大，所以我不太情愿这么称呼它。这算是本书的序言，我的目的主要是讲清楚一些历史渊源。
+
+这本书的前身是 \href{https://zhujiedong.github.io/photoanalysis/}{使用 R
+语言分析 LI-6400 和 LI-6800 光合仪的数据}，而更早的起源大约是 2017
+年7,8月份的样子。那时候我刚刚结束在基因的实习期没多久，在学习 LI-6400
+的响应曲线过程中，需要分析点做测试的数据，然后再 \texttt{plantecophys}
+的基础上做了一些笔记。之后的培训时间里，发现遇到的一些客户有相关的需求，于是我慢慢整理为上面的内容。再后来不断的填补一些内容，所以上面这个链接看上去很乱，而因为这是业余爱好，我的工作越来越忙的原因，我有心无力，一直没有时间，也下不了决心从头整理一下。
+
+直到最近（2021.11）我下了决心整理，但并不是我有时间了，只是不动手开始，那恐怕永远还是没时间，千里之行，始于足下。再者近期疫情（2021.11）在国内又有零星爆发，我暂时能节省大量的通勤时间，所以希望每天能有半个小时到一个小时的时间用在这件事情上。具体能达到什么样的效果我并不清楚，因为有些事情可能超出了我的能力范围，我只能保证现在尽力去做。
+
+这里需要说明几件事情：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  本文的写作纯属个人行为，与我所在单位无关。如果对您使用 LI-6800 和
+  LI-6400
+  进行实验数据的处理有帮助，那么您认为这属于基因公司的功劳也无不可，毕竟有些内容也是我工作中所接触和学习到的。但如果对您造成了伤害，请一定记住，这是个人行为。我所在单位和现在的同事对此没有任何义务和责任。
+\item
+  既然是个人行为，这些相关的分析工作并非我所在单位有义务提供的服务内容，请不要与正常的仪器售后工作混为一谈。
+\item
+  所有引用他人的内容我都会添加引用或者注释。但我决定保留对这本书的一切权利。虽然如此，如果您发表文章中使用了相关的代码或内容，即使是我原创的内容，我对此并不介意，但用于商业目的行为请提前与我沟通。我的个人邮箱为：`zhujiedong@yeah.net`，这也是我喜欢的联系方式。
+\end{enumerate}
+
+对写作这件事情，始于我的业余爱好，最初写这些东西是打发出差晚上无聊时间用的（那时候刚入职现在的公司，并没有很多的售后之外的工作让我去做，所以出差晚上很闲，现在不同了），根本原因是我喜欢在学习的时候做笔记，所以后来为这些东西还专门开了一个公众号：
+
+\begin{figure}
+
+{\centering \includegraphics{././img/wechat.png}
+
+}
+
+\caption{公众号}
+
+\end{figure}
+
+初心就是这么简单而已，这样一个平台能够既让我写笔记，又能与同行交流而已。到现在虽然我已经不需要用爱好来打发时间，晚上处理白天积攒的工作已经让我很忙（没办法，培训的时候不能做其他工作），但是我一直把这个爱好坚持下来，可能也是习惯了吧，但还是给一些人造成了误解。这里必须说明：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  这个公众号是我个人的，目的是分享，并不是提供数据相关咨询，更不提供任何数据分析服务，所以如果您使用了基因公司的仪器，可以把这些内容作为参考，有问题我欢迎交流，但我不能保证一定会回复，这不是我的工作，我时间上优先保证我拿工资的那部分工作的内容，其他时间以我个人的生活为重。
+\item
+  列出上面的微信二维码，主要目的也是方便一些用户，最近这两年
+  \texttt{github}
+  被墙的厉害，我回将一些基本的内容发到微信公众号内，微信不管在哪里都是可以用的，这样我能接到一些反馈，我不回复一些问题多数情况是没时间，但并不表明我没看到，一些有代表性的问题我可能会后面统一回复，一些建议我后面有时间的时候也会采纳和做相应的处理。我倾向于在
+  \texttt{github\ 和\ gitee} 上收到一些反馈，但是如果不会用
+  \texttt{git}，微信将是一个很好的平台。
+\item
+  由第 2 点引出了第 3
+  点，微信最好是文章下面留言，这样有时候我会回复，也避免一些共性的问题反复有人提问。请不要私信，微信私信进行
+  \textbf{问题讨论}
+  是我深恶痛绝的，一是很多人对一个售后微信留言多的程度可能不了解，对售后在生长季节出差的强度也没有体会，有一搭没一搭的回复问题真让人感觉把自己复制个十几个才够用的。二是看了来不及处理的问题，很容易忘，而因为要搞设备的安装、调试和售后很容易看一眼之后没时间回复。
+\item
+  怎么提问题才能提升效率。需要注明几点：仪器型号、症状描述、报错提示、出问题之前所做的操作、同往常相比，有什么异常出现，自己解决问题所做的努力。有了这些信息，我们基本很快就能判断原因，而不是这些问题由我们来问，这样子用微信留言是不方便的。
+\end{enumerate}
+
+最后，希望这些内容能够帮助到有需要的人。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+祝介东
+
+于 2021.11.13 日夜
+
+\hypertarget{Introduction}{%
+\chapter*{介绍}\label{Introduction}}
+\addcontentsline{toc}{chapter}{介绍}
+
+LI-6400
+光合仪自面世以来，在相关的领域得到了广泛的应用。毕竟在植物学领域，专门光合相关的研究或其他研究很多时候都需要光合相关的参数来进行验证相关的处理或者假设。尽管是一个经典的设备，目前在每年的生长季节使用量也十分巨大（这个作为一个售后的感受是最直观的），但它不可避免的落伍于这个时代，并最终停止生产了，取而代之的事
+LI-6800 光合仪。对于这个变化而言，一个很直观的例子可以解释为什么在
+LI-6400
+仍然能胜任多数光合测量任务的情况下，却难逃被淘汰的命运。这就是手机从功能机向智能机的转变，并不是直板诺基亚不好了，只是时代对手机提出来更高的要求。
+LI-6800
+的诞生意味着光合仪从功能机时代转向了智能机的时代，无限的可能被创造力出来。
+
+不论仪器怎么转变，他们可能会节省我们很多劳动力，让我们少去操心一些琐碎的问题，但最终的数据处理则是科研工作者核心的工作的主题，时代进步可能会减轻我们的工作量，例如最近这十几年来，大数据的兴起使得我们对数据分析的难度大大降低。新方法新工具不断出现，这对我们是一个好的事情，但同时对我们的学习要求也不断提高，因为不能分析结果出来，我们缺发现看不懂吧。
+
+基于此，也基于我个人这几年对相关事物的兴趣，我这里将我所知道关于对光合数据分析相关的内容做一个整理，不管水平如何，我只是期望能给未入门或者初入门尚未找到合适资料的同志们一些参考。我努力保证不出错，但不能保证我所使用的代码是最简单、最合理，最有效率的，当然，这是我的目标，但作为一个有不相关工作的业余人士来讲，这很难，所以老师和同学们（不是我没礼貌，只是年纪在这，可能你们的老师是我的同学）口下留情，请多多指正，多多分享。
+
+我对这块工作，目前期望的框架大致如此，（基于
+\href{https://zhujiedong.github.io/photoanalysis/}{使用 R 语言分析
+LI-6400 和 LI-6800 光合仪的数据} 得到的一些总结和反馈）：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  介绍基本工具安装和初步的使用，这里目前准备先介绍一下
+  \texttt{R}，\texttt{Rtools} 及 \texttt{Rstudio}
+  的安装和基本使用，因为作为初学者这是最基本的工具，所谓工欲善其事，必先利其器，掌握了
+  \texttt{Rstudio}
+  之后再写代码就是事倍功半的效果了，添加这部分内容是因为看到不少人给我截图，都是直接用的
+  R gui，这个真的很费事的，我就刚学 \texttt{R}
+  的时候用过这种方式，后来一路到 \texttt{Rstudio} 成立，就再也没换过写
+  \texttt{R} 代码的工具。
+\item
+  介绍专门的光合作用软件包，因为光合数据处理，特别是一些曲线拟合的部分相对比较麻烦，有一些特有的软件包进行使用，例如
+  \texttt{plantecophys} 等。
+\item
+  数据的准备工作，最基本的数据导入，批量导入和处理。
+\item
+  响应曲线部分与叶片导度部分，这里主要介绍气孔导度相关模型与叶肉导度的计算。
+\item
+  其他统计常用方法。这里准备介绍基本的统计方法。
+\end{enumerate}
+
+\begin{tcolorbox}[leftrule=.75mm, colback=white, coltitle=black, left=2mm, toptitle=1mm, toprule=.15mm, bottomtitle=1mm, colframe=quarto-callout-note-color, colbacktitle=quarto-callout-note-color!10!white, titlerule=0mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}注意, arc=.35mm, bottomrule=.15mm]
+我对 \texttt{tidyverse}
+的管道符号并不感冒，而且我又有一定程度的强迫症，不喜欢使用太多依赖，所以代码我基本会尽量使用
+\texttt{R} base
+的语法来进行示例,这样初学者不用安装太多依赖包来运行示例程序，这是个人习惯的问题。
+\end{tcolorbox}
+
+\part{必备工具}
+
+本书计划使用的工具有 \href{https://cran.r-project.org/}{R 软件} (R Core
+Team 2021)，\href{https://www.python.org/}{Python 软件} 以及一款支持
+\texttt{bash} 的终端。这其中前两款是可以直接免费下载安装的，而
+\texttt{bash} 只是 \texttt{shell} 语言
+{[}\^{}https://searchdatacenter.techtarget.com/definition/shell{]}
+的一种，如果使用 Mac 或 linux，那么天然自带，如果使用
+Windows，那么我推荐使用
+\href{https://docs.microsoft.com/en-us/windows/wsl/compare-versions}{WSL2}。
+
+对于编程来讲，一款好的 IDE
+能够节省我们大量的时间，并且节省很多配置的繁琐步骤。对于 \texttt{R} 的
+IDE，我还是强烈推荐使用
+\href{https://www.rstudio.com}{Rstudio}，我后面会介绍入门所必须的一些操作。对于
+\texttt{Python}，新手尤其是做数据科学的新手，我推荐使用
+\href{https://www.anaconda.com/}{Anaconda}，当然了，这并不是一个
+IDE，二是针对数据科学的一揽子解决方案，对初学者来讲，比较省心，会让我们跨过所有的系统变量，常用数据分析软件包的安装等的配置，让我们直接进入实战阶段。\texttt{Python}
+的 IDE 比较有名的事
+\texttt{Pycharm}，但是它是收费的，虽然听说功能很强大，但我也不清楚，我主要用
+\texttt{VScode}，这个是微软自家的王牌产品，直接在引用商店搜索即可。但实际上
+\texttt{Rstudio} 也越来越重视对 \texttt{Python}
+的支持，可以无缝切换两种语言
+\href{https://rstudio.github.io/reticulate/articles/rstudio_ide.html}{reticulate}。
+
+本部分的内容主要介绍相关软件的安装和基本使用。
+
+\part{Introduction}
+
+This is a book created from markdown and executable code.
+
+See (\textbf{knuth84?}) for additional discussion of literate
+programming.
+
+\hypertarget{introduction-1}{%
+\chapter{Introduction}\label{introduction-1}}
+
+This is a book created from markdown and executable code.
+
+See (\textbf{knuth84?}) for additional discussion of literate
+programming.
+
+\hypertarget{introduction-2}{%
+\chapter{Introduction}\label{introduction-2}}
+
+This is a book created from markdown and executable code.
+
+See (\textbf{knuth84?}) for additional discussion of literate
+programming.
+
+\hypertarget{references}{%
+\chapter*{References}\label{references}}
+\addcontentsline{toc}{chapter}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-rcore}{}}%
+R Core Team. 2021. \emph{R: A Language and Environment for Statistical
+Computing}. Vienna, Austria: R Foundation for Statistical Computing.
+\url{https://www.R-project.org/}.
+
+\end{CSLReferences}
+
+\appendix
+\addcontentsline{toc}{part}{Appendices}
+
+\end{document}
+
