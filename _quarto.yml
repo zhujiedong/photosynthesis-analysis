@@ -10,8 +10,8 @@ book:
     介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主，
     有时候为方便或者作为比较，会涉及 python 和其他工具。
   cover-image: img/cover.png
-  site-url: https://rstudio-education.github.io/hopr/
-  repo-url: https://github.com/jjallaire/hopr/
+  site-url: https://zhujiedong.github.io/photosynthesis-analysis/
+  repo-url: https://github.com/zhujiedong/photosynthesis-analysis/
   repo-branch: master
   repo-actions: [edit]
   chapters:
