@@ -189,6 +189,9 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
+  <a href="./thanks.html" class="">致谢</a>
+</li>
+      <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
 </li>
       <li class="sidebar-item">
@@ -521,7 +524,7 @@ dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
 </section>
 <section id="sec-intro-gm-func" class="level2" data-number="22.4">
 <h2 data-number="22.4" class="anchored" data-anchor-id="sec-intro-gm-func"><span class="header-section-number">22.4</span> 函数介绍</h2>
-<div class="cell">
+<div class="cell" data-hash="gm_cache/html/unnamed-chunk-1_777d820715cf7c8174f88eace9744f83">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fit_g_mc_variableJ</span>(</span>
@@ -539,7 +542,7 @@ dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
 </div>
 <p>函数本身参数都比较简单。函数有一个计算数据可靠性的检测，并只使用它检测有效的数据进行拟合进行取平均值，而且他计算的单位是按分压计算的：<span class="math inline">m^{-2} \cdot s^{-1} \cdot Pa^{-1}</span>。</p>
 <p>我使用软件包自带的数据进行演示，当然了 LI-6400 也是可以的，但请参考开始的连接中的文章，来进行相应处理，首先是加载软件包，我们顺便看一下数据：</p>
-<div class="cell">
+<div class="cell" data-hash="gm_cache/html/unnamed-chunk-2_2759dc048994cc7720e33544a69bdf2c">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
@@ -547,7 +550,7 @@ dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
 </details>
 </div>
 <p>然后进行拟合就可以了：</p>
-<div class="cell">
+<div class="cell" data-hash="gm_cache/html/unnamed-chunk-3_80d0b51f617f43b93e1ba6e2585d749e">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">fit_g_mc_variableJ</span>(</span>
@@ -569,7 +572,7 @@ dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
 </details>
 </div>
 <p>我们可以看一下 <code>data</code> 前的数据，仅显示 gsw 和 g_mc(计算的叶肉导度)：</p>
-<div class="cell" data-tbl-cap="{}">
+<div class="cell" data-tbl-cap="{}" data-hash="gm_cache/html/gm-data_2afdeb3345a8d1d221545bcae806ff00">
 <div class="cell-output-display">
 <table class="table">
 <caption>叶肉导度拟合结果{#tbl-gmc-gs}</caption>
@@ -609,7 +612,7 @@ dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
 </div>
 </div>
 <p>可以看到，是有很多不合理值的，我们可以作图看一下合理的值：</p>
-<div class="cell">
+<div class="cell" data-hash="gm_cache/html/fig-gmc-plot-reasonable_6fcf9bf9c1dfee2d65ad66eb5e8bdf44">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> CO2_s, <span class="at">y =</span> g_mc, <span class="at">colour =</span> reliable)) <span class="sc">+</span></span>
@@ -629,7 +632,7 @@ dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
 </div>
 </div>
 <p>当然上面的作图来自于 <code>vignette</code>，如果与我一样还没赶上潮流，可以使用 <code>base plot</code>：</p>
-<div class="cell">
+<div class="cell" data-hash="gm_cache/html/fig-gmc-base-reasonable_87d5b3231d3cd8a2cd6dfde3233f2a5d">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>col_sep <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(data<span class="sc">$</span>reliable <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#CC79A7"</span>)</span>
@@ -651,7 +654,7 @@ dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
 </div>
 </div>
 <p>查看前文所讲的斜率判定相关数据：</p>
-<div class="cell">
+<div class="cell" data-hash="gm_cache/html/fig-dccda-quality_e37b71d58b312251cd3634c65158a188">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot QAQC graph according to Harley et al. 1992</span></span>
@@ -672,7 +675,7 @@ dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
 </div>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-hash="gm_cache/html/fig-gmc-quality__5eda20cfff6e43b962537d42f8281df6">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> dCcdA, <span class="at">y =</span> g_mc, <span class="at">colour =</span> reliable)) <span class="sc">+</span></span>

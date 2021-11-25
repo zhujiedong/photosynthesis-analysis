@@ -189,6 +189,9 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
+  <a href="./thanks.html" class="">致谢</a>
+</li>
+      <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
 </li>
       <li class="sidebar-item">
@@ -473,7 +476,7 @@
 <h2 data-number="21.1" class="anchored" data-anchor-id="sec-plantecophys-stamo"><span class="header-section-number">21.1</span> <code>plantecophys</code> 气孔导度相关函数</h2>
 <section id="sec-fitbb-p" class="level3" data-number="21.1.1">
 <h3 data-number="21.1.1" class="anchored" data-anchor-id="sec-fitbb-p"><span class="header-section-number">21.1.1</span> <code>fitBB</code> 函数</h3>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-1_3a94e5b4ce3616d2d997900b38bee8d0">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitBB</span>(</span>
@@ -499,7 +502,7 @@
 <li>fitg0：默认不计算g0，若需要，改为TRUE。</li>
 </ul>
 <p><strong>代码示例：</strong></p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-2_f5ff22179d1b8b834491dfc77da8c209">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecophys)</span>
@@ -537,7 +540,7 @@ To return coefficients, do coef(myfit).
 <section id="sec-fitbbs" class="level3" data-number="21.1.2">
 <h3 data-number="21.1.2" class="anchored" data-anchor-id="sec-fitbbs"><span class="header-section-number">21.1.2</span> <code>fitBBs</code> 函数</h3>
 <p>如果我们有多个物种或分组的数据，那么使用 <code>fitBBs</code> 则可以快速拟合多条曲线的数据。我们先整合两次的数据，然后来查看一下运行结果：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-3_736bbb2ad924c202e1807640c2b051bd">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>aci01 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/aci01.csv"</span>)</span>
@@ -568,13 +571,13 @@ To return coefficients, do coef(myfit).
 </details>
 </div>
 <p>结果为：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-4_4d3680206cf56ced5fd167b0022f323e">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-tbl-cap="{}">
+<div class="cell" data-tbl-cap="{}" data-hash="gs_cache/html/fitbbss_a71bdafb8b2ee6daf43f781a100077f1">
 <div class="cell-output-display">
 <table class="table">
 <caption>fitBBs 的结果{#tbl-plt-eco-kab}</caption>
@@ -608,7 +611,7 @@ To return coefficients, do coef(myfit).
 <h3 data-number="21.2.1" class="anchored" data-anchor-id="sec-single-photo-stamo"><span class="header-section-number">21.2.1</span> 无分组模型的实现过程</h3>
 <p>内容与上面 的重复，这里不在运行，仅列出代码。</p>
 <p>读取数据：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-6_7d3db99691f5341345792c81e3ea1f4a">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
@@ -616,7 +619,7 @@ To return coefficients, do coef(myfit).
 </details>
 </div>
 <p>BallBerry 模型需要相对湿度，而 LI-6800 的相对湿度数据实际上是转换为百分数后的数据，因此需要处理一下，然后这个函数的方便之处是，它可以一次拟合出所有的模型来：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-7_d2903fd028e0dc68510024141af0e46b">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>RH <span class="ot">&lt;-</span> df<span class="sc">$</span>RHcham <span class="sc">/</span> <span class="dv">100</span></span>
@@ -642,7 +645,7 @@ To return coefficients, do coef(myfit).
 <section id="sec-photo-stoma-result" class="level4">
 <h4 class="anchored" data-anchor-id="sec-photo-stoma-result">结果的查看</h4>
 <p><code>fit_gs_model</code> 结果有两个水平，第一层 list 是拟合模型，第二层则是模型相关的参数、图形等，可以通过位置查看：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-8_f3dcd189bec29edcbca7cbfc1b7b1671">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fits[[<span class="dv">1</span>]][<span class="dv">1</span>]</span>
@@ -651,7 +654,7 @@ To return coefficients, do coef(myfit).
 </details>
 </div>
 <p>也可以通过名称查看：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-9_545ec26763e448f7318189b81bff9e24">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fits<span class="sc">$</span>BallBerry<span class="sc">$</span>Parameters</span>
@@ -665,7 +668,7 @@ To return coefficients, do coef(myfit).
 <section id="sec-multi-photo-stoma" class="level3" data-number="21.2.2">
 <h3 data-number="21.2.2" class="anchored" data-anchor-id="sec-multi-photo-stoma"><span class="header-section-number">21.2.2</span> 分组模型的实现</h3>
 <p>分组数据处理起来也比较方便，例如下面以光强为分组，<code>photosynthesis</code> 提供了两个方便的函数，帮助进行分组数据的操作，<code>fit_many</code> 用于选择函数用于分组数据，<code>compile_data</code> 用于将 <code>list</code> 结果转为 <code>dataframe</code>：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-10_3d31d5e42d39e9a3781a8452997e88eb">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Q_2 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">round</span>(df<span class="sc">$</span>Qin, <span class="at">digits =</span> <span class="dv">0</span>))</span>
@@ -685,14 +688,14 @@ To return coefficients, do coef(myfit).
 </details>
 </div>
 <p>数据的查看比之前又多了一个水平，例如 750 光强下的数据：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-11_3855802146cde149e38d25139dee9dc5">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fits[[<span class="st">"750"</span>]][[<span class="st">"Medlyn_partial"</span>]][[<span class="st">"Parameters"</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>这里转换过程分两部，首先是将所有的参数转为 <code>list</code> 形式，转换对象是 1，也就是第一个模型 BallBerry。然后再将这个 <code>list</code> 进行一次转换，不同分组的参数 <code>Parameters</code>（顺序可参考未分组数据的结果）：</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-12_6520c128196c623f696fff843b091fb7">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bbmods <span class="ot">&lt;-</span> <span class="fu">compile_data</span>(<span class="at">data =</span> fits,</span>
@@ -708,7 +711,7 @@ To return coefficients, do coef(myfit).
 </details>
 </div>
 <p>最后展示的图形是不同光强下，拟合的截距的差异。多个图形也可以使用这种方式转换，不过存储的类型最好是 <code>list</code>（存储的是 <code>ggplot2</code> 对象的类）。例如 <code>vignette</code> 使用下面的方式查看第三幅图的结果。</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-13_e20a5d567fe29f54f4bc20605d6d44eb">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>graphs <span class="ot">&lt;-</span> <span class="fu">compile_data</span>(<span class="at">data =</span> bbmods,</span>
@@ -730,7 +733,7 @@ A - \lambda E
 <section id="sec-farao" class="level3" data-number="21.3.1">
 <h3 data-number="21.3.1" class="anchored" data-anchor-id="sec-farao"><span class="header-section-number">21.3.1</span> <code>FARAO</code> 函数</h3>
 <p><code>FARAO</code> 函数用于找到最大化 <span class="math inline">A - \lambda E</span> 解的** Ci **值，这里是利用数值解的形式求解方程。</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-14_7d4c1d11eed861c7ecc06c27bef2f353">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FARAO</span>(<span class="at">lambda =</span> <span class="fl">0.002</span>, <span class="at">Ca =</span> <span class="dv">400</span>, <span class="at">VPD =</span> <span class="dv">1</span>,</span>
@@ -774,7 +777,7 @@ g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
 <section id="sec-photosyn" class="level3" data-number="21.4.1">
 <h3 data-number="21.4.1" class="anchored" data-anchor-id="sec-photosyn"><span class="header-section-number">21.4.1</span> <code>Photosyn</code> 函数</h3>
 <p>Photosyn 为耦合的光合–气孔导度模型，基于 Farquhar 光合模型和 Ball-Berry 气孔导度模型。</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-15_4ed2b261986d44136a687d50a33a8f10">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Photosyn</span>(<span class="at">VPD =</span> <span class="fl">1.5</span>, <span class="at">Ca =</span> <span class="dv">400</span>, <span class="at">PPFD =</span> <span class="dv">1500</span>,</span>
@@ -799,7 +802,7 @@ g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
 <p>因为是光合气孔导度模型的耦合，故而参数与之前的函数相同，参见 <a href="#sec-fitbb-p">sec.&nbsp;<span>21.1.1</span></a> 和 <a href="aci.html">sec.&nbsp;<span>14</span></a> 部分的内容。</p>
 <section id="sec-photo_exam" class="level4">
 <h4 class="anchored" data-anchor-id="sec-photo_exam"><code>Photosyn</code> 使用举例</h4>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/fig-bpd_ff5087a680ede2280e95817fa179b831">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecophys)</span>
@@ -832,7 +835,7 @@ g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
 </div>
 </div>
 <p><span class="quarto-unresolved-ref">?fig-vpd</span> 显示了不同 VPD 下的光合速率。</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/fig-ppfd_ca522cee97d3a8b5a8b8de84226c756b">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 设定叶肉导度的拟合</span></span>
@@ -866,7 +869,7 @@ g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
 </div>
 </div>
 <p><a href="#fig-ppfd">fig.&nbsp;<span>21.3</span></a> 显示不同 C<sub>i</sub> 下的光合速率。</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/fig-supply_4c1ef7b99d809bbc06abe8d27a6d2a40">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 找出CO2需求和供给的交叉点</span></span>
@@ -937,7 +940,7 @@ f_{\Psi v} = \frac{1 + exp(s_f \Psi_f)}{1 + exp(s_f(\Psi_f - \Psi_v))}
 <section id="sec-photosyntuzet_para" class="level4">
 <h4 class="anchored" data-anchor-id="sec-photosyntuzet_para"><code>PhotosynTuzet</code> 的参数</h4>
 <p>除 <span class="citation" data-cites="tuzet2003a">Tuzet, Perrier, and Leuning (<a href="references.html#ref-tuzet2003a" role="doc-biblioref">2003</a>)</span> 模型中使用的参数外，其他参数都继承了 <code>Photosyn</code> 的参数</p>
-<div class="cell">
+<div class="cell" data-hash="gs_cache/html/unnamed-chunk-19_6ff758480b4da05383820d90c3511b64">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PhotosynTuzet</span>(<span class="at">g1 =</span> <span class="dv">8</span>, <span class="at">Ca =</span> <span class="dv">400</span>, <span class="at">psis =</span> <span class="dv">0</span>,</span>

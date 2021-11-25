@@ -189,6 +189,9 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
+  <a href="./thanks.html" class="">致谢</a>
+</li>
+      <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
 </li>
       <li class="sidebar-item">
@@ -534,7 +537,7 @@ R_d = b_{reg}
 <section id="sec-rd-func-intr" class="level2" data-number="17.4">
 <h2 data-number="17.4" class="anchored" data-anchor-id="sec-rd-func-intr"><span class="header-section-number">17.4</span> 函数简介</h2>
 <p>实际上有三个函数，但他们有共同的参数，道理很简单，他们基于的理论大部分相同：</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/unnamed-chunk-1_f4b882c7c71a54cda887e9f062e1ec23">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fit_r_light_kok</span>(</span>
@@ -564,7 +567,7 @@ R_d = b_{reg}
 <section id="sec-in-action" class="level2" data-number="17.5">
 <h2 data-number="17.5" class="anchored" data-anchor-id="sec-in-action"><span class="header-section-number">17.5</span> 实践</h2>
 <p>实践还是采用叶肉导度测试的数据，来自于软件包自带。代码来自于 <code>vignette</code>，主要对其中内容做相关解释。</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/unnamed-chunk-2_ca70db71ec7b9ec864d50aacb0f3c586">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
@@ -572,7 +575,7 @@ R_d = b_{reg}
 </details>
 </div>
 <p>加载软件包并读取示例数据。</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/unnamed-chunk-3_dad82aaaed11fc29ecd65de2b3233584">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>r_light <span class="ot">&lt;-</span> <span class="fu">fit_r_light_yin</span>(</span>
@@ -588,7 +591,7 @@ R_d = b_{reg}
 </details>
 </div>
 <p><span class="math inline">R_d</span> 为截距：</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/unnamed-chunk-4_aa67483c09b1b34852983cb13b65277f">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>r_light</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -599,7 +602,7 @@ R_d = b_{reg}
 </div>
 </div>
 <p>当然，Kok 方法与之类似：</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/unnamed-chunk-5_225f1baf529a51af58f6f438b7dd4e49">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>r_light <span class="ot">&lt;-</span> <span class="fu">fit_r_light_kok</span>(</span>
@@ -621,7 +624,7 @@ R_d = b_{reg}
 </div>
 <p>结果为负值当然表示这是呼吸的意思。</p>
 <p>示例程序还演示了不同分组的数据批量的处理，这里的分组是使用了 sample 气路的二氧化碳浓度，首先将其取整，然后转化为 <code>factor</code> 后处理，也就是前两行代码所做的处理。之后使用 <code>Yin</code> 的方法将所有分组的数据同时处理；</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/unnamed-chunk-6_e804bf813c82284c861f22849acaee45">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>C_s <span class="ot">&lt;-</span> (<span class="fu">round</span>(data<span class="sc">$</span>CO2_s, <span class="at">digits =</span> <span class="dv">0</span>))</span>
@@ -666,7 +669,7 @@ R_d = b_{reg}
 </div>
 </div>
 <p>然后将数据整理一下：</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/unnamed-chunk-7_ebc4e2fde9afc55538c636d902512278">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">names</span>(r_lights)</span>
@@ -677,7 +680,7 @@ R_d = b_{reg}
 </details>
 </div>
 <p>首先提取不同的分组，这里是浓度的数据，然后将其转化为一个向量。最终将数据整理为一个数据框，第一列是分组名，第二列是对应的截距，或者说是 <span class="math inline">R_d</span>。最后将数据框的表头修改为所需要的表头，结果为：</p>
-<div class="cell" data-tbl-cap="{}">
+<div class="cell" data-tbl-cap="{}" data-hash="Rd_cache/html/yin-kable_869df8b3aa7b31e26ab015c77d7ae8a4">
 <div class="cell-output-display">
 <div id="tbl-yin-kable" class="anchored">
 <table class="table">
@@ -741,7 +744,7 @@ R_d = b_{reg}
 </div>
 </div>
 <p>walker 方法相比来说要复杂一些，因为多求了一个参数：</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/unnamed-chunk-9_bba313d5177bcbe0c3438dd4463b2e22">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>walker_ort <span class="ot">&lt;-</span></span>
@@ -771,7 +774,7 @@ F-statistic: 127.8 on 1 and 10 DF,  p-value: 5.103e-07</code></pre>
 </div>
 </div>
 <p>通过图形才能很好的反应他使用单条线的斜率和截距来计算的情况：</p>
-<div class="cell">
+<div class="cell" data-hash="Rd_cache/html/fig-yin-plot_0cb5b60823da44525acbb16ce611704a">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>walker_ort[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -786,7 +789,7 @@ F-statistic: 127.8 on 1 and 10 DF,  p-value: 5.103e-07</code></pre>
 </div>
 </div>
 <p>数据的结果：</p>
-<div class="cell" data-tbl-cap="{}">
+<div class="cell" data-tbl-cap="{}" data-hash="Rd_cache/html/walk-kable_a64bf246138f39aea27f68ace150bd0d">
 <div class="cell-output-display">
 <div id="tbl-walker-kable" class="anchored">
 <table class="table">

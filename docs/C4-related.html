@@ -189,6 +189,9 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
+  <a href="./thanks.html" class="">致谢</a>
+</li>
+      <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
 </li>
       <li class="sidebar-item">
@@ -450,7 +453,7 @@
 </header>
 
 <p>之前的部分模型全部为关于 C3 植物的拟合，而 <span class="citation" data-cites="Caemmerer2000Biochemical">Caemmerer (<a href="references.html#ref-Caemmerer2000Biochemical" role="doc-biblioref">2000</a>)</span> 的方法，则是针对 C4 植物的 A-Ci 曲线的实现。</p>
-<div class="cell">
+<div class="cell" data-hash="C4-related_cache/html/unnamed-chunk-1_bdea36600fdc7928f7d468c06a243172">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AciC4</span>(Ci, <span class="at">PPFD =</span> <span class="dv">1500</span>, <span class="at">Tleaf =</span> <span class="dv">25</span>, <span class="at">VPMAX25 =</span> <span class="dv">120</span>, </span>
@@ -486,7 +489,7 @@
 <p>以上参数均来自 <span class="citation" data-cites="Caemmerer2000Biochemical">Caemmerer (<a href="references.html#ref-Caemmerer2000Biochemical" role="doc-biblioref">2000</a>)</span>，括号中的参数值均为默认值，具体应用时请按照实际情况修改。</p>
 <section id="c4_sim" class="level2" data-number="18.1">
 <h2 data-number="18.1" class="anchored" data-anchor-id="c4_sim"><span class="header-section-number">18.1</span> C4 植物光合速率的计算</h2>
-<div class="cell">
+<div class="cell" data-hash="C4-related_cache/html/fig-c4-plot-aci_b52b7e6135814cc0b3add75125fcbabf">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 模拟 C4 植物的 Ci 值，计算光合速率并作图</span></span>

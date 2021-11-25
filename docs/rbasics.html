@@ -154,6 +154,9 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
+  <a href="./thanks.html" class="">致谢</a>
+</li>
+      <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
 </li>
       <li class="sidebar-item">
@@ -479,14 +482,14 @@
 </div>
 <p>新建项目有三个选项，如果是刚入门的话，通常只会用到前面两个，例如上面我们选择第一项的目的是在选中的路径下，创建一个 test 文件夹，点击 Create Project 后就会完成相关创建，在这个文件夹内就会生成一个 <code>test.Rproj</code> 文件，我们每次要在这个目录内工作，双击打开这个文件即可，那时候的目录就可以使用相对路径的方式，相对路径的含义我解释一下：</p>
 <p>例如我上面创建的路径是 <code>D:/test</code>，数据里有一个文件夹是 <code>data</code>，存放了一个数据文件叫做 <code>aci-test.csv</code>，即数据文件的路径为：<code>D:/test/data/aci-test.csv</code>，那么我要读取他通过相对路径的方式为：</p>
-<div class="cell">
+<div class="cell" data-hash="rbasics_cache/html/unnamed-chunk-1_50dc760626ded47309b7ac4315f76da1">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">"data/acitest.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>而绝对路径则麻烦一些：</p>
-<div class="cell">
+<div class="cell" data-hash="rbasics_cache/html/unnamed-chunk-2_80ed39b373c3fb8e5b0991ebd4a83edb">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">"D:/test/data/aci-test.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

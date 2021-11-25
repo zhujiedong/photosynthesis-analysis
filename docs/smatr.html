@@ -189,6 +189,9 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
+  <a href="./thanks.html" class="">致谢</a>
+</li>
+      <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
 </li>
       <li class="sidebar-item">
@@ -500,7 +503,7 @@
 <h2 data-number="25.1" class="anchored" data-anchor-id="sec-sma-func"><span class="header-section-number">25.1</span> <code>sma</code> 函数的参数介绍</h2>
 <p>我还是使用软件包自带的数据，然后结合 <span class="citation" data-cites="warton2012smatr">Warton et al. (<a href="references.html#ref-warton2012smatr" role="doc-biblioref">2012</a>)</span> 文章的内容，在尽量详细解释一下参数的意思和返回的结果，期望能使得各位不会的能够看懂。</p>
 <p>这个软件包的最重要的函数为 <code>sma</code>，</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-1_807ab6667b728dd20129cfd6077e8071">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sma</span>(</span>
@@ -609,14 +612,14 @@
 <section id="sec-sma-example" class="level2" data-number="25.2">
 <h2 data-number="25.2" class="anchored" data-anchor-id="sec-sma-example"><span class="header-section-number">25.2</span> 自带数据的例子</h2>
 <p>安装从 CRAN 上进行即可：</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-2_8bdb4b4e0401ce682b5d69c66fb8943e">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'smatr'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>我们来使用自带的数据进行分析示例，先加载需要的软件包和数据：</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-3_b415d795b94e4916b8aad6e6305219e6">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(smatr)</span>
@@ -624,7 +627,7 @@
 </details>
 </div>
 <p>对于我们生态学人来说，数据浅显易懂，地点，降雨量，土壤 P 含量，叶片寿命、比叶面积几个数据：</p>
-<div class="cell" data-tbl-cap="{}">
+<div class="cell" data-tbl-cap="{}" data-hash="smatr_cache/html/kabel-sma-data_7f26ee83997c67bf2af38dac4fbd20b2">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(leaflife), <span class="at">caption =</span> <span class="st">"示例数据{#tbl-sma-data}"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -691,7 +694,7 @@
 <section id="sec-sma-example-single" class="level3" data-number="25.2.1">
 <h3 data-number="25.2.1" class="anchored" data-anchor-id="sec-sma-example-single"><span class="header-section-number">25.2.1</span> 单个样品的分析</h3>
 <p>我感觉单个样品的分析用的比较少，但不排除有些情况适用，我们看一下下面的结果</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-5_3fd2eacc32db89b3e2a3b98ac93f882c">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 单个样品分析 --------------------------------------------------------</span></span>
@@ -757,7 +760,7 @@ P-value : 0.0035393 </code></pre>
 <section id="sec-multi-sma-data" class="level3" data-number="25.2.2">
 <h3 data-number="25.2.2" class="anchored" data-anchor-id="sec-multi-sma-data"><span class="header-section-number">25.2.2</span> 多个样品的分析</h3>
 <p>我们先对降雨量低的数据的性状进行分析：</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-6_29de9f6734597bbc3e1157cbe69155d0">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>low_rain <span class="ot">&lt;-</span> <span class="fu">subset</span>(leaflife, rain <span class="sc">==</span> <span class="st">'low'</span>) </span>
@@ -807,7 +810,7 @@ P-value : 0.00041709 </code></pre>
 </div>
 </div>
 <p>我们看到 H0 : slopes are equal 的概率是 0.047，也就是无共同斜率，图形也佐证了该点：</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/fig-multi-sma-plot_3137c9112ab45f124aa824b60afe4bf3">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(diff_rain)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -826,7 +829,7 @@ P-value : 0.00041709 </code></pre>
 <section id="sec-multi-no-coslope" class="level3" data-number="25.2.3">
 <h3 data-number="25.2.3" class="anchored" data-anchor-id="sec-multi-no-coslope"><span class="header-section-number">25.2.3</span> 多个样品无共同斜率</h3>
 <p>下面的数据时无共同斜率的情况，我就不一一解释了：</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-8_7cab1922f1cbd68488ce010e7be77511">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查共同斜率 --------------------------------------</span></span>
@@ -877,7 +880,7 @@ R-squared : 0.80651
 P-value : 0.00041709 </code></pre>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/fig-with-com-slop_97fcfb430dd7efa93d4f6a92a70920f0">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(com_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -892,7 +895,7 @@ P-value : 0.00041709 </code></pre>
 </div>
 </div>
 <p>结论: H0 : slopes are equal. P 为 0.13，也就是接受 h0</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-10_0720b6568a6fa03980e7b337355c5745">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查斜率与 1 是否差异显著 -------------------------------------------------------------</span></span>
@@ -1006,7 +1009,7 @@ R-squared : 0.80651
 P-value : 0.00041709 </code></pre>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/fig-no-com-inter_06596ce49c1e65d04fd8b0c88279279b">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(low_soilp_elev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1021,7 +1024,7 @@ P-value : 0.00041709 </code></pre>
 </div>
 </div>
 <p>结论： H0 : no difference in elevation. p 为 0.01 共同截距有显著差异</p>
-<div class="cell">
+<div class="cell" data-hash="smatr_cache/html/unnamed-chunk-12_f97a8a58ebf8747c3d5447a08b6ec127">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查延主轴有无漂移 -------------------------------------------------------------</span></span>

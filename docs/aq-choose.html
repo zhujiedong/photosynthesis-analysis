@@ -173,6 +173,9 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
+  <a href="./thanks.html" class="">致谢</a>
+</li>
+      <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
 </li>
       <li class="sidebar-item">
@@ -448,7 +451,7 @@
 <p>但需要注意，如果样本数量过低，那么就需要使用修正的 AIC 指数 <span class="citation" data-cites="fabozzi_basics_2014">(<a href="references.html#ref-fabozzi_basics_2014" role="doc-biblioref">Fabozzi et al. 2014</a>)</span>，即 AICc，这个函数不在 base 中，需要第三方的软件包，例如 <code>AICcmodavg</code>。</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'AICcmodavg'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>为方便，我们使用 <code>nlsLM</code> 来进行四种模型的比较：</p>
-<div class="cell">
+<div class="cell" data-hash="aq-choose_cache/html/unnamed-chunk-1_664c752c67d8ee270fc754977b5f461f">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(minpack.lm)</span>
@@ -513,7 +516,7 @@ mod_rec_aq  5 -16.443712</code></pre>
 </div>
 </div>
 <p>对于 <code>AICc</code> 使用则略微麻烦，因为它没有直接支持向量化操作：</p>
-<div class="cell">
+<div class="cell" data-hash="aq-choose_cache/html/unnamed-chunk-2_91e6909eb8f34124c4d15efd17160ed9">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">list</span>(rec_aq, non_rec_aq, exp_aq, mod_rec_aq), AICc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -541,7 +544,7 @@ mod_rec_aq  5 -16.443712</code></pre>
 <p>Compute analysis of variance (or deviance) tables for one or more fitted model objects.</p>
 </blockquote>
 <p>当然了，过程很简单:</p>
-<div class="cell">
+<div class="cell" data-hash="aq-choose_cache/html/unnamed-chunk-3_eb63e0ad2e963916262f3e0100665492">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(rec_aq, non_rec_aq, exp_aq, mod_rec_aq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -567,7 +570,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="sec-aq-eye" class="level2" data-number="12.3">
 <h2 data-number="12.3" class="anchored" data-anchor-id="sec-aq-eye"><span class="header-section-number">12.3</span> 肉眼判断</h2>
 <p>标题有点搞笑，但其实是可以快速筛选判断的，只不过文章里面或附录里面才需要上面的方法来提供数据支持。例如我们把前面几个方程作图的代码整合在一起看一下数据的情况：</p>
-<div class="cell">
+<div class="cell" data-hash="aq-choose_cache/html/fig-cominbe-aq_c71432886e8845b3014ba396c40f53aa">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>

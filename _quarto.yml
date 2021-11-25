@@ -16,6 +16,7 @@ book:
   repo-actions: [edit]
   chapters:
     - index.qmd
+    - thanks.qmd
     - preface.qmd
     - intro.qmd
     - part: basics.qmd

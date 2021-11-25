@@ -4,7 +4,7 @@
   <meta name="generator" content="quarto-0.2.299">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
-  <title>LI-6800 和 LI-6400 光合数据分析指南 - 数据准备</title>
+  <title>LI-6800 和 LI-6400 光合数据分析指南 - 致谢</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -24,8 +24,8 @@
   <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
   <script src="site_libs/quarto-search/fuse.min.js"></script>
   <script src="site_libs/quarto-search/quarto-search.js"></script>
-  <link href="./data-import.html" rel="next">
-  <link href="./general-packages.html" rel="prev">
+  <link href="./preface.html" rel="next">
+  <link href="./index.html" rel="prev">
   <script src="site_libs/quarto-html/quarto.js"></script>
   <script src="site_libs/quarto-html/popper.min.js"></script>
   <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -61,7 +61,7 @@
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">数据准备</h1>
+      <h1 class="quarto-secondary-nav-title">致谢</h1>
       <button type="button" class="quarto-btn-toggle btn">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -91,7 +91,7 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
-  <a href="./thanks.html" class="">致谢</a>
+  <a href="./thanks.html" class="active">致谢</a>
 </li>
       <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
@@ -152,7 +152,7 @@
         <div class="me-auto">
           <div class="d-inline-flex w-100 sidebar-section-item">
             <div class="sidebar-section-link me-auto">
-            <a href="./data-prepare.html" class="active">数据准备</a>
+            <a href="./data-prepare.html" class="">数据准备</a>
             </div>
             <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#数据准备-collapse" aria-expanded="true">
               <div><i class="bi bi-chevron-right ms-2"></i></div>
@@ -346,9 +346,14 @@
 <!-- main -->
 <main class="content">
 <header id="title-block-header">
-<h1 class="title display-7"><span id="sec-prepare-data" class="quarto-section-identifier d-none d-lg-block">数据准备</span></h1>
+<h1 class="title display-7"><span id="thanks" class="quarto-section-identifier d-none d-lg-block">致谢</span></h1>
 </header>
-<p>对于数据的基本处理，我还是建议先将 <code>Excel</code> 转为 <code>csv</code>之后，再做相关处理。因为相比 <code>Excel</code> 数据，<code>csv</code> 格式在读取的时候速度还是非常快的，优势比较明显，因为光合仪的数据有许多不需要读入的仪器相关信息，以及大量的公式，普通的 <code>Excel</code> 处理相关的软件包并不支持，而复杂一点的软件包依赖多，一次批量处理为 <code>csv</code> 格式后再处理，对于整个分析是比较有利的，因为很多分析我们并不是一次读入就完成了，可能需要反复调试代码。本部分的内容主要介绍怎么处理光合仪的 <code>Excel</code> 格式转为 <code>csv</code> 格式。</p>
+<p>需要致谢的人和事情比较多，但因为这是未完工作品，所以只能不断补充。</p>
+<p>首先需要感谢公司技术部和前技术部同事（转岗），他们对于其中的很多内容在工作之余进行了测试，提出来很多建议，例如焦阳在转岗之前拿着厚厚的一本叶绿素荧光方面的书（不在公司，记不起名字来了，后面补充），查找了 <code>jiptest</code> 这个包里大部分计算的公式并手敲成了 R 代码，刘美玲、徐粒指出了 <code>jiptest</code> 初代版本的明显错误，张启尧测试了大量 ACi 拟合部分的代码、检查了公式的错误，贾子毅在自己有大量文档要写的前提下指出来第一版写作中的明显的错误，朱晓伟曾经在我决定进行第二版迁移的时候曾经说有能帮忙的地方就说一声，刘晓迪指出来 <code>jiptest</code> 的一些问题（但我暂时没时间处理，只能十分抱歉）等等，当然这只是其中我这健忘的记性中能记得的一些事情，他们做的远不止于此。其他同事（到目前为止）：王昭、谢智、高红艳、武海月、王军、许燕、武洪敏、李蓉、赖挺、张云飞等都做了相关代码的测试，提供过一些反馈或者贡献了一些测试数据，这些都是他们<strong>本职工作之外</strong>的事情，虽然落笔于我，但仅仅是我一个人也做不到这么快的完成这些内容（离完善还有一定距离，但至少作为一个参考资料能勉强合格）。</p>
+<p>其他提供帮助的人有（希望没有遗漏，如果因为我事情繁杂，忘记了请多包涵，请提醒我补充，这里是按时间先后顺序）：</p>
+<p>网名“汪友尽”的朋友指出了直角双曲线修正模型补偿点计算公式写错了。</p>
+<p>南农王永琳博士指出非直角双曲线公式写错了。</p>
+<p>网名 Wang Zhe 的朋友指出来 SMATR 官方 C++ 版本的地址（我毕业后官方换了网址，但我找不到一以为没有了）：(SMATR 官方版)[http://bio.mq.edu.au/research/groups/comparative/SMATR/]</p>
 
 
 <script type="application/javascript">
@@ -430,13 +435,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </main> <!-- /main -->
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./general-packages.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></span>
+      <a href="./index.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">欢迎</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./data-import.html">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./preface.html">
+        <span class="nav-page-text">序言</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

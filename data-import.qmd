@@ -16,7 +16,7 @@ remotes::install_github("zhujiedong/readphoto")
 remotes::install_git("https://gitee.com/zhu_jie_dong/readphoto")
 ```
 
-### LI-6400 数据的整合{#6400combine}
+### LI-6400 数据的整合{#sec-6400combine}
 
 将所有 LI-6400 的 **原始数据文件** 放置于一个文件夹下，例如下面代码放在了名为 6400 的文件夹内，基本参数如下：
 
@@ -80,7 +80,7 @@ y1$Photo/x1$Photo
 
 LI-6800 的数据我们可以直接处理 Excel 即可，我们分开来看两种方式：
 
-### R 下  Excel 格式读取的重计算 {##6800xlconnect}
+### R 下  Excel 格式读取的重计算 {#sec-6800xlconnect}
 
 `XLConnect` 直接读取功能比较麻烦，为了节省时间，我将其写成了函数，放在了我的 `readphoto` 软件包里，软件包的安装参考 @sec-install_readphoto ：
 

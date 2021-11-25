@@ -173,6 +173,9 @@
   <a href="./index.html" class="">欢迎</a>
 </li>
       <li class="sidebar-item">
+  <a href="./thanks.html" class="">致谢</a>
+</li>
+      <li class="sidebar-item">
   <a href="./preface.html" class="">序言</a>
 </li>
       <li class="sidebar-item">
@@ -445,7 +448,7 @@
 <section id="sec-racir-dat-fitaci" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="sec-racir-dat-fitaci"><span class="header-section-number">15.1</span> 使用 <code>plantecophys</code> 来拟合</h2>
 <p>我这里使用一个测量水稻的数据来进行演示，测量方式是使用的 DAT 技术的快速 ACi 曲线，正常情况下使用 <code>plantecophys</code> 分析 LI-6800 数据应该是这样：</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/unnamed-chunk-1_d7fc2ab43c1b089f35113afba08b987c">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"plantecophys"</span>)</span>
@@ -466,13 +469,13 @@
 </details>
 </div>
 <p>计算参数为：</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/unnamed-chunk-2_b74f788cef3142a353f374835a233572">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>pars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-tbl-cap="{}">
+<div class="cell" data-tbl-cap="{}" data-hash="DAT-vs-racir_cache/html/plantecophys1-_b81e12f477c3e4e505780e3dfa5678b8">
 <div class="cell-output-display">
 <div id="tbl-plantecophys1" class="anchored">
 <table class="table">
@@ -506,7 +509,7 @@
 </div>
 </div>
 <p>作图查看为：</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/fig-plantecophys1_488dbb36806454bdb6ad9f6a62cb2d61">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dat1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -521,7 +524,7 @@
 </div>
 </div>
 <p>但是 <code>plantecophys</code> 是专用于 LI-6400 的参数，使用 LI-6800 修改参数略微麻烦，我于是将其 <code>fitaci</code> 函数略做修改，使其方便用于 LI-6800 (<a href="aci.html#sec-use-fitaci">sec.&nbsp;<span>14.1.2</span></a>):</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/unnamed-chunk-5_6bbbba9dca326b4a0f460090b04f68b9">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> plantecophys2<span class="sc">::</span><span class="fu">fitaci</span>(</span>
@@ -559,13 +562,13 @@ Achieved convergence tolerance: 7.337e-06</code></pre>
 </div>
 </div>
 <p>我们看一下结果：</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/unnamed-chunk-6_427fc12d8c69cc48bc3519e632d9bd6a">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat2<span class="sc">$</span>pars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-tbl-cap="{}">
+<div class="cell" data-tbl-cap="{}" data-hash="DAT-vs-racir_cache/html/plantecophys2-_b50008e0e88d8e6b8bcd340510bee20c">
 <div class="cell-output-display">
 <div id="tbl-plantecophys2" class="anchored">
 <table class="table">
@@ -599,7 +602,7 @@ Achieved convergence tolerance: 7.337e-06</code></pre>
 </div>
 </div>
 <p>作图结果为：</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/fig-plantecophys2_eeda148816586485fd23d78501281a9d">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dat2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -627,11 +630,11 @@ Achieved convergence tolerance: 7.337e-06</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>下面 <code>photosynthesis</code> 的代码，在我运行拟合过程中长时间不结束，估计是数据量大之后在某个算法上进行反复尝试的原因，为了避免卡在此处，下面的代码并没有运行结束。后面再进行测试 2021-11-24</p>
+<p>下面 <code>photosynthesis</code> 的代码，在我运行拟合过程中长时间不结束，估计是数据量大之后在某个算法上进行反复尝试的原因，为了避免卡在此处，下面的代码并没有运行结束。后面再进行测试 2021-11-25</p>
 </div>
 </div>
 <p>这里不再做过多介绍，具体细节可以参考 @#sec-photosynthesis-aci：</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/unnamed-chunk-9_d34ced65d2d468665b6a7438885e66c4">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
@@ -647,14 +650,14 @@ Achieved convergence tolerance: 7.337e-06</code></pre>
 </details>
 </div>
 <p>拟合结果：</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/unnamed-chunk-10_2ac4efdb35fd1e5a8f393ef40cfd83b8">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>reshape2<span class="sc">::</span><span class="fu">melt</span>(fit[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>使用相同的方式查看图形：</p>
-<div class="cell">
+<div class="cell" data-hash="DAT-vs-racir_cache/html/unnamed-chunk-11_5e07a6cf8dde1ac7a7c2b9d206d6dd06">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
