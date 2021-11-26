@@ -85,6 +85,7 @@ format:
     highlight-style: ayu-dark
     code-background: true
     code-border-left: "#31BAE9"
+    #mainfont: "Microsoft YaHei"
     #lang: zh
 
 #editor: visual

@@ -460,6 +460,10 @@
 <li><a href="#sec-default-plot-jiptest" class="nav-link" data-scroll-target="#sec-default-plot-jiptest"> <span class="header-section-number">19.4.1</span> 默认图形的方式</a></li>
 <li><a href="#sec-customized-plot-jiptest" class="nav-link" data-scroll-target="#sec-customized-plot-jiptest"> <span class="header-section-number">19.4.2</span> 定制化图形的方式</a></li>
 </ul></li>
+<li><a href="#sec-stdsm-area" class="nav-link" data-scroll-target="#sec-stdsm-area"> <span class="header-section-number">19.5</span> 关于 Area 和 Sm 参数计算的说明</a>
+<ul class="collapse">
+<li><a href="#sec-auc-explain" class="nav-link" data-scroll-target="#sec-auc-explain"> <span class="header-section-number">19.5.1</span> 曲线下部面积的计算</a></li>
+</ul></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/jiptest.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
 <!-- main -->
@@ -469,15 +473,28 @@
 </header>
 
 <p>LI-6800 能够直接提供基本的叶绿素荧光参数，其他参数均可通过这些基本的参数进行计算，计算也较简单，在此不赘述，需要注意的是快相荧光部分的数据，因为分析 ojip 数据的模型有很多，多数情况下都需要大量的计算，在此我们先将其中较为简单的 jip test 数据分析进行介绍。</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+提示
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>如果使用 LI-6800 的快相荧光做 OJIP 曲线的分析，建议使用连续光荧光信号的数据（带 dc 的函数），对于绝大多数参数来讲，使用调制光还是连续光并无差异，但是对于曲线面积的计算来讲，连续信号灯数据点要明显更多，这对计算有利。而且对于一些荧光信号偏低的样品，连续光信号可以明显提升信噪比（我使用的示例数据面积计算结果基本相同，这是因为我测量时信噪比明显比较高的原因）。</p>
+</div>
+</div>
 <section id="sec-jiptest" class="level2" data-number="19.1">
 <h2 data-number="19.1" class="anchored" data-anchor-id="sec-jiptest"><span class="header-section-number">19.1</span> jip test 的实现</h2>
 <p>分析依赖于我写的 <code>jiptest</code> 软件包，去年冬天（2020.11）我修改了一次，其中我希望大改的是求曲线下部面积的部分，<strong>因为曲线形状不规则，需要用到积分，我用的现成的软件包，而且印象里求面积没有使用标准化后的数据来进行计算，所以不太合适，这个我争取近期找时间来解决一下，这里先立一个 flag，</strong>安装可以按照下面的方式：</p>
-<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-1_db0072e38ac6ed14e187aa0da7b259ce">
+<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-1_c298d8970964bc7cd0b4dafa2269860c">
 <p></p><details open="">
 <summary>Code</summary><p></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"zhujiedong/jiptest"</span>)</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"zhujiedong/jiptest"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 或</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install_git</span>(<span class="st">'https://gitee.com/zhu_jie_dong/jiptest'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_git</span>(<span class="st">'https://gitee.com/zhu_jie_dong/jiptest'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -790,14 +807,108 @@
 <p>建议在开始分析数据前，使用作图查看数据质量，若使用调制光数据测量的荧光信号太弱，数据点太散，则可以使用连续光测量信号进行分析，对于归一化的荧光参数，二者几乎无差别。最好的方式当然是在测量时注意荧光信号强度，若基础荧光信号太弱，尝试增加测量叶片的面积，增强荧光信号强度，增大信噪比。</p>
 </div>
 </div>
+</section>
+</section>
+<section id="sec-stdsm-area" class="level2" data-number="19.5">
+<h2 data-number="19.5" class="anchored" data-anchor-id="sec-stdsm-area"><span class="header-section-number">19.5</span> 关于 Area 和 Sm 参数计算的说明</h2>
+<p>具体参数的计算参考了 <span class="citation" data-cites="tsimilli_revisiting2019">Tsimilli-Michael (<a href="references.html#ref-tsimilli_revisiting2019" role="doc-biblioref">2019</a>)</span> 和 <span class="citation" data-cites="bussotti_jip_2010">Bussotti et al. (<a href="references.html#ref-bussotti_jip_2010" role="doc-biblioref">2010</a>)</span>，时间轴的单位是 ms。</p>
+<p>在最初的版本中，面积计算原本是用了了一个 三次项样条插值来将数据点拟合为一条曲线，然后对曲线进行计算，前几天有客户询问我计算报错，我只能看出来那是积分错误，但我不知道原因，因为积分的方法我是用的一个叫做 <code>MASS</code> 包来处理的，它有一些问题需要处理：</p>
+<ol type="1">
+<li><p><code>MASS</code> 有时候改动会导致计算面积不能使用，这个发生过一次，好在改动不是特别大，我修改了之后就能用了。但这就是个问题，依赖别人的软件包，作者我也不认识，人家更新不会通知我，也不会管我能不能用。</p></li>
+<li><p>样条插值尽管拟合效果不错，但总会因为 J 点和 I 点的拐点导致拟合不佳的情况出现，这样子会带来一定的误差来源。</p></li>
+<li><p>基本出错我很难定位具体原因。</p></li>
+</ol>
+<p>基于上面这些原因，我使用了下面的方式对面积计算进行修改，当然下面演示的是原理部分，所以我只计算曲线下部面积，反正上部面积是总面积减去下部面积，所以这个不影响最终计算，也能简化我对计算方式的描述。</p>
+<section id="sec-auc-explain" class="level3" data-number="19.5.1">
+<h3 data-number="19.5.1" class="anchored" data-anchor-id="sec-auc-explain"><span class="header-section-number">19.5.1</span> 曲线下部面积的计算</h3>
+<p>计算方法依据这里 <a href="https://stackoverflow.com/questions/4954507/calculate-the-area-under-a-curve">Sotos</a> 的回答来进行。</p>
+<p>基本思路是这样，既然一种积分的方式是将曲线划分为很多个梯形，然后求其总面积。因为我的数据点数量非常大（通常 250 kHz 的调制频率），那么实际上我已经在 1 s 的测量时间内，将曲线划分为 250 kHz - 1 个梯形了（理论上最大值，实际没这么多），那我干脆不用拟合来做曲线，就直接用线连接所有数据点，不久避免了拟合不准确的问题了吗？为简化流程，我将梯形看做矩形，长度使用 2 点滚动平均值来计算，减少误差。因此，下面的内容就是用连续光信号来验证这个观点。</p>
+<div class="cell" data-hash="jiptest_cache/html/unnamed-chunk-14_0d933317ce893b199f1431b524768f13">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用的软件包</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 导入依次 OJIP 测量整理好的数据</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>ac <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/dctest.csv"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 将数据里的 s 转化为 ms</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>ac<span class="sc">$</span>SECS <span class="ot">&lt;-</span> (ac<span class="sc">$</span>SECS)<span class="sc">*</span><span class="dv">1000</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用对数的时间轴</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>ac<span class="sc">$</span>logs <span class="ot">&lt;-</span> <span class="fu">log</span>(ac<span class="sc">$</span>SECS)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 找到 FO点，因为计算是 OJIP 时间段内的数据</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>j <span class="ot">&lt;-</span> <span class="fu">which</span>(ac<span class="sc">$</span>FLUOR <span class="sc">==</span> <span class="fu">max</span>(ac<span class="sc">$</span>FLUOR))</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 只选择需要的数据</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>ac <span class="ot">&lt;-</span> ac[<span class="dv">1</span><span class="sc">:</span>j,]</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 数据的行数</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(ac)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用上面叙述的原理来计算总面积</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>auc <span class="ot">&lt;-</span> <span class="fu">with</span>(ac, <span class="fu">sum</span>(<span class="fu">diff</span>(logs)<span class="sc">*</span><span class="fu">rollmean</span>(FLUOR,<span class="dv">2</span>)))</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>auc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>[1] 2543274</code></pre>
+</div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 滚动平均值使用的数据，也就是矩形的长</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>roll <span class="ot">&lt;-</span> <span class="fu">with</span>(ac, <span class="fu">rollmean</span>(FLUOR,<span class="dv">2</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 按照相邻两点多最大值计算最大的误差</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>auc_max_rect <span class="ot">&lt;-</span> <span class="fu">with</span>(ac, <span class="fu">sum</span>(<span class="fu">diff</span>(logs)<span class="sc">*</span> FLUOR[<span class="dv">2</span><span class="sc">:</span>n]))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算的 sm 参数的最大误差</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>sm_error <span class="ot">&lt;-</span> (auc_max_rect <span class="sc">-</span> auc)<span class="sc">/</span>(<span class="fu">max</span>(ac<span class="sc">$</span>FLUOR) <span class="sc">-</span> <span class="fu">min</span>(ac<span class="sc">$</span>FLUOR))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>这里 Area 误差从数值上看上去不小，但这是没有标准化后的荧光信号强度，实际并不大，而且没有标准化的数据在荧光参数里多数没有比较的价值，我们看一下标准化后的 Sm 参数：</p>
+<div class="cell" data-hash="jiptest_cache/html/sm_error_bbbc07dbb9ffa942b45022173958ce8d">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>sm_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-stdout">
+<pre><code>[1] 0.01855341</code></pre>
+</div>
+</div>
+<p>这个数值是 0.0185534，也就是最大的误差是这个数据，但实际上我们按照梯形最高的边来作为矩形的长来计算的最大面积，这个面积对数据高估了，实际上的误差应该略大于 sm_error/2，也就是 0.0092767，相比于我们的实验来讲，这个小数点后第三位的误差可以忽略不计。</p>
+<p>通过图形我们可以直观的观察一下结果：</p>
+<div class="cell" data-hash="jiptest_cache/html/fig-auc-compare_72dbbdd00588282fa393d9a5089378d8">
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#比较原来数据点的线与使用滚动平均值的线的差异</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ac<span class="sc">$</span>logs, ac<span class="sc">$</span>FLUOR)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> (<span class="dv">1</span><span class="sc">:</span>(n<span class="dv">-1</span>))){</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rect</span>(ac<span class="sc">$</span>logs[i], <span class="dv">0</span>, ac<span class="sc">$</span>logs[i<span class="sc">+</span><span class="dv">1</span>], ac<span class="sc">$</span>FLUOR[i<span class="sc">+</span><span class="dv">1</span>])</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rect</span>(ac<span class="sc">$</span>logs[i], <span class="dv">0</span>, ac<span class="sc">$</span>logs[i<span class="sc">+</span><span class="dv">1</span>], roll[i], <span class="at">border =</span> <span class="st">'red'</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-auc-compare" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="jiptest_files/figure-html/fig-auc-compare-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 19.5: 比较使用简化方式计算面积与原来数据点连线之间的差异</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>通过 <a href="#fig-auc-compare">fig.&nbsp;<span>19.5</span></a> 我们能够看到，二者差异非常小(黑色是原始测量数据，红色为使用滚动平均值的数据)，即使是些微低估，也是所有的处理都存在这个情况，总比有的样条插值拟合曲线好，有的拟合不好要来得一致一些。而对于标准化之后的面积 Sm，那么小数点后第三位的误差，不会对结果造成明显影响，因为这个面积个位数或者十位数是普遍现象。</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-bussotti_jip_2010" class="csl-entry" role="doc-biblioentry">
+Bussotti, Filippo, Rosanna Desotgiu, Martina Pollastrini, and Chiara Cascio. 2010. <span>“The <span>JIP</span> Test: <span>A</span> Tool to Screen the Capacity of Plant Adaptation to Climate Change.”</span> <em>Scandinavian Journal of Forest Research</em> 25 (August): 1–8.
+</div>
 <div id="ref-stirbetRelationKautskyEffect2011" class="csl-entry" role="doc-biblioentry">
 Stirbet, Alexandrina, and Govindjee. 2011. <span>“On the Relation Between the <span>Kautsky</span> Effect (Chlorophyll a Fluorescence Induction) and <span>Photosystem</span> <span>II</span>: <span>Basics</span> and Applications of the <span>OJIP</span> Fluorescence Transient.”</span> <em>Journal of Photochemistry and Photobiology B: Biology</em>, Special <span>Issue</span> on <span>Recent</span> <span>Progress</span> in the <span>Studies</span> of <span>Structure</span> and <span>Function</span> of <span>Photosystem</span> <span>II</span>, 104 (1): 236–57. <a href="https://doi.org/10.1016/j.jphotobiol.2010.12.010">https://doi.org/10.1016/j.jphotobiol.2010.12.010</a>.
 </div>
 <div id="ref-stirbetChlorophyllFluorescenceInduction2012" class="csl-entry" role="doc-biblioentry">
 Stirbet, Alexandrina, and Govindjee. 2012. <span>“Chlorophyll a Fluorescence Induction: A Personal Perspective of the Thermal Phase, the <span>J</span>–<span>I</span>–<span>P</span> Rise.”</span> <em>Photosynthesis Research</em> 113 (1): 15–61. <a href="https://doi.org/10.1007/s11120-012-9754-5">https://doi.org/10.1007/s11120-012-9754-5</a>.
+</div>
+<div id="ref-tsimilli_revisiting2019" class="csl-entry" role="doc-biblioentry">
+Tsimilli-Michael, Merope. 2019. <span>“Revisiting <span>JIP</span>-Test: <span>An</span> Educative Review on Concepts, Assumptions, Approximations, Definitions and Terminology.”</span> <em>Photosynthetica</em> 57 (December): 90–107. <a href="https://doi.org/10.32615/ps.2019.150">https://doi.org/10.32615/ps.2019.150</a>.
 </div>
 </div>
 </section>

@@ -9,4 +9,4 @@
 
 南农王永琳博士指出非直角双曲线公式写错了。
 
-网名 Wang Zhe 的朋友指出来 SMATR 官方 C++ 版本的地址（我毕业后官方换了网址，但我找不到一以为没有了）：(SMATR  官方版)[http://bio.mq.edu.au/research/groups/comparative/SMATR/]
+网名 Wang Zhe 的朋友指出来 SMATR 官方 C++ 版本的地址（我毕业后官方换了网址，但我找不到一以为没有了）：[SMATR  官方版](http://bio.mq.edu.au/research/groups/comparative/SMATR/)
