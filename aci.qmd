@@ -254,14 +254,14 @@ $$ {#eq-onepoint}
 目前我手头没有相应数据，仅有使用 LI-6400 测试 auto log 2 时的一个数据，我们用这个来示范该方法的使用：
 
 ```{r}
-#| onepointdata
-one_data <- read.csv("./data/onepoint.csv")
+#| label: onepointdata
+one_data <- read.csv("data/onepoint.csv")
 ```
 
 ```{r}
 #| label: one_pointdata
 #| echo: false
-#| tbl-cap:  
+#| tbl-cap:  ""
 kable(head(one_data),  caption = 'onepoint 使用的数据 {#tbl-one_point}')
 ```
 
@@ -282,7 +282,7 @@ aci_fit <- fitaci(one_data, fitmethod = "onepoint")
 
 ```{r}
 #| label: onepoint-result
-#| fig-cap: 
+#| fig-cap: ""
 #| echo: false
 kable(data.frame(aci_fit$Photo, 
              aci_fit$Vcmax, aci_fit$Jmax),
@@ -316,7 +316,6 @@ findCiTransition(acifit)
 
 
 ```{r}
-#| message: false
 library(photosynthesis)
 
 aci$TLEAF <- aci$Tleaf + 273.15
@@ -342,7 +341,7 @@ reshape2::melt(fit[[1]])
 ```{r}
 #| label: photosyn-fitaci-
 #| echo: false
-#| tbl-cap: 
+#| tbl-cap: ""
 
 kable(reshape2::melt(fit[[1]]), caption = "使用 photosynthesis 来拟合 ACi 曲线的结果 {#tbl-photosyn-fitaci}")
 ```
@@ -351,7 +350,7 @@ kable(reshape2::melt(fit[[1]]), caption = "使用 photosynthesis 来拟合 ACi �
 
 ```{r}
 #| label: photosyn-fitaci-plot
-#| fig.cap: "使用 photosynthesis 来拟合 ACi 曲线的图形查看"
+#| fig.cap: '使用 photosynthesis 来拟合 ACi 曲线的图形查看'
 fit[[2]]
 ```
 

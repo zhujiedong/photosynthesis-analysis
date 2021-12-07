@@ -72,8 +72,8 @@ book:
 
 format:
   html: 
-    theme: cosmo
-    cover-image: /img/cover.png
+    theme: [cosmo, self-cosmo.scss]
+    cover-image: img/cover.png
     code-link: true
     toc: true
     toc-depth: 3
@@ -85,16 +85,17 @@ format:
     highlight-style: ayu-dark
     code-background: true
     code-border-left: "#31BAE9"
-    #mainfont: "Microsoft YaHei"
+    
+    self-contained: true
     #lang: zh
 
 #editor: visual
 comments:
-  hypothesis: true
+  #hypothesis: true
   
 execute:
   warning: false
   message: false
-  cache: true
+  #cache: true
     
 bibliography: references.bib

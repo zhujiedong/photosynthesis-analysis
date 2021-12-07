@@ -22,7 +22,7 @@ $$ {#eq-ic}
 
 ```{r}
 #| label: mrecr
-#| fig.cap: "直角双曲线修正模型拟合"
+#| fig.cap: '直角双曲线修正模型拟合'
 
 library(minpack.lm)
 

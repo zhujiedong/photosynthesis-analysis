@@ -1,9 +1,10 @@
-# 光合相关的软件包 {#photo-packages}
+# 光合相关的软件包 {#sec-photo-packages}
 
 @rpkgphoto 对光合模型研究中使用的 `R` 包做了一个汇总，如下表：
 
 ```{r}
 #| label: photosyn-pkgs
+#| tbl-cap: 
 #| echo: false
 
 x <-
@@ -33,7 +34,8 @@ x <-
       'Ape (E), Caper (E), exp2flux (E), geiger (E), HyPhy (E), Phangorn (E), phyloch (E), phytools (E)'
     )
   )
-DT::datatable(x, caption = "光合模型中使用的软件包")
+kable(x, caption = "光合模型中使用的软件包{#tbl-packages-photo}")
+
 ```
 
 表内将其功能有了一个简单的分类，有一些是光合专用包，有一些实际上是包含了一部分功能在里面。本章内容主要是对上述软件包以及一些上面表格没有列出的软件包进行相关介绍。其中专用于光合的软件包我会单独介绍，而普适性的或者只有部分功能用于此的则只是简单介绍部分功能。

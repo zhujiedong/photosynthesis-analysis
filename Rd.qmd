@@ -224,7 +224,7 @@ summary(walker_ort[[1]])
 
 ```{r}
 #| label: fig-yin-plot
-#| fig.cap: "图形方式查看 Walker 的测量方法"
+#| fig.cap: '图形方式查看 Walker 的测量方法'
 
 walker_ort[[2]]
 ```

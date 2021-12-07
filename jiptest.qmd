@@ -136,7 +136,7 @@ write.csv(dctest, "d:/data/dcjip_resluts.csv")
 
 ```{r}
 #| label: fig-default-moulation-plot-ac
-#| fig.cap: "默认调制光图形查看"
+#| fig.cap: '默认调制光图形查看'
 
 plot(jip_data)
 ```
@@ -145,7 +145,7 @@ plot(jip_data)
 
 ```{r}
 #| label: fig-default-moulation-plot-dc
-#| fig.cap: "默认连续光图形查看"
+#| fig.cap: '默认连续光图形查看'
 
 plot(jip_dcdata)
 ```
@@ -162,7 +162,7 @@ plot(jip_dcdata)
 
 ```{r}
 #| label: fig-cus-ac-plot-leg-cls
-#| fig.cap: "定制调制光图形示例"
+#| fig.cap: '定制调制光图形示例'
 
 cls <- palette.colors(n = 5,  "set 2", alpha = 0.8)
 plot(
@@ -192,7 +192,7 @@ legend(
 
 ```{r}
 #| label: fig-cus-dc-plot-leg-cls
-#| fig.cap: "定制连续光图形示例"
+#| fig.cap: '定制连续光图形示例'
 
 plot(jip_dcdata, legend_pos = "bottomright", normalized = FALSE)
 ```
@@ -281,7 +281,7 @@ sm_error
 
 ```{r}
 #| label: fig-auc-compare
-#| fig.cap: "比较使用简化方式计算面积与原来数据点连线之间的差异"
+#| fig.cap: '比较使用简化方式计算面积与原来数据点连线之间的差异'
 
 #比较原来数据点的线与使用滚动平均值的线的差异
 plot(ac$logs, ac$FLUOR)

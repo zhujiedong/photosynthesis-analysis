@@ -41,13 +41,13 @@ dat1$pars
 #| echo: false
 #| tbl-cap: 
 
-kable(dat1$pars, caption = "`plantecophys 拟合 DAT 测量的参数` {#tbl-plantecophys1}")
+kable(dat1$pars, caption = 'plantecophys 拟合 DAT 测量的参数 {#tbl-plantecophys1}')
 ```
 作图查看为：
 
 ```{r}
 #| label: fig-plantecophys1
-#| fig.cap: "使用 plantecophys 拟合 DAT 数据的图形"
+#| fig.cap: '使用 plantecophys 拟合 DAT 数据的图形'
 
 plot(dat1)
 ```
@@ -81,7 +81,7 @@ dat2$pars
 #| echo: false
 #| tbl-cap: 
 
-kable(dat2$pars, caption = "`plantecophys 拟合 DAT 测量的参数` {#tbl-plantecophys2}")
+kable(dat2$pars, caption = 'plantecophys 拟合 DAT 测量的参数 {#tbl-plantecophys2}')
 ```
 
 作图结果为：
@@ -89,7 +89,7 @@ kable(dat2$pars, caption = "`plantecophys 拟合 DAT 测量的参数` {#tbl-plan
 
 ```{r}
 #| label: fig-plantecophys2
-#| fig.cap: "使用 plantecophys2 拟合 DAT 数据的图形"
+#| fig.cap: '使用 plantecophys2 拟合 DAT 数据的图形'
 
 plot(dat2)
 ```

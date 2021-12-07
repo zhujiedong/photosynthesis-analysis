@@ -30,7 +30,7 @@ kable(head(data), caption = "plantecowraps 自带的示例数据 #{tbl-plantecow
 ```
 
 
-这里使用的是示例数据，上面的代码就是调用软件包示例数据的意思，一般我们也不会这么用。
+这里使用的是示例数据。
 
 ```{r}
 fits <- fitacis2(
@@ -69,9 +69,9 @@ tresp[[2]]
 ```{r}
 #| lable: wraps-para
 #| echo: false
-#| tbl-cap: 
+#| tbl-cap: ''
 
-kable(tresp[[2]], caption = "plantecowrap 拟合的参数 {#tbl-ecoerap-para}")
+kable(tresp[[2]], caption = 'plantecowrap 拟合的参数 {#tbl-ecoerap-para}')
 ```
 
 
@@ -80,7 +80,7 @@ kable(tresp[[2]], caption = "plantecowrap 拟合的参数 {#tbl-ecoerap-para}")
 
 ```{r}
 #| label: fig-plantecowrap-plot
-#| fig.cap: "plantecowrap 的图形查看"
+#| fig.cap: 'plantecowrap 的图形查看'
 tresp[[3]]
 ```
 能直接看到 $V_{cmax}$ 和 $J_{max}$ 对温度的响应。
@@ -103,8 +103,7 @@ head(data2)
 
 数据根据 Groping 分为了 a,b两组。
 
-```{r}
-#| eval: false
+```{.r}
 fits2 <- fitacis2(
   data = data2,
   varnames = list(
@@ -139,8 +138,7 @@ tresps <- fit_topt_VJs(data = outputs,
 
 这里就是利用率分组信息来区分不同的数据组。和上面没太大区别。这里既然使用了多个分组，那么要获取对应的图形和参数，就麻烦一些，但是作者考虑了这一点，直接写好相关的函数，望文生义即可，就是代表字面意思：
 
-```{r}
-#| eval: false
+```{.r}
 pars <- get_t_pars(tresps)
 pars
 

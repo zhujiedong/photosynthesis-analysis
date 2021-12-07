@@ -152,7 +152,7 @@ kable(with(data, head(data.frame(gsw, g_mc))), caption = "叶肉导度拟合结�
 
 ```{r}
 #| label: fig-gmc-plot-reasonable
-#| fig.cap: "使用默认作图查看合理值"
+#| fig.cap: '使用默认作图查看合理值'
 
 
 ggplot(data, aes(x = CO2_s, y = g_mc, colour = reliable)) +
@@ -167,7 +167,7 @@ ggplot(data, aes(x = CO2_s, y = g_mc, colour = reliable)) +
 
 ```{r}
 #| label: fig-gmc-base-reasonable
-#| fig.cap: "使用基础作图查看合理值"
+#| fig.cap: '使用基础作图查看合理值'
 
 col_sep <- ifelse(data$reliable == TRUE, "#56B4E9", "#CC79A7")
 with(data, {
@@ -184,7 +184,7 @@ with(data, {
 
 ```{r}
 #| label: fig-dccda-quality
-#| fig.cap: "外界二氧化碳浓度与判定用斜率作图"
+#| fig.cap: '外界二氧化碳浓度与判定用斜率作图'
 
 
 #Plot QAQC graph according to Harley et al. 1992
@@ -199,12 +199,12 @@ ggplot(data, aes(x = CO2_s, y = dCcdA, colour = reliable)) +
 ```
 
 ```{r}
-#| label: fig-gmc-quality_
-#| fig.cap: "判定用斜率与叶肉导度作图"
+#| label: fig-gmc-quality-
+#| fig.cap: '判定用斜率与叶肉导度作图'
 
 ggplot(data, aes(x = dCcdA, y = g_mc, colour = reliable)) +
-  labs(x = expression(delta*C[c]*"/"*delta*A),
-       y = expression(g[m]~"(mol"~m^{-2}~s^{-1}~Pa^{-1}*")")) +
+  labs(x = expression(delta*C[c]*'/'*delta*A),
+       y = expression(g[m]~'(mol'~m^{-2}~s^{-1}~Pa^{-1}*')')) +
   geom_point(size = 2) +
   theme_bw() +
   theme(legend.position = 'bottom')

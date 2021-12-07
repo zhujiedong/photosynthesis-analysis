@@ -2,21 +2,20 @@
 
 非线性拟合是光合数据分析中非常重要的部分，但是他的难点在于其初值的确定。故而这里在正式开始接受光响应曲线模型之前，首先介绍怎样确定非线性拟合的初值。
 
-在解释初始值之前我们首先需要了解一个数学上的概念------迭代，
+在解释初始值之前我们首先需要了解一个数学上的概念——迭代，
 
-> "迭代法"也称"辗转法"是一种不断用变量的旧值递推新值的过程。
+> ”迭代法“也称”辗转法“是一种不断用变量的旧值递推新值的过程。
 
 用通俗但不是特别严谨的说法可解释为：每次执行这种算法时，程序都会从原值（也就是我抄的上面迭代法定义的旧值）推导出一个新值。
 
 之所以先介绍这个迭代，原因很简单，非线性拟合就是通过迭代的方法，需要对每一个变量**最初的估计值进行不断的迭代，得到一个向一个点收缩或汇聚的值，这个估计值必须在实际值的一定范围内，程序通过不断调整这个值来改善拟合结果**。这就解释了上面的问题，初始值是让程序开始运行的前提，不然没法想着目标值迭代推进，必须设定。我下面的内容将以 LI-6800 的光响应曲线的测试数据，使用非直角双曲线模型进行拟合来讲解具体的 R 中的一些实现方法，我们首先导入数据，然后再利用这些数据逐个举例不同的确定初始值的方式。
 
 ```{r}
-nls <- read.csv("data/nlstest.csv")
+nls_test <- read.csv("data/nlstest.csv")
 
-# 光响应曲线比较简单，我们将需要的数据直接提取，方便后面操作
-lrc_Q <- nls$Qin
-lrc_A <- nls$A
-
+# 提取数据
+lrc_Q <- nls_test$Qin
+lrc_A <- nls_test$A
 ```
 
 ## nlsLM 解决方案 {#sec-nlslm}
@@ -28,7 +27,6 @@ nlsLM 来自于 @Elzhov2016minpack 的 `minpack.lm`，利用 C 语言的 MINPACK
 的概率会大大降低，而且尽管有可能结果不如意，我们也可以利用他的结果缩小初值的范围，继续尝试其他初值。
 
 例如下面的例子中，非直角双曲线 (@sec-non-hypo) 的 Rd 的初值我们可以利用暗呼吸的实测值大致估计，同理最大光合速率也是如此，剩下的分别为非直角双曲线曲率，我们暂定为 1，alpha 也暂定为 0.1，使用 `nlsLM` 进行拟合，结果如下：
-
 ```{r}
 library(minpack.lm)
 
@@ -45,9 +43,7 @@ lrcnls_lm <- nlsLM(lrc_A ~ (1/(2*theta))*
 summary(lrcnls_lm)
 ```
 
-结果看上去还可以[^nls-start-1]。
-
-[^nls-start-1]: 有些时候结果并不理想，该方法并不是万无一失
+结果看上去还可以，不过有的时候结果并不理想，该方法并不是万无一失，也就是初值设置也不能太离谱，还是要接近正常值。
 
 ## 作图比对法 {#sec-plot_comp}
 
@@ -63,7 +59,7 @@ summary(lrcnls_lm)
 
 -   将计算的A值与光强进行作图，看我们计算的曲线与测量数据点的重合程度，必要时在修改其他参数，使曲线和散点重合度最好，重合程度最高的参数值即为我们需要的初始值。
 
-### 实现过程 {#plot_exam}
+### 实现过程 {#sec-plot_exam}
 
 ```{r}
 # 我们选择的模型，将其写为一个函数，用于计算净光合速率
@@ -78,7 +74,7 @@ test <- data.frame(x = lrc_Q, y = lrc_A)
 
 ```{r}
 #| label: fig-pomp
-#| fig.cap: "初步判断 alpha 的初始值"
+#| fig.cap: '初步判断 alpha 的初始值'
 
 # 先做实测数据的散点图
 plot(y ~ x, data = test)
@@ -93,7 +89,7 @@ curve(expfct(x, Am = (max(lrc_A)-min(lrc_A)),
 
 ```{r}
 #| label: fig-alpp 
-#| fig.cap: "初修正后断 alpha 的初始值"
+#| fig.cap: '初修正后断 alpha 的初始值'
 
 plot(y ~ x, data = test)
 curve(expfct(x, Am = (max(lrc_A)-min(lrc_A)),
@@ -114,7 +110,7 @@ summary(lrcnls_manual)
 
 ```{r}
 #| label: fig-alpf
-#| fig.cap: "检验作图法的初始值判断"
+#| fig.cap: '检验作图法的初始值判断'
 
 # 对拟合之后的结果作图，观察使用我们的估计值，
 # 迭代的最终值与元数据的重合程度
@@ -131,8 +127,7 @@ curve(expfct(x, Am = 12.307586,
 
 ```{r}
 #| label: fig-malp
-#| fig.cap: "多个 alpha 取值的差异"
-#| message: false
+#| fig.cap: '多个 alpha 取值的差异'
 
 library(ggplot2)
 library(purrr)
@@ -179,15 +174,11 @@ ggplot(data = show, aes(x, y, group = a, color = a)) +
 
 从 @fig-malp 我们我们可以看到，实测值在 alpha =0.04 和 alpha = 0.05 两条曲线之间，在 0.045 时最接近测量点，也就是我们把初始值设为 0.04 和 0.05 之间最接近，本例中可认为是0.045，实际这三个值均可。
 
-## 自动多次尝试法 {#mult_try}
+## 自动多次尝试法 {#sec-mult_try}
 
 该方法实际为使用 `nls2` 来实现，具体方法参考 @nls2 的文章，可简单概括为使用一系列的起始值梯度（例如下面的代码中， alpha 的取值在 0.01 到 0.08 之间 ），然后软件循序使用不同的起始值，即排列组合所有的起始值序列，最终找到合适的值，具体实现如下：
 
 ```{r}
-#| message: false
-#| warning: false
-#| error: false
-
 library(nls2)
 
 grid.test <- expand.grid(list(
@@ -209,8 +200,7 @@ summary(lrcnls2)
 
 ```{r}
 #| label: fig-mcomp
-#| message: FALSE
-#| fig.cap: "两种方法结果的对比展示"
+#| fig.cap: '两种方法结果的对比展示'
 plot(lrc_Q, lrc_A)
 lines(lrc_Q,  predict(lrcnls2), col="red")
 lines(lrc_Q,  predict(lrcnls_manual), col="blue")

@@ -38,12 +38,12 @@ kable(head(iris), caption = "iris 数据集{#tbl-kable-iris-norm}")
 ```{r}
 #| layout-ncol: 2
 #| label: fig-iris-data-hist
-#| fig.cap: "iris 数据集花萼长度使用不同分隔长度的直方图"
+#| fig.cap: 'iris 数据集花萼长度使用不同分隔长度的直方图'
 #| fig-subcap:
-#|   - "0.05 的 bin 长度"
-#|   - "0.3 的 bin 长度"
-#|   - "0.5 的 bin 长度"
-#|   - "0.8 的 bin 长度"
+#|   - '0.05 的 bin 长度'
+#|   - '0.3 的 bin 长度'
+#|   - '0.5 的 bin 长度'
+#|   - '0.8 的 bin 长度'
 
 hist(
   iris$Sepal.Length,
@@ -81,7 +81,7 @@ hist(
 
 ```{r}
 #| label: fig-hist-density
-#| fig.cap: "添加密度曲线的直方图"
+#| fig.cap: '添加密度曲线的直方图'
 
 hist(
   iris$Sepal.Length,
@@ -105,10 +105,10 @@ lines(density(iris$Sepal.Length), col = 2, lwd = 2)
 ```{r}
 #| layout-nrow: 1
 #| label: fig-carqq-normqq
-#| fig.cap: "两种 qqplot 的对比"
+#| fig.cap: '两种 qqplot 的对比'
 #| fig-subcap:
-#|   - "base R 的 qqplot"
-#|   - "car 的 qqplot"
+#|   - 'base R 的 qqplot'
+#|   - 'car 的 qqplot'
 library(car)
 qqnorm(iris$Sepal.Length, pch = 21, col = 'blue', main = 'qqplot in base plot')
 qqline(iris$Sepal.Length, col = "red", lwd = 3)
@@ -183,7 +183,7 @@ pct_pesticide <- sample(seq(0.6, 0.8, by = 0.02), 16, replace = TRUE)
 
 ```{r}
 #| label: fig-test-qqplot
-#| fig.cap: "检验造假数据是否符合正态分布"
+#| fig.cap: '检验造假数据是否符合正态分布'
 
 qqnorm(pct_pesticide)
 qqline(pct_pesticide)

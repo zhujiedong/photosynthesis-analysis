@@ -14,7 +14,7 @@ PCA 通常能够反映我们复杂数据集的一些分布特征，例如典型�
 
 ```{r}
 #| label: fig-2dim-iris
-#| fig.cap: "二维数据的关系"
+#| fig.cap: '二维数据的关系'
 plot(log(iris$Sepal.Length), log(iris$Sepal.Width))
 ```
 
@@ -37,7 +37,7 @@ plot(log(iris$Sepal.Length), log(iris$Sepal.Width))
 
 ```{r}
 #| label: fig-maxvar
-#| fig.cap: "变异最大的极端情况"
+#| fig.cap: '变异最大的极端情况'
 
 plot(1:5, col="red")
 lines(1:5, col="blue")
@@ -57,7 +57,7 @@ abline(3,0,col="green")
 
 ```{r}
 #| label: fig-scree
-#| fig.cap: "iris 碎石图"
+#| fig.cap: 'iris 碎石图'
 
 
 library("FactoMineR")
@@ -75,7 +75,7 @@ fviz_eig(ir_pca, addlabels = TRUE)
 
 ```{r}
 #| label: fig-loadingpca
-#| fig.cap: "iris 载荷图"
+#| fig.cap: 'iris 载荷图'
 
 
 fviz_pca_var(ir_pca)
@@ -87,7 +87,7 @@ fviz_pca_var(ir_pca)
 
 ```{r}
 #| label: fig-scorepca
-#| fig.cap: "iris 得分图"
+#| fig.cap: 'iris 得分图'
 
 fviz_pca_ind(ir_pca, repel = TRUE, col.ind= iris$Species)
 ```

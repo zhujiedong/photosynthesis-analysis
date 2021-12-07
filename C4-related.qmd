@@ -3,7 +3,7 @@
 之前的部分模型全部为关于 C3 植物的拟合，而 @Caemmerer2000Biochemical 的方法，则是针对
 C4 植物的 A-Ci 曲线的实现。
 
-```{r, eval=FALSE}
+```{.r}
 AciC4(Ci, PPFD = 1500, Tleaf = 25, VPMAX25 = 120, 
       JMAX25 = 400, Vcmax = 60, Vpr = 80, 
       alpha = 0, gbs = 0.003, O2 = 210, 
@@ -40,7 +40,7 @@ AciC4(Ci, PPFD = 1500, Tleaf = 25, VPMAX25 = 120,
 
 ```{r}
 #| label: fig-c4-plot-aci
-#| fig.cap: "AciC4 模拟一定 Ci 梯度下光合速率的变化"
+#| fig.cap: 'AciC4 模拟一定 Ci 梯度下光合速率的变化'
 
 # 模拟 C4 植物的 Ci 值，计算光合速率并作图
 library(plantecophys)

@@ -246,7 +246,7 @@ summary(diff_rain)
 
 ```{r}
 #| label: fig-multi-sma-plot
-#| fig.cap: "多个分组无共同斜率"
+#| fig.cap: '多个分组无共同斜率'
 plot(diff_rain)
 ```
 
@@ -269,7 +269,7 @@ summary(com_test)
 
 ```{r}
 #| label: fig-with-com-slop
-#| fig.cap: "具有共同斜率的图形"
+#| fig.cap: '具有共同斜率的图形'
 plot(com_test)
 ```
 
@@ -291,7 +291,7 @@ summary(low_soilp_elev)
 
 ```{r}
 #| label: fig-no-com-inter
-#| fig.cap: "共同截距差异显著的图形"
+#| fig.cap: '共同截距差异显著的图形'
 plot(low_soilp_elev)
 ```
 
