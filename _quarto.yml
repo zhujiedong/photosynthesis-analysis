@@ -40,7 +40,7 @@ book:
         - hyp-rev.qmd
         - aq-choose.qmd
         - big-leaf.qmd
-        
+        #- dataq-vs-aq.qmd
     - part: aci-curve.qmd
       chapters:
         - aci.qmd

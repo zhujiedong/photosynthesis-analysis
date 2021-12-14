@@ -122,7 +122,16 @@ df6$A/df_random$A
 
 ### 使用 Python 来处理 {#sec-6800-import-python}
 
-这个方案见链接：[github](https://github.com/zhujiedong/LI6800_excel2csv) 或 [微信](https://mp.weixin.qq.com/s?__biz=MzU4ODI3NjkzMg==&mid=2247485489&idx=2&sn=9aed981d7624c8e289cb9173c269373a&chksm=fdde7d9acaa9f48c3dc0d09324d0461b18b4edd4ff56207de54b5152cbfe4a97fdc482b31b82&token=101697346&lang=zh_CN#rd)
+
+目前版本的使用非常简单，首先选择 `excel` 数据文件所在的文件夹，通过点击 `Choose the data folder` 来实现，然后点击 `Run LI-6800 Excel Converter` 来运行整个转换过程即可，最后转换的 csv 文件存放于数据文件夹内新生成的一个叫做 `final-csv-data` 的文件夹内，当前版本无需指定表头所在的行号，直接运行即可。程序很简单，如果不是要整理为图形界面，那么没有几行，已经上传 github：
+
+[python 源代码](https://github.com/zhujiedong/LI6800_excel2csv)
+
+
+如果不嫌弃图形界面打开需要等待 1 min 左右的时间，那么可以从下面的链接下周 exe 程序双击直接运行即可。
+
+[LI6800_excel2csv](https://www.aliyundrive.com/s/FPcqSoUfYQJ)
+
 
 ### 批量处理 csv 文件 {#sec-6800-batch}
 
@@ -152,7 +161,6 @@ n <- ncol(df_remark)
 
 
 ```{r}
-```{r,echo=FALSE}
 #| label: 6800-remark
 #| tbl-cap: 
 #| echo: false

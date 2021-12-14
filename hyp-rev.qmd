@@ -81,10 +81,10 @@ ggplot(light, aes(x = lrc_Q, y = lrc_A)) +
 
 ```{r}
 #| label: mrectable
-#| tbl-cap: 'mod-cap'
+#| tbl-cap: 
 #| echo: FALSE
 kable(
-fitlrc_mrec$coef, booktabs = TRUE,
+fitlrc_mrec$coef,
 caption = '直角双曲线修正模型计算参数 {#tbl-mrectable-}'
 )
 ```

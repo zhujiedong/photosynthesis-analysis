@@ -1,0 +1,112 @@
+# 非稳态光响应曲线与光响应曲线
+
+@saathoff_gas_2021 介绍了非稳态光响应曲线，目前可以使用自定义的 BP 程序来实现。尽管时间上二者相近，但是使用非稳态的方式可以获得大量的数据点用于非线性拟合，例如我们使用直角双曲线修改模型来测试：
+
+```{r}
+library(minpack.lm)
+
+aq <- read.csv("data/AQ.csv")
+
+
+aq_nls <- nlsLM(A ~ alpha * ((1 - 
+              beta*Qin)/(1 + gamma * Qin)) * Qin - Rd,
+                start=list(alpha = 0.07, beta = 0.00005,
+                           gamma=0.004, Rd = 0.2),
+              data = aq
+                )
+fit_aq <- summary(aq_nls)
+
+sat_aq <-  (sqrt((fit_aq$coef[2,1] + fit_aq$coef[3,1])/
+              fit_aq$coef[2,1]) -1)/fit_aq$coef[3,1]
+# 补偿点计算
+c_aq <- (
+  -(fit_aq$coef[3, 1] * fit_aq$coef[4, 1] - 
+  fit_aq$coef[1, 1]) - sqrt((fit_aq$coef[3, 1] * 
+  fit_aq$coef[4, 1] - fit_aq$coef[1, 1])^2- 
+  (4 * fit_aq$coef[1, 1] * fit_aq$coef[2, 1] * 
+  fit_aq$coef[4, 1])))/
+  (2*fit_aq$coef[1,1]*fit_aq$coef[2,1])
+
+sat_aq
+c_aq
+```
+
+
+非稳态方式测量的结果
+
+```{r}
+dataq <- read.csv("data/dataq.csv")
+
+dataq_nls <- nlsLM(A ~ alpha * ((1 - 
+                                beta*Qin)/(1 + gamma * Qin)) * Qin - Rd,
+                start=list(alpha = 0.07, beta = 0.00005,
+                           gamma=0.004, Rd = 0.2),
+                data = dataq
+)
+fit_dataq <- summary(dataq_nls)
+
+
+sat_dataq <-  (sqrt((fit_dataq$coef[2,1] + fit_dataq$coef[3,1])/
+                   fit_dataq$coef[2,1]) -1)/fit_dataq$coef[3,1]
+# 补偿点计算
+c_dataq <- (
+  -(fit_dataq$coef[3, 1] * fit_dataq$coef[4, 1] - 
+      fit_dataq$coef[1, 1]) - sqrt((fit_dataq$coef[3, 1] * 
+                                   fit_dataq$coef[4, 1] - fit_dataq$coef[1, 1])^2- 
+                                  (4 * fit_dataq$coef[1, 1] * fit_dataq$coef[2, 1] * 
+                                     fit_dataq$coef[4, 1])))/
+  (2*fit_dataq$coef[1,1]*fit_dataq$coef[2,1])
+
+sat_dataq
+c_dataq
+```
+
+我们来看一下拟合的结果：
+
+
+```{r}
+fit_aq$parameters
+```
+
+```{r}
+fit_dataq$parameters
+```
+
+
+
+作图比较一下：
+
+```{r}
+library(ggplot2)
+
+mod_rec_form <-  y ~ 
+  alpha * ((1 - beta*x)/(1 + gamma * x)) * x - Rd
+
+ggplot() +
+  geom_point(color = 'gray', shape = 5, aes(x = Qin, y = A), data = aq) +
+  geom_smooth(aes(x = Qin, y = A), data = aq, color='gray', 
+              size = 1.5, method="nls", 
+    formula = mod_rec_form, 
+    se = FALSE, method.args = list(
+    start = c(alpha = 0.07, beta = 0.00005,
+              gamma=0.004, Rd = 0.2), 
+    aes(x =Qin, y = A 
+     ))
+  )+
+  geom_point(color = 'blue', shape = 1, aes(x = Qin, y = A), data = dataq) +
+  geom_smooth(aes(x = Qin, y = A), data = dataq, method="nls", 
+    color='blue', size = 1.2,
+    formula = mod_rec_form, 
+    se = FALSE, method.args = list(
+    start = c(alpha = 0.07, beta = 0.00005,
+              gamma=0.004, Rd = 0.2), 
+    aes(x =Qin, y = A))
+  )+
+  
+  labs(y=expression(paste("photosynthetic rate  ", 
+          "(", mu, mol%.%m^-2%.%s^-1, ")")), 
+       x=expression(paste("PAR ", 
+           "(", mu, mol%.%m^-2%.%s^-1, ")")))+
+  theme_light()
+```
+
