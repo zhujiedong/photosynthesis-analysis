@@ -72,7 +72,7 @@ book:
 
 format:
   html: 
-    theme: [cosmo, self-cosmo.scss]
+    theme: minty
     cover-image: img/cover.png
     code-link: true
     toc: true
@@ -86,12 +86,21 @@ format:
     code-background: true
     code-border-left: "#31BAE9"
     
-    self-contained: true
+    #self-contained: true
     #lang: zh
 
 #editor: visual
 comments:
   #hypothesis: true
+  
+crossref:
+  fig-title: 图
+  tbl-title: 表
+  title-delim: ":"
+  fig-prefix: 图
+  tbl-prefix: 表
+  eq-prefix: 公式
+  sec-prefix: 小节
   
 execute:
   warning: false

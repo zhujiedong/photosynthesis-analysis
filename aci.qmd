@@ -11,8 +11,7 @@ ACi 曲线的拟合，有三个软件包来实现，分别是 `plantecophys, pla
 
 `fitaci` 的用法如下^[仅针对 C3 植物]：
 
-```{r}
-#| eval: false
+```{r, eval=FALSE}
 
 fitaci(data, varnames = list(ALEAF = "Photo", 
   Tleaf = "Tleaf", Ci = "Ci", PPFD = "PARi", 
@@ -161,8 +160,7 @@ par <- op
 
 如果需要导出数据做他用，使用 Rstudio 的话，其自动补全的功能在选择数据上更方便 (即输入拟合的名称 + $ 符号后，自动补全会弹出提示)。例如导出预测值和系数分别使用如下方式：
 
-```{r}
-#| eval: false
+```{r, eval=FALSE}
 
 # 将模型拟合结果中df（即计算数据）赋给predictaci，
 # 并用write.csv导出
@@ -177,8 +175,7 @@ write.csv(coef(acifit), file = "coefaci.csv")
 
 fitacis 函数实际上是 fitaci 函数的扩展，方便一次拟合多条曲线^[需要注意，此时fitmethod一般推荐使用bilinear。]。函数的参数如下：
 
-```{r}
-#| eval: false
+```{r, eval=FALSE}
 
 fitacis(data, group, fitmethod = c("default", 
         "bilinear"),progressbar = TRUE, 
@@ -261,7 +258,7 @@ one_data <- read.csv("data/onepoint.csv")
 ```{r}
 #| label: one_pointdata
 #| echo: false
-#| tbl-cap:  ""
+#| tbl-cap:  " "
 kable(head(one_data),  caption = 'onepoint 使用的数据 {#tbl-one_point}')
 ```
 
@@ -282,7 +279,7 @@ aci_fit <- fitaci(one_data, fitmethod = "onepoint")
 
 ```{r}
 #| label: onepoint-result
-#| fig-cap: ""
+#| fig-cap: " "
 #| echo: false
 kable(data.frame(aci_fit$Photo, 
              aci_fit$Vcmax, aci_fit$Jmax),
@@ -296,8 +293,7 @@ kable(data.frame(aci_fit$Photo,
 
 对于计算不同 ACi 限制阶段过渡点的方式，可以使用 CiTransition 的函数，第一点为 Ac ~ Aj，第二点为 Aj ~ Ap，并且仅在计算 TPU 的前提下才会有第二点出现。
 
-```{r}
-#| eval: false
+```{r,eval=FALSE}
 findCiTransition(object, ...)
 ```
 
@@ -333,15 +329,14 @@ fit <-
 
 我们先观察拟合结果：
 
-```{r}
-#| eval: false
+```{r, eval=FALSE}
 reshape2::melt(fit[[1]])
 ```
 
 ```{r}
 #| label: photosyn-fitaci-
 #| echo: false
-#| tbl-cap: ""
+#| tbl-cap: " "
 
 kable(reshape2::melt(fit[[1]]), caption = "使用 photosynthesis 来拟合 ACi 曲线的结果 {#tbl-photosyn-fitaci}")
 ```
@@ -351,6 +346,7 @@ kable(reshape2::melt(fit[[1]]), caption = "使用 photosynthesis 来拟合 ACi �
 ```{r}
 #| label: photosyn-fitaci-plot
 #| fig.cap: '使用 photosynthesis 来拟合 ACi 曲线的图形查看'
+
 fit[[2]]
 ```
 

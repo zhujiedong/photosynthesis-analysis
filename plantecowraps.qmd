@@ -23,7 +23,7 @@ head(data)
 ```{r}
 #| echo: false
 #| label: plantecowraps-data
-#| tbl-cap: 
+#| tbl-cap: ' '
 
 kable(head(data), caption = "plantecowraps 自带的示例数据 #{tbl-plantecowraps}")
 
@@ -69,7 +69,7 @@ tresp[[2]]
 ```{r}
 #| lable: wraps-para
 #| echo: false
-#| tbl-cap: ''
+#| tbl-cap: ' '
 
 kable(tresp[[2]], caption = 'plantecowrap 拟合的参数 {#tbl-ecoerap-para}')
 ```

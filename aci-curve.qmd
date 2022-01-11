@@ -28,7 +28,7 @@ $$
 \alpha =\frac{V_{O}}{V_{C}}  = \frac{O}{C_c} \times \frac{V_{omax} K_c}{V_{cmax}K_{o}} = \frac{O}{C_{c}} \times \frac{1}{S_{\frac{c}{o}}}
 $$ {#eq-dynamic}
 
-式 @eq-dynamic 中，Cc 和 O 分别为叶绿体部位 CO~2~ 和 O~2~ 浓度。Cc 和 O 通常以气体摩尔分数 ($\mu mol\text{·}mol^{-1}$ ) 或分压 (Pa) 表示, 但光合过程是在叶绿体的液相基质中发生的, 用分压表示更加恰当。Kc 与 Ko 为 Rubisco 羧化(氧化)的米氏常数, 代表了羧化(氧化)速率达到最大羧化(氧化)速率一半时的 CO~2~ 和 $O_{2}$ 浓度。是 Rubisco 特异性因子, $S_{\frac{c}{o}}$表示 Rubisco 对CO~2~ 和 $O_{2}$ 的偏好程度。
+式 @eq-dynamic 中，Cc 和 O 分别为叶绿体部位 CO~2~ 和 O~2~ 浓度。Cc 和 O 通常以气体摩尔分数 ($\mu mol \cdot mol^{-1}$ ) 或分压 (Pa) 表示, 但光合过程是在叶绿体的液相基质中发生的, 用分压表示更加恰当。Kc 与 Ko 为 Rubisco 羧化(氧化)的米氏常数, 代表了羧化(氧化)速率达到最大羧化(氧化)速率一半时的 CO~2~ 和 $O_{2}$ 浓度。是 Rubisco 特异性因子, $S_{\frac{c}{o}}$表示 Rubisco 对CO~2~ 和 $O_{2}$ 的偏好程度。
 
 当 A = Rd , 即 RuBP 羧化的 CO~2~ 吸收速率刚好 等于 RuBP 氧化的 CO~2~ 释放速率 (Vc = 2Vo，羧化时 CO~2~ 提供的为 CO ) 时, $\alpha$ = 0.5。此时叶绿体的 CO~2~ 浓度就是叶绿体 CO~2~ 光合补偿点, 标记为 $\Gamma^{*}$。即：
 
