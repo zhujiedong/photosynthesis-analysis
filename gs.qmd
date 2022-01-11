@@ -293,7 +293,7 @@ Aci(Ci, ...)
 #### `Photosyn` 使用举例 {#sec-photo_exam}
 
 ```{r}
-#| label: fig-bpd
+#| label: fig-vpd
 #| fig.cap: "VPD VS. An"
 
 library(plantecophys)
@@ -313,7 +313,7 @@ with(r, plot(VPD, ALEAF, type='l'))
 
 
 ```{r}
-#| label: fig-ppfd
+#| abel: fig-ppfd
 #| fig.cap: "PPFD VS. GS"
 
 # 设定叶肉导度的拟合

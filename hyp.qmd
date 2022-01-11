@@ -115,14 +115,12 @@ ggplot(light, aes(x = lrc_Q, y = lrc_A)) +
 *   求饱和点和补偿点，补偿点的计算根据其定义，净光合速率为 0，求解模型在一定区间的根来计算，而饱和点则较为麻烦，若使用 @eq-aqe 计算，那么饱和点远远低于我们实际需求的，因此，我们使用了 $0.75P_{nmax}$ 来计算，求得目标区间的根。当然也可以采用其他比例来作为饱和点光合速率。
 
 ```{r}
-#| label: rectable
-#| tbl-cap:  
+#| label: tbl-rectable
+#| tbl-cap:  '直角双曲线结果'
 #| echo: false
 
 
-kable(fitlrc_rec$coef,
-caption = '直角双曲线计算参数 {#tbl-para-rec-tab}'
-)
+kable(fitlrc_rec$coef)
 ```
 
-最终的数据拟结果如 @fig-recr 所示，拟合的参数及结果见 @tbl-para-rec-tab。
+最终的数据拟结果如 @fig-recr 所示，拟合的参数及结果见 @tbl-rectable。

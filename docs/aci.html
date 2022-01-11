@@ -874,16 +874,17 @@ Km =  698.2084 </code></pre>
 <h3 data-number="14.1.3" class="anchored" data-anchor-id="sec-onepoint"><span class="header-section-number">14.1.3</span> fitmethod = “onepoint” 介绍</h3>
 <p><span class="citation" data-cites="De2016A">De Kauwe et al. (<a href="references.html#ref-De2016A" role="doc-biblioref">2016</a>)</span> 发表了关于 one point 方法计算 <span class="math inline">V_{cmax}</span> 和 <span class="math inline">J_{max}</span> 的文章，在 2017 年 11 月的更新中，plantecophys 将对应的 <code>python</code> 代码移植到了 <code>plantecophys</code>， 该方法并非使用一个点计算 <span class="math inline">V_{cmax}</span> 和 <span class="math inline">J_{max}</span>，而是对数据集中的每一个点的值进行估计，使用的方法为逆向了光合作用方程。输出则是将原始数据中加入了 <span class="math inline">V_{cmax}</span> 和 <span class="math inline">J_{max}</span> 的计算结果，当然一如既往的可以使用温度校准的方法。为提升测量的准确性，最佳方案是有测量的 Rd 值。<strong>也就是 useRd 被默认启用。它的假设是在外部环境 CO<sub>2</sub> 浓度和饱和光下。</strong></p>
 <p>基于上面的描述，他们的模型如下：</p>
-<p><span id="eq-inverseA"><span class="math display">
+<p><span id="eq-inversea"><span class="math display">
 \hat{V}_{cmax} = (A_{sat} + R_{day}) \frac{C_i + K_m}{C_i - \Gamma^*} 
  \qquad(14.1)</span></span></p>
 <p>其中：K<sub>m</sub> 为米氏常数，其计算为：</p>
-<p>$$ K_m = K_c (1 + )</p>
-<p>$$ {#eq-km}</p>
-<p>未知参数均由文献中的方法进行计算，具体可参考 <span class="citation" data-cites="De2016A">De Kauwe et al. (<a href="references.html#ref-De2016A" role="doc-biblioref">2016</a>)</span> 的原文,但上述方法的缺陷是还需要 R<sub>day</sub>，因此作者使用了1.5% V<sub>cmax</sub> 作为 R<sub>day</sub>，因此公式 <span class="quarto-unresolved-ref">?eq-inversea</span> 可变换为：</p>
+<p><span id="eq-km"><span class="math display">
+K_m = K_c (1 + \frac{O_i}{K_o}) 
+ \qquad(14.2)</span></span></p>
+<p>未知参数均由文献中的方法进行计算，具体可参考 <span class="citation" data-cites="De2016A">De Kauwe et al. (<a href="references.html#ref-De2016A" role="doc-biblioref">2016</a>)</span> 的原文,但上述方法的缺陷是还需要 R<sub>day</sub>，因此作者使用了1.5% V<sub>cmax</sub> 作为 R<sub>day</sub>，因此公式 <a href="#eq-inversea">公式&nbsp;<span>14.1</span></a> 可变换为：</p>
 <p><span id="eq-onepoint"><span class="math display">
 \hat{V}_{cmax} = A_{sat} (\frac{C_i + K_m}{C_i - \Gamma^*} - 0.015)
- \qquad(14.2)</span></span></p>
+ \qquad(14.3)</span></span></p>
 <p>另一个重要的模型的假设为 J<sub>max</sub> 与 V<sub>cmax</sub> 是成比例的， J<sub>max</sub> 的计算是通过 C<sub>i</sub> transition point 来实现的，文章中的比值均值为 1.9，范围在 1.68 ~ 2.14 之间。</p>
 </section>
 <section id="sec-onpoint_fit" class="level3" data-number="14.1.4">
@@ -895,8 +896,11 @@ Km =  698.2084 </code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>one_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/onepoint.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>::: {.cell tbl-cap=’ ’} ::: {.cell-output-display} Table: onepoint 使用的数据 {#tbl-one_point}</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-one_pointdata" class="anchored">
 <table class="table">
+<caption>表 14.1: onepoint 使用的数据 </caption>
 <colgroup>
 <col style="width: 0%">
 <col style="width: 1%">
@@ -1398,8 +1402,10 @@ Km =  698.2084 </code></pre>
 </tr>
 </tbody>
 </table>
-<p>::: :::</p>
-<p><span class="quarto-unresolved-ref">?tbl-one_point</span> 数据为同一个叶片连续记录数据，故所有的光合速率十分接近。</p>
+</div>
+</div>
+</div>
+<p><a href="#tbl-one_pointdata">表&nbsp;<span>14.1</span></a> 数据为同一个叶片连续记录数据，故所有的光合速率十分接近。</p>
 <p>使用方法：</p>
 <div class="cell">
 <p></p><details open="">
@@ -1415,7 +1421,7 @@ Km =  698.2084 </code></pre>
 <div class="cell-output-display">
 <div id="tbl-onekable-result" class="anchored">
 <table class="table">
-<caption>表 14.1: onepoint 法计算的结果 </caption>
+<caption>表 14.2: onepoint 法计算的结果 </caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">aci_fit.Photo</th>
@@ -2024,7 +2030,7 @@ Km =  698.2084 </code></pre>
 </div>
 </div>
 </div>
-<p>需要注意，为保证结果的精确，如果不设定 Rd, 也即文献中的 Rday， 模型是无法计算的，因此 <a href="#tbl-onekable-result">表&nbsp;<span>14.1</span></a> 的示例中虚构了一个。</p>
+<p>需要注意，为保证结果的精确，如果不设定 Rd, 也即文献中的 Rday， 模型是无法计算的，因此 <a href="#tbl-onekable-result">表&nbsp;<span>14.2</span></a> 的示例中虚构了一个。</p>
 </section>
 <section id="sec-transition" class="level3" data-number="14.1.5">
 <h3 data-number="14.1.5" class="anchored" data-anchor-id="sec-transition"><span class="header-section-number">14.1.5</span> <code>findCiTransition</code> 函数</h3>

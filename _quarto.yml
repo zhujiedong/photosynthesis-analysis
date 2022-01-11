@@ -40,7 +40,7 @@ book:
         - hyp-rev.qmd
         - aq-choose.qmd
         - big-leaf.qmd
-        #- dataq-vs-aq.qmd
+        #-tbl- dataq-vs-aq.qmd
     - part: aci-curve.qmd
       chapters:
         - aci.qmd
@@ -94,6 +94,7 @@ comments:
   #hypothesis: true
   
 crossref:
+  chapters: true
   fig-title: 图
   tbl-title: 表
   title-delim: ":"

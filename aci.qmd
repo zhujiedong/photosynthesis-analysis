@@ -229,16 +229,15 @@ plot(fits[[which.max(rmses)]])
 
 $$
 \hat{V}_{cmax} = (A_{sat} + R_{day}) \frac{C_i + K_m}{C_i - \Gamma^*} 
-$$ {#eq-inverseA}
+$$ {#eq-inversea}
 
 其中：K~m~ 为米氏常数，其计算为：
 
 $$
 K_m = K_c (1 + \frac{O_i}{K_o}) 
-
 $$ {#eq-km}
 
-未知参数均由文献中的方法进行计算，具体可参考 @De2016A 的原文,但上述方法的缺陷是还需要 R~day~，因此作者使用了1.5% V~cmax~ 作为 R~day~，因此公式 @eq-inverseA 可变换为：
+未知参数均由文献中的方法进行计算，具体可参考 @De2016A 的原文,但上述方法的缺陷是还需要 R~day~，因此作者使用了1.5% V~cmax~ 作为 R~day~，因此公式 @eq-inversea 可变换为：
 
 $$
 \hat{V}_{cmax} = A_{sat} (\frac{C_i + K_m}{C_i - \Gamma^*} - 0.015)
@@ -256,14 +255,14 @@ one_data <- read.csv("data/onepoint.csv")
 ```
 
 ```{r}
-#| label: one_pointdata
+#| label: tbl-one_pointdata
 #| echo: false
-#| tbl-cap:  " "
-kable(head(one_data),  caption = 'onepoint 使用的数据 {#tbl-one_point}')
+#| tbl-cap:  "onepoint 使用的数据"
+kable(head(one_data))
 ```
 
 
-@tbl-one_point 数据为同一个叶片连续记录数据，故所有的光合速率十分接近。
+@tbl-one_pointdata 数据为同一个叶片连续记录数据，故所有的光合速率十分接近。
 
 使用方法：
 

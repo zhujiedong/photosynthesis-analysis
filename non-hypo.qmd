@@ -82,16 +82,13 @@ ggplot(light, aes(x = lrc_Q, y = lrc_A)) +
 ```
 
 ```{r}
-#| label: nrectable
-#| tbl-cap:  
+#| label: tbl-nrectable
+#| tbl-cap: "非直角双曲线模型结果"
 #| echo: FALSE
-kable(
-fitlrc_nrec$coef,
-caption = '非直角双曲线计算参数 {#tbl-nrectable-}'
-)
+kable(fitlrc_nrec$coef)
 ```
 
-最终的数据拟结果如图 @fig-nrecr 所示，拟合的参数及结果见表 @tbl-nrectable-。单纯从作图来看，本例数据使用非直角双曲线与散点图重合程度更高。
+最终的数据拟结果如图 @fig-nrecr 所示，拟合的参数及结果见表 @tbl-nrectable。单纯从作图来看，本例数据使用非直角双曲线与散点图重合程度更高。
 
 ## 利用函数来拟合 {#sec-fitqa-quick}
 

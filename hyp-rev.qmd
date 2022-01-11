@@ -21,7 +21,7 @@ $$ {#eq-ic}
 ## 直角双曲线修正模型的实现 {#sec-rev_rec_exam}
 
 ```{r}
-#| label: mrecr
+#| label: fig-mrecr
 #| fig.cap: '直角双曲线修正模型拟合'
 
 library(minpack.lm)
@@ -80,13 +80,12 @@ ggplot(light, aes(x = lrc_Q, y = lrc_A)) +
 ```
 
 ```{r}
-#| label: mrectable
-#| tbl-cap: 
+#| label: tbl-mrectable
+#| tbl-cap: '直角双曲线修正模型计算参数'
 #| echo: FALSE
-kable(
-fitlrc_mrec$coef,
-caption = '直角双曲线修正模型计算参数 {#tbl-mrectable-}'
-)
+
+
+kable(fitlrc_mrec$coef)
 ```
 
 尽管修正模型可以方便的计算饱和点和补偿点，但如同 @Lobo2013Fitting 所指出，双曲线模型对其结果的计算常有超出生态学意义范围的值[^hyp-rev-1]，因此对模型的选择不能一概而论，需根据实际情况而选择。

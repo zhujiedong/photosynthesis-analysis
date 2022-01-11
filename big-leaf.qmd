@@ -35,6 +35,6 @@
 
 ![根据 LAI 权重求和来计算大叶模型的参数](img/weighted-parameter.png){#fig-lai-big-leaf}
 
-光响应曲线的拟合可以参考 @sec-nonrec-mod。部分实验结果如下：
+光响应曲线的拟合可以参考 @sec-non-hypo。部分实验结果如下：
 
 ![假定不同物种组成下的模型结果](img/big-leaf-model.png){#fig-lai-big-leaf-model}

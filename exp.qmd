@@ -61,13 +61,12 @@ ggplot(light, aes(x = lrc_Q, y = lrc_A)) +
 ```
 
 ```{r}
-#| label: nexptable
-#| tbl-cap: "exp-cap"
+#| label: tbl-nexptable
+#| tbl-cap: "指数模型计算参数"
 #| echo: FALSE
 kable(
-fitlrc_exp$coef, 
-caption = '指数模型计算参数 {#tbl-expaq}'
+fitlrc_exp$coef
 )
 ```
 
-最终的数据拟结果如图 @fig-nexpr 所示，拟合的参数及结果见表 @tbl-expaq。
+最终的数据拟结果如图 @fig-nexpr 所示，拟合的参数及结果见表 @tbl-nexptable。

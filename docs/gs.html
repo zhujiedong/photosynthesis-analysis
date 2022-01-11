@@ -827,44 +827,46 @@ g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(r, <span class="fu">plot</span>(VPD, ALEAF, <span class="at">type=</span><span class="st">'l'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-bpd" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-vpd" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="gs_files/figure-html/fig-bpd-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="gs_files/figure-html/fig-vpd-1.png" class="img-fluid figure-img" width="672"></p>
 <p></p><figcaption aria-hidden="true" class="figure-caption">图 21.1: VPD VS. An</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p><span class="quarto-unresolved-ref">?fig-vpd</span> 显示了不同 VPD 下的光合速率。</p>
-<div class="cell">
+<p><a href="#fig-vpd">图&nbsp;<span>21.1</span></a> 显示了不同 VPD 下的光合速率。</p>
+<div class="cell" data-abel="fig-ppfd">
 <p></p><details open="">
 <summary>Code</summary><p></p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 设定叶肉导度的拟合</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>run1 <span class="ot">&lt;-</span> <span class="fu">Photosyn</span>(<span class="at">PPFD=</span><span class="fu">seq</span>(<span class="dv">50</span>,<span class="dv">1000</span>,<span class="at">length=</span><span class="dv">25</span>), </span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">gmeso=</span><span class="fl">0.15</span>, <span class="at">Vcmax=</span><span class="dv">40</span>, <span class="at">Jmax=</span><span class="dv">85</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(run1, <span class="fu">plot</span>(PPFD, GS, <span class="at">type=</span><span class="st">'l'</span>))</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 运行ACi曲线数据（提供Ci值而不是计算）</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>arun1 <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="at">Ci=</span><span class="fu">seq</span>(<span class="dv">50</span>, <span class="dv">1200</span>, <span class="at">length=</span><span class="dv">101</span>), </span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">Vcmax=</span><span class="dv">40</span>, <span class="at">Jmax=</span><span class="dv">85</span>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>arun2 <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="at">Ci=</span><span class="fu">seq</span>(<span class="dv">50</span>, <span class="dv">1200</span>, <span class="at">length=</span><span class="dv">101</span>), </span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">Vcmax=</span><span class="dv">30</span>, <span class="at">Jmax=</span><span class="dv">70</span>)</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(arun1, <span class="fu">plot</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>))</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(arun2, <span class="fu">points</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>, <span class="at">lty=</span><span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(run1, <span class="fu">plot</span>(PPFD, GS, <span class="at">type=</span><span class="st">'l'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-ppfd-1" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gs_files/figure-html/fig-ppfd-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 21.2: PPFD VS. GS</figcaption><p></p>
+<p><img src="gs_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">PPFD VS. GS</figcaption><p></p>
 </figure>
 </div>
 </div>
+<p></p><details open="">
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 运行ACi曲线数据（提供Ci值而不是计算）</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>arun1 <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="at">Ci=</span><span class="fu">seq</span>(<span class="dv">50</span>, <span class="dv">1200</span>, <span class="at">length=</span><span class="dv">101</span>), </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">Vcmax=</span><span class="dv">40</span>, <span class="at">Jmax=</span><span class="dv">85</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>arun2 <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="at">Ci=</span><span class="fu">seq</span>(<span class="dv">50</span>, <span class="dv">1200</span>, <span class="at">length=</span><span class="dv">101</span>), </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">Vcmax=</span><span class="dv">30</span>, <span class="at">Jmax=</span><span class="dv">70</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(arun1, <span class="fu">plot</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>))</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(arun2, <span class="fu">points</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>, <span class="at">lty=</span><span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<div id="fig-ppfd-2" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gs_files/figure-html/fig-ppfd-2.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 21.3: PPFD VS. GS</figcaption><p></p>
+<p><img src="gs_files/figure-html/unnamed-chunk-32-2.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">PPFD VS. GS</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -873,40 +875,40 @@ g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
 <div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 找出CO2需求和供给的交叉点</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 设定部分参数</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> <span class="fl">0.2</span> <span class="co"># 对水的气孔导度</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>Ca <span class="ot">&lt;-</span> <span class="dv">400</span> <span class="co"># 外部CO2</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>gctogw <span class="ot">&lt;-</span> <span class="fl">1.57</span> <span class="co"># 转换系数</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>gc <span class="ot">&lt;-</span> gs <span class="sc">/</span> gctogw <span class="co"># 对 CO2 的气孔导度</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 需求曲线</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="fu">seq</span>(<span class="dv">60</span>,<span class="dv">500</span>,<span class="at">length=</span><span class="dv">101</span>), <span class="at">Ca=</span><span class="dv">400</span>)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 提供气孔导度及交叉点</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">Photosyn</span>(<span class="at">GS=</span>gs, <span class="at">Ca=</span>Ca)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 交叉点可视化</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">yaxs=</span><span class="st">"i"</span>)</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(p, <span class="fu">plot</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>, </span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fu">max</span>(ALEAF))))</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(g, <span class="fu">points</span>(Ci, ALEAF, <span class="at">pch=</span><span class="dv">19</span>, <span class="at">col=</span><span class="st">"red"</span>))</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(gc <span class="sc">*</span> Ca, <span class="sc">-</span>gc, <span class="at">lty=</span><span class="dv">5</span>)</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="fu">expression</span>(</span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Demand:"</span><span class="sc">~</span><span class="er">~</span>A<span class="sc">==</span><span class="fu">f</span>(C[i])),</span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">expression</span>(<span class="st">"Supply:"</span><span class="sc">~</span><span class="er">~</span>A<span class="sc">==</span>g[c]<span class="sc">*</span>(C[a]<span class="sc">-</span>C[i])),</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Operating point"</span>),</span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>   <span class="at">lty=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">1</span>),<span class="at">pch=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">19</span>),</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>   <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>,<span class="st">"black"</span>,<span class="st">"red"</span>),</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>   <span class="at">bty=</span><span class="st">'n'</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 找出CO2需求和供给的交叉点</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 设定部分参数</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> <span class="fl">0.2</span> <span class="co"># 对水的气孔导度</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>Ca <span class="ot">&lt;-</span> <span class="dv">400</span> <span class="co"># 外部CO2</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>gctogw <span class="ot">&lt;-</span> <span class="fl">1.57</span> <span class="co"># 转换系数</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>gc <span class="ot">&lt;-</span> gs <span class="sc">/</span> gctogw <span class="co"># 对 CO2 的气孔导度</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 需求曲线</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="fu">seq</span>(<span class="dv">60</span>,<span class="dv">500</span>,<span class="at">length=</span><span class="dv">101</span>), <span class="at">Ca=</span><span class="dv">400</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 提供气孔导度及交叉点</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">Photosyn</span>(<span class="at">GS=</span>gs, <span class="at">Ca=</span>Ca)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 交叉点可视化</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">yaxs=</span><span class="st">"i"</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(p, <span class="fu">plot</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>, </span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fu">max</span>(ALEAF))))</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(g, <span class="fu">points</span>(Ci, ALEAF, <span class="at">pch=</span><span class="dv">19</span>, <span class="at">col=</span><span class="st">"red"</span>))</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(gc <span class="sc">*</span> Ca, <span class="sc">-</span>gc, <span class="at">lty=</span><span class="dv">5</span>)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="fu">expression</span>(</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Demand:"</span><span class="sc">~</span><span class="er">~</span>A<span class="sc">==</span><span class="fu">f</span>(C[i])),</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">expression</span>(<span class="st">"Supply:"</span><span class="sc">~</span><span class="er">~</span>A<span class="sc">==</span>g[c]<span class="sc">*</span>(C[a]<span class="sc">-</span>C[i])),</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Operating point"</span>),</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>   <span class="at">lty=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">1</span>),<span class="at">pch=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">19</span>),</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>   <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>,<span class="st">"black"</span>,<span class="st">"red"</span>),</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>   <span class="at">bty=</span><span class="st">'n'</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-supply" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="gs_files/figure-html/fig-supply-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 21.4: supply VS. demand</figcaption><p></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">图 21.2: supply VS. demand</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-supply">图&nbsp;<span>21.4</span></a> 需求与供给的关系。</p>
+<p><a href="#fig-supply">图&nbsp;<span>21.2</span></a> 需求与供给的关系。</p>
 </section>
 </section>
 <section id="photsyneb" class="level3" data-number="21.4.2">
@@ -944,9 +946,9 @@ f_{\Psi v} = \frac{1 + exp(s_f \Psi_f)}{1 + exp(s_f(\Psi_f - \Psi_v))}
 <div class="cell">
 <p></p><details open="">
 <summary>Code</summary><p></p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PhotosynTuzet</span>(<span class="at">g1 =</span> <span class="dv">8</span>, <span class="at">Ca =</span> <span class="dv">400</span>, <span class="at">psis =</span> <span class="dv">0</span>,</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">kl =</span> <span class="dv">2</span>, <span class="at">sf =</span> <span class="dv">3</span>, <span class="at">psif =</span> <span class="sc">-</span><span class="dv">2</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PhotosynTuzet</span>(<span class="at">g1 =</span> <span class="dv">8</span>, <span class="at">Ca =</span> <span class="dv">400</span>, <span class="at">psis =</span> <span class="dv">0</span>,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">kl =</span> <span class="dv">2</span>, <span class="at">sf =</span> <span class="dv">3</span>, <span class="at">psif =</span> <span class="sc">-</span><span class="dv">2</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <ul>
