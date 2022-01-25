@@ -129,7 +129,7 @@ df6$A/df_random$A
 :::
 
 
-![7HarSf.gif](https://s4.ax1x.com/2022/01/25/7HarSf.gif)
+![exce 启动迭代计算](https://s4.ax1x.com/2022/01/25/7HarSf.gif){#fig-excel-iter}
 
 
 #### 安装
