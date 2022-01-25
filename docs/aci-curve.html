@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 二氧化碳响应曲线概述</title>
@@ -33,25 +33,6 @@
     }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -89,6 +70,25 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -196,7 +196,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -409,44 +409,44 @@
 </div>
 <p><span id="eq-aeta"><span class="math display">
 A = V_c - 0.5V_{o} - R_{d}
- \qquad(1)</span></span></p>
+\qquad(1)</span></span></p>
 <p>线粒体Rd不同于暗呼吸速率(Rn )。Rn是叶片在 黑暗中的线粒体呼吸速率, 随着光照的增加, 线粒体呼吸速率下降。因此 Rd &lt; Rn 在黑暗条件下测定的叶 片 CO<sub>2</sub> 交换速率即 Rn , 但是 Rd 的测定比较困难, 因为光照条件下 Rd 与 Vc、Vo 同时存在。<span class="citation" data-cites="Hikosaka2006Temperature">Hikosaka et al. (<a href="references.html#ref-Hikosaka2006Temperature" role="doc-biblioref">2006</a>)</span> 总结了几种测定 Rd 的方法，式 <a href="#eq-aeta">公式&nbsp;<span>1</span></a> 又可表达为：</p>
 <p><span id="eq-achange"><span class="math display">
 A =V_{c} (1 -0.5 \alpha)\ R_{d}
- \qquad(2)</span></span></p>
+\qquad(2)</span></span></p>
 <p>式 <a href="#eq-achange">公式&nbsp;<span>2</span></a> 中 <span class="math inline">\alpha</span> 为氧化速率和羧化速率的比值，由 Rubisco 动力学常数确定：</p>
 <p><span id="eq-dynamic"><span class="math display">
 \alpha =\frac{V_{O}}{V_{C}}  = \frac{O}{C_c} \times \frac{V_{omax} K_c}{V_{cmax}K_{o}} = \frac{O}{C_{c}} \times \frac{1}{S_{\frac{c}{o}}}
- \qquad(3)</span></span></p>
+\qquad(3)</span></span></p>
 <p>式 <a href="#eq-dynamic">公式&nbsp;<span>3</span></a> 中，Cc 和 O 分别为叶绿体部位 CO<sub>2</sub> 和 O<sub>2</sub> 浓度。Cc 和 O 通常以气体摩尔分数 (<span class="math inline">\mu mol \cdot mol^{-1}</span> ) 或分压 (Pa) 表示, 但光合过程是在叶绿体的液相基质中发生的, 用分压表示更加恰当。Kc 与 Ko 为 Rubisco 羧化(氧化)的米氏常数, 代表了羧化(氧化)速率达到最大羧化(氧化)速率一半时的 CO<sub>2</sub> 和 <span class="math inline">O_{2}</span> 浓度。是 Rubisco 特异性因子, <span class="math inline">S_{\frac{c}{o}}</span>表示 Rubisco 对CO<sub>2</sub> 和 <span class="math inline">O_{2}</span> 的偏好程度。</p>
 <p>当 A = Rd , 即 RuBP 羧化的 CO<sub>2</sub> 吸收速率刚好 等于 RuBP 氧化的 CO<sub>2</sub> 释放速率 (Vc = 2Vo，羧化时 CO<sub>2</sub> 提供的为 CO ) 时, <span class="math inline">\alpha</span> = 0.5。此时叶绿体的 CO<sub>2</sub> 浓度就是叶绿体 CO<sub>2</sub> 光合补偿点, 标记为 <span class="math inline">\Gamma^{*}</span>。即：</p>
 <p><span id="eq-com"><span class="math display">
 \Gamma^{*}\ =\ \frac{0.5O}{S_{\frac{c}{o}}}
- \qquad(4)</span></span></p>
+\qquad(4)</span></span></p>
 <p>由公式 <a href="#eq-dynamic">公式&nbsp;<span>3</span></a> 和公式 <a href="#eq-com">公式&nbsp;<span>4</span></a> 可得：</p>
 <p><span id="eq-combine"><span class="math display">
 \alpha =\frac{2\Gamma^{*}}{C_{c}}
- \qquad(5)</span></span></p>
+\qquad(5)</span></span></p>
 <p>代入公式 <a href="#eq-achange">公式&nbsp;<span>2</span></a> 得到：</p>
 <p><span id="eq-combine2"><span class="math display">
 A\ =V_{c}\ (1\ -\frac{\Gamma^{*}}{C_{c}})\ R_{d}
- \qquad(6)</span></span></p>
+\qquad(6)</span></span></p>
 <p>在 Cc 浓度很低的时候，RuBP 供应充足 (<a href="#fig-fvcb">图&nbsp;<span>1</span></a>) Rubisco 阶段)，Vc 等于 Rubisco 所能支持的羧化速率 w<sub>c</sub>，：</p>
 <p><span id="eq-wc"><span class="math display">
 w_{c}\ =\ \frac{V_{cmax\ }C_{c}}{C_{c\ }+\ K_{c\ }(1\ +\ \frac{O}{K_{o}})}
- \qquad(7)</span></span></p>
+\qquad(7)</span></span></p>
 <p>随着 Cc 浓度的增加，Rubisco 支持的羧化速率超过了 RuBP 供应速率, Vc 受 RuBP 再生速率的限制（<a href="#fig-fvcb">图&nbsp;<span>1</span></a> RuBP 阶段），此时 Vc 由 RuBP 的再生速率限制，而 RuBP 又由电子传递速率（J）决定，故：</p>
 <p><span id="eq-wj"><span class="math display">
 w_{j}\ =\ \frac{J\ C_{c}}{4C_{c\ }+\ 8\Gamma^{*}}
- \qquad(8)</span></span></p>
+\qquad(8)</span></span></p>
 <p>当 Cc 浓度很高，光合磷酸化超过了淀粉和蔗糖的合成速率的时候，Vc 受到 TP 利用速率（Vp）的限制（图 <a href="#fig-fvcb">图&nbsp;<span>1</span></a> TPU 阶段），一般情况下，</p>
 <p><span id="eq-wp"><span class="math display">
 w_{p\ }=\ \frac{3V_{p}C_{c}}{C_{c}-\Gamma^{*}}
- \qquad(9)</span></span></p>
+\qquad(9)</span></span></p>
 <p>最终，C3 植物叶片的光合速率 A 由 w<sub>c</sub>、w<sub>j</sub>、w<sub>p</sub> 的最小者决定（图 <a href="#fig-fvcb">图&nbsp;<span>1</span></a> 实现部分），当c &gt; <span class="math inline">\Gamma^{*}</span>时：</p>
 <p><span id="eq-fvcbfin"><span class="math display">
 A=min\{w_{c},w_{j,}w_{p}\}(1-\frac{\Gamma^{*}}{C_{c}})-R_{d}
- \qquad(10)</span></span></p>
+\qquad(10)</span></span></p>
 <section id="co2_note" class="level3">
 <h3 class="anchored" data-anchor-id="co2_note">CO<sub>2</sub> 响应曲线测量的注意事项</h3>
 <p>尽管上文对其分段性做了数学上的解释，相比来讲，不是那么通俗易懂，根据 <span class="citation" data-cites="matthew2018">Haworth, Marino, and Centritto (<a href="references.html#ref-matthew2018" role="doc-biblioref">2018</a>)</span> 文章中的内容，我们后面两小节的内容对其进行概述：</p>
@@ -465,7 +465,7 @@ A=min\{w_{c},w_{j,}w_{p}\}(1-\frac{\Gamma^{*}}{C_{c}})-R_{d}
 <p>一个更精确的了解植物生理指标的方法是将 A/Ci 曲线改为 A/Cc 曲线，但这需要了解 gm 数据。因为 Cc 通过如下方式计算：</p>
 <p><span id="eq-notecc"><span class="math display">
 C_c = C_i - \frac{A}{gm}
- \qquad(11)</span></span></p>
+\qquad(11)</span></span></p>
 <p>对于 gm 的计算，比较易操作的有几种：采用光合荧光联合测量的方式计算求得。当然也可以采用曲线拟合的方式，或者 <span class="citation" data-cites="yin2009using">Yin et al. (<a href="references.html#ref-yin2009using" role="doc-biblioref">2009</a>)</span> 使用的方式，在低氧气体下，采用不同的光照水平求得。这部分内容我们会在 <a href="gm.html">小节&nbsp;<span>22</span></a> 中讨论。</p>
 <p>此外，测量气体交换时一个比较大的误差来源就是气体的扩散，因为测量时，多数时间内外界气体浓度要高于叶室内的气体浓度，那么即使用密封性非常好的材料，由外界高 <span class="math inline">CO_2</span> 浓度气体向叶室低 <span class="math inline">CO_2</span> 浓度气体的扩散无法避免，尤其是在连续长时间测量时该效应尤为明显，因此需要经常更换叶室垫圈。还可以通过一些方法来校正（<span class="citation" data-cites="Flexas2007leak">Flexas J and A (<a href="references.html#ref-Flexas2007leak" role="doc-biblioref">2007</a>)</span>，rodeghiero2007major），但如果采用 LI-6800 测量这将不是问题，首先它使用的材料耐用性比较高，而其叶室增压技术能够很好的解决这方面的问题。</p>
 </section>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 15&nbsp; 快速ACi 曲线 (RACiR)</title>
@@ -96,9 +96,6 @@
     }
   </style>
 
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -136,6 +133,9 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -243,7 +243,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -627,7 +627,7 @@ Achieved convergence tolerance: 7.337e-06</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>下面 <code>photosynthesis</code> 的代码，在我运行拟合过程中长时间不结束，估计是数据量大之后在某个算法上进行反复尝试的原因，为了避免卡在此处，下面的代码并没有运行结束。后面再进行测试 2022-01-11</p>
+<p>下面 <code>photosynthesis</code> 的代码，在我运行拟合过程中长时间不结束，估计是数据量大之后在某个算法上进行反复尝试的原因，为了避免卡在此处，下面的代码并没有运行结束。后面再进行测试 2022-01-25</p>
 </div>
 </div>
 <p>这里不再做过多介绍，具体细节可以参考 @#sec-photosynthesis-aci：</p>

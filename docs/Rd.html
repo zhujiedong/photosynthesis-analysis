@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 17&nbsp; Rd 呼吸 相关</title>
@@ -96,25 +96,6 @@
     }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -152,6 +133,25 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -259,7 +259,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -489,26 +489,26 @@
 <p><span class="citation" data-cites="walkerImprovedMethodMeasuring2015a">Walker and Ort (<a href="references.html#ref-walkerImprovedMethodMeasuring2015a" role="doc-biblioref">2015</a>)</span> 对于交点的判定给出了详细论述，如上图所示，这几条曲线（或最初的线性）并不是总会完全相交于一点。通常采用的方法是将所有曲线（或直线）的交点进行取均值。实践中，这些点很少收敛于单点，<strong>通常移除某交点或重新测量直到交点的标准差在某范围内</strong>。但总之会存在一定缺陷，因而 <span class="citation" data-cites="walkerImprovedMethodMeasuring2015a">Walker and Ort (<a href="references.html#ref-walkerImprovedMethodMeasuring2015a" role="doc-biblioref">2015</a>)</span> 对上述方法做了一个改变：</p>
 <p><span id="eq-laisk-walker1"><span class="math display">
 C_i^* = \frac{b1-b2}{m_2 -m_1}
- \qquad(17.1)</span></span></p>
+\qquad(17.1)</span></span></p>
 <p>其中 <span class="math inline">C_i^*</span> 的意义为上文提到的计算的 <span class="math inline">\Gamma^*</span>, m 表示两条响应曲线线性部分的直线的斜率，b 表示截距。之后再进行计算：</p>
 <p><span id="eq-laisk-walker2"><span class="math display">
 R_d = m C_i^* + b
- \qquad(17.2)</span></span></p>
+\qquad(17.2)</span></span></p>
 <p>该方法的基本步骤是：</p>
 <ol type="1">
 <li>将每条曲线的 m 值作为 x 轴，b 值作为 y 轴，那么对其做一个标准的线性回归，这条回归线的斜率为：</li>
 </ol>
 <p><span id="eq-laisk-walker3"><span class="math display">
 m_{reg} = \frac{b_2-b_1}{m_2 -m_1}
- \qquad(17.3)</span></span></p>
+\qquad(17.3)</span></span></p>
 <p>将其乘以 -1，并整理方程，那么我们可以得到下面的公式：</p>
 <p><span id="eq-laisk-walker4"><span class="math display">
 b=-C_i^* + b_{reg}
- \qquad(17.4)</span></span></p>
+\qquad(17.4)</span></span></p>
 <p>那么：</p>
 <p><span id="eq-laisk-walker5"><span class="math display">
 R_d = b_{reg}
- \qquad(17.5)</span></span></p>
+\qquad(17.5)</span></span></p>
 </section>
 </section>
 <section id="sec-kok-method" class="level2" data-number="17.2">

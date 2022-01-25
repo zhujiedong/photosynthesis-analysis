@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 26&nbsp; 参考文献</title>
@@ -33,9 +33,6 @@
     }
   </style>
 
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -73,6 +70,9 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -180,7 +180,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -370,208 +370,428 @@
 </header>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-Aganchich2009" class="csl-entry" role="doc-biblioentry">
-Aganchich, B, S Wahbi, F Loreto, and M Centritto. 2009. <span>“Partial Root Zone Drying: Regulation of Photosynthetic Limitations and Antioxidant Enzymatic Activities in Young Olive (Olea Europaea) Saplings.”</span> <em>Tree Physiology</em> 29 (5): 685.
+Aganchich, B, S Wahbi, F Loreto, and M Centritto. 2009. <span>“Partial
+Root Zone Drying: Regulation of Photosynthetic Limitations and
+Antioxidant Enzymatic Activities in Young Olive (Olea Europaea)
+Saplings.”</span> <em>Tree Physiology</em> 29 (5): 685.
 </div>
 <div id="ref-Ball1987A" class="csl-entry" role="doc-biblioentry">
-Ball, J. Timothy, Ian E. Woodrow, and Joseph A. Berry. 1987. <em>A Model Predicting Stomatal Conductance and Its Contribution to the Control of Photosynthesis Under Different Environmental Conditions</em>. Springer Netherlands.
+Ball, J. Timothy, Ian E. Woodrow, and Joseph A. Berry. 1987. <em>A Model
+Predicting Stomatal Conductance and Its Contribution to the Control of
+Photosynthesis Under Different Environmental Conditions</em>. Springer
+Netherlands.
 </div>
 <div id="ref-ball_model_1987" class="csl-entry" role="doc-biblioentry">
-Ball, John, Ian Woodrow, and Joseph Berry. 1987. <span>“A <span>Model</span> <span>Predicting</span> <span>Stomatal</span> <span>Conductance</span> and <span>Its</span> <span>Contribution</span> to the <span>Control</span> of <span>Photosynthesis</span> <span>Under</span> <span>Different</span> <span>Environmental</span> <span>Conditions</span>.”</span> <em>Progress in Photosynthesis Research</em> 4 (January): 221–24. <a href="https://doi.org/10.1007/978-94-017-0519-6_48">https://doi.org/10.1007/978-94-017-0519-6_48</a>.
+Ball, John, Ian Woodrow, and Joseph Berry. 1987. <span>“A
+<span>Model</span> <span>Predicting</span> <span>Stomatal</span>
+<span>Conductance</span> and <span>Its</span> <span>Contribution</span>
+to the <span>Control</span> of <span>Photosynthesis</span>
+<span>Under</span> <span>Different</span> <span>Environmental</span>
+<span>Conditions</span>.”</span> <em>Progress in Photosynthesis
+Research</em> 4 (January): 221–24. <a href="https://doi.org/10.1007/978-94-017-0519-6_48">https://doi.org/10.1007/978-94-017-0519-6_48</a>.
 </div>
 <div id="ref-BalyEC1935" class="csl-entry" role="doc-biblioentry">
-Baly, EC. 1935. <span>“The Kinetics of Photosynthesis.”</span> <em>Proceedings of the Royal Society of London Series B (Biological Sciences)</em>, no. 117: 218–39.
+Baly, EC. 1935. <span>“The Kinetics of Photosynthesis.”</span>
+<em>Proceedings of the Royal Society of London Series B (Biological
+Sciences)</em>, no. 117: 218–39.
 </div>
 <div id="ref-bernacchi_temperature_2002" class="csl-entry" role="doc-biblioentry">
-Bernacchi, Carl J., Archie R. Portis, Hiromi Nakano, Susanne von Caemmerer, and Stephen P. Long. 2002. <span>“Temperature <span>Response</span> of <span>Mesophyll</span> <span>Conductance</span>. <span>Implications</span> for the <span>Determination</span> of <span>Rubisco</span> <span>Enzyme</span> <span>Kinetics</span> and for <span>Limitations</span> to <span>Photosynthesis</span> in <span>Vivo</span>.”</span> <em>Plant Physiology</em> 130 (4): 1992–98. <a href="https://doi.org/10.1104/pp.008250">https://doi.org/10.1104/pp.008250</a>.
+Bernacchi, Carl J., Archie R. Portis, Hiromi Nakano, Susanne von
+Caemmerer, and Stephen P. Long. 2002. <span>“Temperature
+<span>Response</span> of <span>Mesophyll</span>
+<span>Conductance</span>. <span>Implications</span> for the
+<span>Determination</span> of <span>Rubisco</span> <span>Enzyme</span>
+<span>Kinetics</span> and for <span>Limitations</span> to
+<span>Photosynthesis</span> in <span>Vivo</span>.”</span> <em>Plant
+Physiology</em> 130 (4): 1992–98. <a href="https://doi.org/10.1104/pp.008250">https://doi.org/10.1104/pp.008250</a>.
 </div>
 <div id="ref-nls2" class="csl-entry" role="doc-biblioentry">
-Bouvier, Annie, and Sylvie Huet. 1994. <span>“Nls2 Nonlinear Regression by s PLUS Functions.”</span> <em>Computational Statistics &amp; Data Analysis</em> 18 (1): 187–90.
+Bouvier, Annie, and Sylvie Huet. 1994. <span>“Nls2 Nonlinear Regression
+by s PLUS Functions.”</span> <em>Computational Statistics &amp; Data
+Analysis</em> 18 (1): 187–90.
 </div>
 <div id="ref-brooksEffectTemperatureCO21985" class="csl-entry" role="doc-biblioentry">
-Brooks, A., and G. D. Farquhar. 1985. <span>“Effect of Temperature on the <span>Co2</span>/<span>O2</span> Specificity of Ribulose-1,5-Bisphosphate Carboxylase/Oxygenase and the Rate of Respiration in the Light.”</span> <em>Planta</em> 165 (3): 397–406. <a href="https://doi.org/10.1007/BF00392238">https://doi.org/10.1007/BF00392238</a>.
+Brooks, A., and G. D. Farquhar. 1985. <span>“Effect of Temperature on
+the <span>Co2</span>/<span>O2</span> Specificity of
+Ribulose-1,5-Bisphosphate Carboxylase/Oxygenase and the Rate of
+Respiration in the Light.”</span> <em>Planta</em> 165 (3): 397–406. <a href="https://doi.org/10.1007/BF00392238">https://doi.org/10.1007/BF00392238</a>.
 </div>
 <div id="ref-Buckley2014Is" class="csl-entry" role="doc-biblioentry">
-Buckley, T. N., S Martorell, A Diazespejo, M Tomàs, and H Medrano. 2014. <span>“Is Stomatal Conductance Optimized over Both Time and Space in Plant Crowns? A Field Test in Grapevine Vitis Vinifera.”</span> <em>Plant Cell &amp; Environment</em> 37 (12): 2707.
+Buckley, T. N., S Martorell, A Diazespejo, M Tomàs, and H Medrano. 2014.
+<span>“Is Stomatal Conductance Optimized over Both Time and Space in
+Plant Crowns? A Field Test in Grapevine Vitis Vinifera.”</span>
+<em>Plant Cell &amp; Environment</em> 37 (12): 2707.
 </div>
 <div id="ref-bussotti_jip_2010" class="csl-entry" role="doc-biblioentry">
-Bussotti, Filippo, Rosanna Desotgiu, Martina Pollastrini, and Chiara Cascio. 2010. <span>“The <span>JIP</span> Test: <span>A</span> Tool to Screen the Capacity of Plant Adaptation to Climate Change.”</span> <em>Scandinavian Journal of Forest Research</em> 25 (August): 1–8.
+Bussotti, Filippo, Rosanna Desotgiu, Martina Pollastrini, and Chiara
+Cascio. 2010. <span>“The <span>JIP</span> Test: <span>A</span> Tool to
+Screen the Capacity of Plant Adaptation to Climate Change.”</span>
+<em>Scandinavian Journal of Forest Research</em> 25 (August): 1–8.
 </div>
 <div id="ref-Caemmerer2000Biochemical" class="csl-entry" role="doc-biblioentry">
-Caemmerer, S. Von. 2000. <span>“Biochemical Models of Leaf Photosynthesis.”</span> <em>Quarterly Review of Biology</em>, 165.
+Caemmerer, S. Von. 2000. <span>“Biochemical Models of Leaf
+Photosynthesis.”</span> <em>Quarterly Review of Biology</em>, 165.
 </div>
 <div id="ref-centritto2003" class="csl-entry" role="doc-biblioentry">
-Centritto, M, F Loreto, and K Chartzoulakis. 2003. <span>“The Use of Low Co2 to Estimate Diffusional and Non-Diffusional Limitations of Photosynthetic Capacity of Salt-Stressed Olive Saplings.”</span> <em>Plant Cell and Environment</em> 26 (4): 585–94.
+Centritto, M, F Loreto, and K Chartzoulakis. 2003. <span>“The Use of Low
+Co2 to Estimate Diffusional and Non-Diffusional Limitations of
+Photosynthetic Capacity of Salt-Stressed Olive Saplings.”</span>
+<em>Plant Cell and Environment</em> 26 (4): 585–94.
 </div>
 <div id="ref-Coursolle12019" class="csl-entry" role="doc-biblioentry">
-Coursolle, Carole, Guillaume O. Prud’homme, Manuel Lamothe1, and Nathalie Isabel1. 2019. <span>“Measuring Rapid a–Ci Curves in Boreal Conifers: Black Spruce and Balsam Fir.”</span> <em>Frontiers in Plant Science</em>. <a href="https://doi.org/10.3389/fpls.2019.01276">https://doi.org/10.3389/fpls.2019.01276</a>.
+Coursolle, Carole, Guillaume O. Prud’homme, Manuel Lamothe1, and
+Nathalie Isabel1. 2019. <span>“Measuring Rapid a–Ci Curves in Boreal
+Conifers: Black Spruce and Balsam Fir.”</span> <em>Frontiers in Plant
+Science</em>. <a href="https://doi.org/10.3389/fpls.2019.01276">https://doi.org/10.3389/fpls.2019.01276</a>.
 </div>
 <div id="ref-Cowan1977Stomatal" class="csl-entry" role="doc-biblioentry">
-Cowan, I. R., and G. D. Farquhar. 1977. <span>“Stomatal Function in Relation to Leaf Metabolism and Environment.”</span> <em>Symposia of the Society for Experimental Biology</em> 31 (23): 471.
+Cowan, I. R., and G. D. Farquhar. 1977. <span>“Stomatal Function in
+Relation to Leaf Metabolism and Environment.”</span> <em>Symposia of the
+Society for Experimental Biology</em> 31 (23): 471.
 </div>
 <div id="ref-De2016A" class="csl-entry" role="doc-biblioentry">
-De Kauwe, Martin G, Yan Shih Lin, Ian J Wright, Belinda E Medlyn, Kristine Y Crous, David S Ellsworth, Vincent Maire, I Colin Prentice, Owen K Atkin, and Alistair Rogers. 2016. <span>“A Test of the One Point Method for Estimating Maximum Carboxlation Capacity from Field Measured, Light Saturated Photosynthesis.”</span> <em>New Phytologist</em> 210 (3): 1130.
+De Kauwe, Martin G, Yan Shih Lin, Ian J Wright, Belinda E Medlyn,
+Kristine Y Crous, David S Ellsworth, Vincent Maire, I Colin Prentice,
+Owen K Atkin, and Alistair Rogers. 2016. <span>“A Test of the One Point
+Method for Estimating Maximum Carboxlation Capacity from Field Measured,
+Light Saturated Photosynthesis.”</span> <em>New Phytologist</em> 210
+(3): 1130.
 </div>
 <div id="ref-Duursma2012MAESPA" class="csl-entry" role="doc-biblioentry">
-Duursma, R. A., and B. E. Medlyn. 2012. <span>“MAESPA: A Model to Study Interactions Between Water Limitation, Environmental Drivers and Vegetation Function at Tree and Stand Levels, with an Example Application to CO<span class="math inline"><sub>2</sub></span> Drought Interactions.”</span> <em>Geoscientific Model Development Discussions</em> 5 (4): 919–40.
+Duursma, R. A., and B. E. Medlyn. 2012. <span>“MAESPA: A Model to Study
+Interactions Between Water Limitation, Environmental Drivers and
+Vegetation Function at Tree and Stand Levels, with an Example
+Application to CO<span class="math inline"><sub>2</sub></span> Drought
+Interactions.”</span> <em>Geoscientific Model Development
+Discussions</em> 5 (4): 919–40.
 </div>
 <div id="ref-Duursma2015Plantecophys" class="csl-entry" role="doc-biblioentry">
-Duursma, Remko A. 2015. <span>“Plantecophys-an r Package for Analysing and Modelling Leaf Gas Exchange Data.”</span> <em>Plos One</em> 10 (11): e0143346.
+Duursma, Remko A. 2015. <span>“Plantecophys-an r Package for Analysing
+and Modelling Leaf Gas Exchange Data.”</span> <em>Plos One</em> 10 (11):
+e0143346.
 </div>
 <div id="ref-duursma_near-optimal_2013" class="csl-entry" role="doc-biblioentry">
-Duursma, Remko A., Paxton Payton, Michael P. Bange, Katrina J. Broughton, Renee A. Smith, Belinda E. Medlyn, and David T. Tissue. 2013a. <span>“Near-Optimal Response of Instantaneous Transpiration Efficiency to Vapour Pressure Deficit, Temperature and [<span>Co2</span>] in Cotton (<span>Gossypium</span> Hirsutum <span>L</span>.).”</span> <em>Agricultural and Forest Meteorology</em> 168: 168–76. <a href="https://doi.org/10.1016/j.agrformet.2012.09.005">https://doi.org/10.1016/j.agrformet.2012.09.005</a>.
+Duursma, Remko A., Paxton Payton, Michael P. Bange, Katrina J.
+Broughton, Renee A. Smith, Belinda E. Medlyn, and David T. Tissue.
+2013a. <span>“Near-Optimal Response of Instantaneous Transpiration
+Efficiency to Vapour Pressure Deficit, Temperature and
+[<span>Co2</span>] in Cotton (<span>Gossypium</span> Hirsutum
+<span>L</span>.).”</span> <em>Agricultural and Forest Meteorology</em>
+168: 168–76. <a href="https://doi.org/10.1016/j.agrformet.2012.09.005">https://doi.org/10.1016/j.agrformet.2012.09.005</a>.
 </div>
 <div id="ref-Duursma2013Near" class="csl-entry" role="doc-biblioentry">
-———. 2013b. <span>“Near-Optimal Response of Instantaneous Transpiration Efficiency to Vapour Pressure Deficit, Temperature and CO<span class="math inline"><sub>2</sub></span> in Cotton (Gossypium Hirsutum l.).”</span> <em>Agricultural &amp; Forest Meteorology</em> 168 (1): 168–76.
+———. 2013b. <span>“Near-Optimal Response of Instantaneous Transpiration
+Efficiency to Vapour Pressure Deficit, Temperature and CO<span class="math inline"><sub>2</sub></span> in Cotton (Gossypium Hirsutum
+l.).”</span> <em>Agricultural &amp; Forest Meteorology</em> 168 (1):
+168–76.
 </div>
 <div id="ref-ellsworth2015phosphorus" class="csl-entry" role="doc-biblioentry">
-Ellsworth, David S, Kristine Y Crous, Hans Lambers, and Julia Cooke. 2015. <span>“Phosphorus Recycling in Photorespiration Maintains High Photosynthetic Capacity in Woody Species.”</span> <em>Plant Cell and Environment</em> 38 (6): 1142–56.
+Ellsworth, David S, Kristine Y Crous, Hans Lambers, and Julia Cooke.
+2015. <span>“Phosphorus Recycling in Photorespiration Maintains High
+Photosynthetic Capacity in Woody Species.”</span> <em>Plant Cell and
+Environment</em> 38 (6): 1142–56.
 </div>
 <div id="ref-Elzhov2016minpack" class="csl-entry" role="doc-biblioentry">
-Elzhov, Timur V., Katharine M. Mullen, Andrej Nikolai Spiess, and Ben Bolker. 2016. <span>“Minpack.lm: R Interface to the Levenberg-Marquardt Nonlinear Least-Squares Algorithm Found in MINPACK, Plus Support for Bounds.”</span>
+Elzhov, Timur V., Katharine M. Mullen, Andrej Nikolai Spiess, and Ben
+Bolker. 2016. <span>“Minpack.lm: R Interface to the Levenberg-Marquardt
+Nonlinear Least-Squares Algorithm Found in MINPACK, Plus Support for
+Bounds.”</span>
 </div>
 <div id="ref-fabozzi_basics_2014" class="csl-entry" role="doc-biblioentry">
-Fabozzi, Frank J., Sergio M. Focardi, Svetlozar T. Rachev, and Bala G. Arshanapalli. 2014. <em>The <span>Basics</span> of <span>Financial</span> <span>Econometrics</span>: <span>Tools</span>, <span>Concepts</span>, and <span>Asset</span> <span>Management</span> <span>Applications</span></em>. 1st edition. Wiley.
+Fabozzi, Frank J., Sergio M. Focardi, Svetlozar T. Rachev, and Bala G.
+Arshanapalli. 2014. <em>The <span>Basics</span> of
+<span>Financial</span> <span>Econometrics</span>: <span>Tools</span>,
+<span>Concepts</span>, and <span>Asset</span> <span>Management</span>
+<span>Applications</span></em>. 1st edition. Wiley.
 </div>
 <div id="ref-Farquhar1980A" class="csl-entry" role="doc-biblioentry">
-Farquhar, G. D., S. Von Caemmerer, and J. A. Berry. 1980. <span>“A Biochemical Model of Photosynthetic CO<span class="math inline"><sub>2</sub></span> Assimilation in Leaves of C3 Species.”</span> <em>Planta</em> 149 (1): 78–90.
+Farquhar, G. D., S. Von Caemmerer, and J. A. Berry. 1980. <span>“A
+Biochemical Model of Photosynthetic CO<span class="math inline"><sub>2</sub></span> Assimilation in Leaves of C3
+Species.”</span> <em>Planta</em> 149 (1): 78–90.
 </div>
 <div id="ref-Flexas2007leak" class="csl-entry" role="doc-biblioentry">
-Flexas J, Azespejo A, and Berry J A. 2007. <span>“Analysis of Leakage in IRGA’s Leaf Chambers of Open Gas Exchange Systems: Quantification and Its Effects in Photosynthesis Parameterization.”</span> <em>Journal of Experimental Botany</em> 58 (6): 1533.
+Flexas J, Azespejo A, and Berry J A. 2007. <span>“Analysis of Leakage in
+IRGA’s Leaf Chambers of Open Gas Exchange Systems: Quantification and
+Its Effects in Photosynthesis Parameterization.”</span> <em>Journal of
+Experimental Botany</em> 58 (6): 1533.
 </div>
 <div id="ref-Gu2010Reliable" class="csl-entry" role="doc-biblioentry">
-Gu, Lianhong, Stephen G Pallardy, Kevin Tu, Beverly E Law, and Stan D Wullschleger. 2010. <span>“Reliable Estimation of Biochemical Parameters from c-3 Leaf Photosynthesis-Intercellular Carbon Dioxide Response Curves.”</span> <em>Plant Cell &amp; Environment</em> 33 (11): 1852–74.
+Gu, Lianhong, Stephen G Pallardy, Kevin Tu, Beverly E Law, and Stan D
+Wullschleger. 2010. <span>“Reliable Estimation of Biochemical Parameters
+from c-3 Leaf Photosynthesis-Intercellular Carbon Dioxide Response
+Curves.”</span> <em>Plant Cell &amp; Environment</em> 33 (11): 1852–74.
 </div>
 <div id="ref-harleyTheoreticalConsiderationsWhen1992" class="csl-entry" role="doc-biblioentry">
-Harley, Peter C., Francesco Loreto, Giorgio Di Marco, and Thomas D. Sharkey. 1992. <span>“Theoretical <span>Considerations</span> When <span>Estimating</span> the <span>Mesophyll</span> <span>Conductance</span> to <span>Co2</span> <span>Flux</span> by <span>Analysis</span> of the <span>Response</span> of <span>Photosynthesis</span> to <span>Co2</span>.”</span> <em>Plant Physiology</em> 98: 1429–36.
+Harley, Peter C., Francesco Loreto, Giorgio Di Marco, and Thomas D.
+Sharkey. 1992. <span>“Theoretical <span>Considerations</span> When
+<span>Estimating</span> the <span>Mesophyll</span>
+<span>Conductance</span> to <span>Co2</span> <span>Flux</span> by
+<span>Analysis</span> of the <span>Response</span> of
+<span>Photosynthesis</span> to <span>Co2</span>.”</span> <em>Plant
+Physiology</em> 98: 1429–36.
 </div>
 <div id="ref-haworth2015coordination" class="csl-entry" role="doc-biblioentry">
-Haworth, Matthew, Dilek Killi, Alessandro Materassi, and Antonio Raschi. 2015. <span>“Coordination of Stomatal Physiological Behavior and Morphology with Carbon Dioxide Determines Stomatal Control.”</span> <em>American Journal of Botany</em> 102 (5): 677–88.
+Haworth, Matthew, Dilek Killi, Alessandro Materassi, and Antonio Raschi.
+2015. <span>“Coordination of Stomatal Physiological Behavior and
+Morphology with Carbon Dioxide Determines Stomatal Control.”</span>
+<em>American Journal of Botany</em> 102 (5): 677–88.
 </div>
 <div id="ref-matthew2018" class="csl-entry" role="doc-biblioentry">
-Haworth, Matthew, Giovanni Marino, and Mauro Centritto. 2018. <span>“An Introductory Guide to Gas Exchange Analysis of Photosynthesis and Its Application to Plant Phenotyping and Precision Irrigation to Enhance Water Use Efficiency.”</span> <em>Journal of Water and Climate Change</em>. https://doi.org/<a href="https://doi.org/10.2166/wcc.2018.152">https://doi.org/10.2166/wcc.2018.152</a>.
+Haworth, Matthew, Giovanni Marino, and Mauro Centritto. 2018. <span>“An
+Introductory Guide to Gas Exchange Analysis of Photosynthesis and Its
+Application to Plant Phenotyping and Precision Irrigation to Enhance
+Water Use Efficiency.”</span> <em>Journal of Water and Climate
+Change</em>. https://doi.org/<a href="https://doi.org/10.2166/wcc.2018.152">https://doi.org/10.2166/wcc.2018.152</a>.
 </div>
 <div id="ref-heath2005rising" class="csl-entry" role="doc-biblioentry">
-Heath, James R, Edward Ayres, Malcolm Possell, Richard D Bardgett, Helaina I J Black, Helen Grant, Phil Ineson, and Gerhard Kerstiens. 2005. <span>“Rising Atmospheric Co2 Reduces Sequestration of Root-Derived Soil Carbon.”</span> <em>Science</em> 309 (5741): 1711–13.
+Heath, James R, Edward Ayres, Malcolm Possell, Richard D Bardgett,
+Helaina I J Black, Helen Grant, Phil Ineson, and Gerhard Kerstiens.
+2005. <span>“Rising Atmospheric Co2 Reduces Sequestration of
+Root-Derived Soil Carbon.”</span> <em>Science</em> 309 (5741): 1711–13.
 </div>
 <div id="ref-Hikosaka2006Temperature" class="csl-entry" role="doc-biblioentry">
-Hikosaka, K, K Ishikawa, A Borjigidai, O Muller, and Y Onoda. 2006. <span>“Temperature Acclimation of Photosynthesis: Mechanisms Involved in the Changes in Temperature Dependence of Photosynthetic Rate.”</span> <em>Journal of Experimental Botany</em> 57 (2): 291.
+Hikosaka, K, K Ishikawa, A Borjigidai, O Muller, and Y Onoda. 2006.
+<span>“Temperature Acclimation of Photosynthesis: Mechanisms Involved in
+the Changes in Temperature Dependence of Photosynthetic Rate.”</span>
+<em>Journal of Experimental Botany</em> 57 (2): 291.
 </div>
 <div id="ref-HuangHY2009" class="csl-entry" role="doc-biblioentry">
-Huang, HY, XY Dou, PY Sun, B Deng, GJ Wu, and CL Peng. 2009. <span>“Comparison of Photosynthetic Characteristics in Two Ecotypes of Jatropha Curcas in Summer.”</span> <em>Acta Ecologica Sinica</em>, no. 29: 2861–67.
+Huang, HY, XY Dou, PY Sun, B Deng, GJ Wu, and CL Peng. 2009.
+<span>“Comparison of Photosynthetic Characteristics in Two Ecotypes of
+Jatropha Curcas in Summer.”</span> <em>Acta Ecologica Sinica</em>, no.
+29: 2861–67.
 </div>
 <div id="ref-stinziano2019" class="csl-entry" role="doc-biblioentry">
-Joseph R., Stinziano, Adamson Rachael K., and Hanson David T. 2019. <span>“Using Multirate Rapid ACi Curves as a Tool to Explore New Questions in the Photosynthetic Physiology of Plants.”</span> <em>New Phytologist</em>. <a href="https://doi.org/10.1111/nph.15657">https://doi.org/10.1111/nph.15657</a>.
+Joseph R., Stinziano, Adamson Rachael K., and Hanson David T. 2019.
+<span>“Using Multirate Rapid ACi Curves as a Tool to Explore New
+Questions in the Photosynthetic Physiology of Plants.”</span> <em>New
+Phytologist</em>. <a href="https://doi.org/10.1111/nph.15657">https://doi.org/10.1111/nph.15657</a>.
 </div>
 <div id="ref-kemp2003modern" class="csl-entry" role="doc-biblioentry">
-Kemp, Freda. 2003. <span>“Modern Applied Statistics with s.”</span> <em>Journal of The Royal Statistical Society Series D-the Statistician</em> 52 (4): 704–5.
+Kemp, Freda. 2003. <span>“Modern Applied Statistics with s.”</span>
+<em>Journal of The Royal Statistical Society Series D-the
+Statistician</em> 52 (4): 704–5.
 </div>
 <div id="ref-knauerBigleafPackageCalculation2018" class="csl-entry" role="doc-biblioentry">
-Knauer, Jürgen, Tarek S. El-Madany, Sönke Zaehle, and Mirco Migliavacca. 2018. <span>“Bigleaf—<span>An</span> <span>R</span> Package for the Calculation of Physical and Physiological Ecosystem Properties from Eddy Covariance Data.”</span> <em>PLOS ONE</em> 13 (8): e0201114. <a href="https://doi.org/10.1371/journal.pone.0201114">https://doi.org/10.1371/journal.pone.0201114</a>.
+Knauer, Jürgen, Tarek S. El-Madany, Sönke Zaehle, and Mirco Migliavacca.
+2018. <span>“Bigleaf—<span>An</span> <span>R</span> Package for the
+Calculation of Physical and Physiological Ecosystem Properties from Eddy
+Covariance Data.”</span> <em>PLOS ONE</em> 13 (8): e0201114. <a href="https://doi.org/10.1371/journal.pone.0201114">https://doi.org/10.1371/journal.pone.0201114</a>.
 </div>
 <div id="ref-kokInhibitionPhotosynthesisIntense1956" class="csl-entry" role="doc-biblioentry">
-Kok, Bessel. 1956. <span>“On the Inhibition of Photosynthesis by Intense Light.”</span> <em>Biochimica Et Biophysica Acta</em> 21 (2): 234–44. <a href="https://doi.org/10.1016/0006-3002(56)90003-8">https://doi.org/10.1016/0006-3002(56)90003-8</a>.
+Kok, Bessel. 1956. <span>“On the Inhibition of Photosynthesis by Intense
+Light.”</span> <em>Biochimica Et Biophysica Acta</em> 21 (2): 234–44. <a href="https://doi.org/10.1016/0006-3002(56)90003-8">https://doi.org/10.1016/0006-3002(56)90003-8</a>.
 </div>
 <div id="ref-lauteri2014" class="csl-entry" role="doc-biblioentry">
-Lauteri, Marco, Matthew Haworth, Rachid Serraj, Maria Cristina Monteverdi, and Mauro Centritto. 2014. <span>“Photosynthetic Diffusional Constraints Affect Yield in Drought Stressed Rice Cultivars During Flowering.”</span> <em>PLOS ONE</em> 9 (10).
+Lauteri, Marco, Matthew Haworth, Rachid Serraj, Maria Cristina
+Monteverdi, and Mauro Centritto. 2014. <span>“Photosynthetic Diffusional
+Constraints Affect Yield in Drought Stressed Rice Cultivars During
+Flowering.”</span> <em>PLOS ONE</em> 9 (10).
 </div>
 <div id="ref-leuning1995a" class="csl-entry" role="doc-biblioentry">
-Leuning, R. 1995a. <span>“A Critical Appraisal of a Combined Stomatal‐photosynthesis Model for C3 Plants.”</span> <em>Plant Cell and Environment</em> 18 (4): 339–55.
+Leuning, R. 1995a. <span>“A Critical Appraisal of a Combined
+Stomatal‐photosynthesis Model for C3 Plants.”</span> <em>Plant Cell and
+Environment</em> 18 (4): 339–55.
 </div>
 <div id="ref-leuning_critical_1995" class="csl-entry" role="doc-biblioentry">
-Leuning, R. 1995b. <span>“A Critical Appraisal of a Combined Stomatal-Photosynthesis Model for C3 Plants.”</span> <em>Plant, Cell &amp; Environment</em> 18 (4): 339–55. https://doi.org/<a href="https://doi.org/10.1111/j.1365-3040.1995.tb00370.x">https://doi.org/10.1111/j.1365-3040.1995.tb00370.x</a>.
+Leuning, R. 1995b. <span>“A Critical Appraisal of a Combined
+Stomatal-Photosynthesis Model for C3 Plants.”</span> <em>Plant, Cell
+&amp; Environment</em> 18 (4): 339–55. https://doi.org/<a href="https://doi.org/10.1111/j.1365-3040.1995.tb00370.x">https://doi.org/10.1111/j.1365-3040.1995.tb00370.x</a>.
 </div>
 <div id="ref-rpkgphoto" class="csl-entry" role="doc-biblioentry">
-Liu, Yasi, Xiangping Wang, Dayong Fan, Jiangshan Lai, Alonso Zavafer, Yasi Liu, Xiangping Wang, Dayong Fan, Jiangshan Lai, and Alonso Zavafer. 2021. <span>“The Use of <span>R</span> in Photosynthesis Research.”</span> <em>Functional Plant Biology</em>, October. <a href="https://doi.org/10.1071/FP21102">https://doi.org/10.1071/FP21102</a>.
+Liu, Yasi, Xiangping Wang, Dayong Fan, Jiangshan Lai, Alonso Zavafer,
+Yasi Liu, Xiangping Wang, Dayong Fan, Jiangshan Lai, and Alonso Zavafer.
+2021. <span>“The Use of <span>R</span> in Photosynthesis
+Research.”</span> <em>Functional Plant Biology</em>, October. <a href="https://doi.org/10.1071/FP21102">https://doi.org/10.1071/FP21102</a>.
 </div>
 <div id="ref-de_lobo_fitting_2013" class="csl-entry" role="doc-biblioentry">
-Lobo, F. A. de, M. P. de Barros, H. J. Dalmagro, Â. C. Dalmolin, W. E. Pereira, É. C. de Souza, G. L. Vourlitis, and C. E. Ortíz. 2013. <span>“Fitting Net Photosynthetic Light-Response Curves with <span>Microsoft</span> <span>Excel</span> - a Critical Look at the Models.”</span> <em>Photosynthetica</em> 51 (3): 445–56. <a href="https://doi.org/10.1007/s11099-013-0045-y">https://doi.org/10.1007/s11099-013-0045-y</a>.
+Lobo, F. A. de, M. P. de Barros, H. J. Dalmagro, Â. C. Dalmolin, W. E.
+Pereira, É. C. de Souza, G. L. Vourlitis, and C. E. Ortíz. 2013.
+<span>“Fitting Net Photosynthetic Light-Response Curves with
+<span>Microsoft</span> <span>Excel</span> - a Critical Look at the
+Models.”</span> <em>Photosynthetica</em> 51 (3): 445–56. <a href="https://doi.org/10.1007/s11099-013-0045-y">https://doi.org/10.1007/s11099-013-0045-y</a>.
 </div>
 <div id="ref-Lobo2013Fitting" class="csl-entry" role="doc-biblioentry">
-Lobo, F. De A., M. P. De Barros, H. J. Dalmagro, Â. C. Dalmolin, W. E. Pereira, É. C. de Souza, G. L. Vourlitis, and C. E. Rodríguez Ortíz. 2013. <span>“Fitting Net Photosynthetic Light-Response Curves with Microsoft Excel a Critical Look at the Models.”</span> <em>Photosynthetica</em> 51 (3): 445–56.
+Lobo, F. De A., M. P. De Barros, H. J. Dalmagro, Â. C. Dalmolin, W. E.
+Pereira, É. C. de Souza, G. L. Vourlitis, and C. E. Rodríguez Ortíz.
+2013. <span>“Fitting Net Photosynthetic Light-Response Curves with
+Microsoft Excel a Critical Look at the Models.”</span>
+<em>Photosynthetica</em> 51 (3): 445–56.
 </div>
 <div id="ref-Long2003Gas" class="csl-entry" role="doc-biblioentry">
-Long, S. P., and C. J. Bernacchi. 2003. <span>“Gas Exchange Measurements, What Can They Tell Us about the Underlying Limitations to Photosynthesis? Procedures and Sources of Error.”</span> <em>Journal of Experimental Botany</em> 54 (392): 2393.
+Long, S. P., and C. J. Bernacchi. 2003. <span>“Gas Exchange
+Measurements, What Can They Tell Us about the Underlying Limitations to
+Photosynthesis? Procedures and Sources of Error.”</span> <em>Journal of
+Experimental Botany</em> 54 (392): 2393.
 </div>
 <div id="ref-marshall1980a" class="csl-entry" role="doc-biblioentry">
-Marshall, B, and P V Biscoe. 1980. <span>“A Model for C3 Leaves Describing the Dependence of Net Photosynthesis on Irradiance.”</span> <em>Journal of Experimental Botany</em> 31 (1): 29–39.
+Marshall, B, and P V Biscoe. 1980. <span>“A Model for C3 Leaves
+Describing the Dependence of Net Photosynthesis on Irradiance.”</span>
+<em>Journal of Experimental Botany</em> 31 (1): 29–39.
 </div>
 <div id="ref-medlyn_temperature_2002" class="csl-entry" role="doc-biblioentry">
-Medlyn, B. E., E. Dreyer, D. Ellsworth, M. Forstreuter, P. C. Harley, M. U. F. Kirschbaum, X. Le Roux, et al. 2002. <span>“Temperature Response of Parameters of a Biochemically Based Model of Photosynthesis. <span>II</span>. <span>A</span> Review of Experimental Data.”</span> <em>Plant, Cell &amp; Environment</em> 25 (9): 1167–79. https://doi.org/<a href="https://doi.org/10.1046/j.1365-3040.2002.00891.x">https://doi.org/10.1046/j.1365-3040.2002.00891.x</a>.
+Medlyn, B. E., E. Dreyer, D. Ellsworth, M. Forstreuter, P. C. Harley, M.
+U. F. Kirschbaum, X. Le Roux, et al. 2002. <span>“Temperature Response
+of Parameters of a Biochemically Based Model of Photosynthesis.
+<span>II</span>. <span>A</span> Review of Experimental Data.”</span>
+<em>Plant, Cell &amp; Environment</em> 25 (9): 1167–79.
+https://doi.org/<a href="https://doi.org/10.1046/j.1365-3040.2002.00891.x">https://doi.org/10.1046/j.1365-3040.2002.00891.x</a>.
 </div>
 <div id="ref-Medlyn2011Reconciling" class="csl-entry" role="doc-biblioentry">
-Medlyn, Belinda E., Remko A. Duursma, Derek Eamus, David S. Ellsworth, I. Colin Prentice, Craig V. M. Barton, Kristine Y. Crous, Paolo De Angelis, Michael Freeman, and Lisa Wingate. 2011. <span>“Reconciling the Optimal and Empirical Approaches to Modelling Stomatal Conductance.”</span> <em>Global Change Biology</em> 17 (6): 2134–44.
+Medlyn, Belinda E., Remko A. Duursma, Derek Eamus, David S. Ellsworth,
+I. Colin Prentice, Craig V. M. Barton, Kristine Y. Crous, Paolo De
+Angelis, Michael Freeman, and Lisa Wingate. 2011. <span>“Reconciling the
+Optimal and Empirical Approaches to Modelling Stomatal
+Conductance.”</span> <em>Global Change Biology</em> 17 (6): 2134–44.
 </div>
 <div id="ref-mejdovaPhotosyntheticParametersSedgegrass2021" class="csl-entry" role="doc-biblioentry">
-Mejdová, Markéta, Jiří Dušek, Lenka Foltýnová, Lenka Macálková, and Hana Čížková. 2021. <span>“Photosynthetic Parameters of a Sedge-Grass Marsh as a Big-Leaf: Effect of Plant Species Composition.”</span> <em>Scientific Reports</em> 11 (1): 3723. <a href="https://doi.org/10.1038/s41598-021-82382-2">https://doi.org/10.1038/s41598-021-82382-2</a>.
+Mejdová, Markéta, Jiří Dušek, Lenka Foltýnová, Lenka Macálková, and Hana
+Čížková. 2021. <span>“Photosynthetic Parameters of a Sedge-Grass Marsh
+as a Big-Leaf: Effect of Plant Species Composition.”</span>
+<em>Scientific Reports</em> 11 (1): 3723. <a href="https://doi.org/10.1038/s41598-021-82382-2">https://doi.org/10.1038/s41598-021-82382-2</a>.
 </div>
 <div id="ref-ogren_convexity_1993" class="csl-entry" role="doc-biblioentry">
-Ogren, E. 1993. <span>“Convexity of the <span>Photosynthetic</span> <span>Light</span>-<span>Response</span> <span>Curve</span> in <span>Relation</span> to <span>Intensity</span> and <span>Direction</span> of <span>Light</span> During <span>Growth</span>.”</span> <em>Plant Physiology</em> 101 (3): 1013–19. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC158720/">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC158720/</a>.
+Ogren, E. 1993. <span>“Convexity of the <span>Photosynthetic</span>
+<span>Light</span>-<span>Response</span> <span>Curve</span> in
+<span>Relation</span> to <span>Intensity</span> and
+<span>Direction</span> of <span>Light</span> During
+<span>Growth</span>.”</span> <em>Plant Physiology</em> 101 (3): 1013–19.
+<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC158720/">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC158720/</a>.
 </div>
 <div id="ref-Prado1997Photosynthetic" class="csl-entry" role="doc-biblioentry">
-Prado, C. H., and J. A. P. V. De Moraes. 1997. <span>“Photosynthetic Capacity and Specific Leaf Mass in Twenty Woody Species of Cerrado Vegetation Under Field Conditions.”</span> <em>Photosynthetica</em> 33 (1): 103–12.
+Prado, C. H., and J. A. P. V. De Moraes. 1997. <span>“Photosynthetic
+Capacity and Specific Leaf Mass in Twenty Woody Species of Cerrado
+Vegetation Under Field Conditions.”</span> <em>Photosynthetica</em> 33
+(1): 103–12.
 </div>
 <div id="ref-rcore" class="csl-entry" role="doc-biblioentry">
-R Core Team. 2021. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+R Core Team. 2021. <em>R: A Language and Environment for Statistical
+Computing</em>. Vienna, Austria: R Foundation for Statistical Computing.
+<a href="https://www.R-project.org/">https://www.R-project.org/</a>.
 </div>
 <div id="ref-saathoff_gas_2021" class="csl-entry" role="doc-biblioentry">
-Saathoff, Aaron J., and Jon Welles. 2021. <span>“Gas Exchange Measurements in the Unsteady State.”</span> <em>Plant, Cell &amp; Environment</em> 44 (11): 3509–23. <a href="https://doi.org/10.1111/pce.14178">https://doi.org/10.1111/pce.14178</a>.
+Saathoff, Aaron J., and Jon Welles. 2021. <span>“Gas Exchange
+Measurements in the Unsteady State.”</span> <em>Plant, Cell &amp;
+Environment</em> 44 (11): 3509–23. <a href="https://doi.org/10.1111/pce.14178">https://doi.org/10.1111/pce.14178</a>.
 </div>
 <div id="ref-Smith2002" class="csl-entry" role="doc-biblioentry">
-Smith, Lindsay I. 2002. <span>“A Tutorial on Principal Component Analysis.”</span>
+Smith, Lindsay I. 2002. <span>“A Tutorial on Principal Component
+Analysis.”</span>
 </div>
 <div id="ref-stinziano2017" class="csl-entry" role="doc-biblioentry">
-Stinziano, J. R., P. B. Morgan, D. J. Lynch, A. J. Saathoff, D. K. Mcdermitt, and D. T. Hanson. 2017. <span>“The Rapid a-Ci Response: Photosynthesis in the Phenomic Era.”</span> <em>Plant Cell &amp; Environment</em> 40.
+Stinziano, J. R., P. B. Morgan, D. J. Lynch, A. J. Saathoff, D. K.
+Mcdermitt, and D. T. Hanson. 2017. <span>“The Rapid a-Ci Response:
+Photosynthesis in the Phenomic Era.”</span> <em>Plant Cell &amp;
+Environment</em> 40.
 </div>
 <div id="ref-stinziano2018" class="csl-entry" role="doc-biblioentry">
-Stinziano, Joseph R, Dayle K Mcdermitt, Douglas J Lynch, Aaron J Saathoff, Patrick B Morgan, and David T Hanson. 2018. <span>“The Rapid a/Ci Response: A Guide to Best Practices.”</span> <em>New Phytologist</em>.
+Stinziano, Joseph R, Dayle K Mcdermitt, Douglas J Lynch, Aaron J
+Saathoff, Patrick B Morgan, and David T Hanson. 2018. <span>“The Rapid
+a/Ci Response: A Guide to Best Practices.”</span> <em>New
+Phytologist</em>.
 </div>
 <div id="ref-photosynthesispkg" class="csl-entry" role="doc-biblioentry">
-Stinziano, Joseph R, Cassaundra Roback, Demi Gamble, Bridget Murphy, Patrick Hudson, and Christopher D Muir. 2020. <span>“Photosynthesis: Tools for Plant Ecophysiology &amp; Modeling.”</span> <a href="https://CRAN.R-project.org/package=photosynthesis">https://CRAN.R-project.org/package=photosynthesis</a>.
+Stinziano, Joseph R, Cassaundra Roback, Demi Gamble, Bridget Murphy,
+Patrick Hudson, and Christopher D Muir. 2020. <span>“Photosynthesis:
+Tools for Plant Ecophysiology &amp; Modeling.”</span> <a href="https://CRAN.R-project.org/package=photosynthesis">https://CRAN.R-project.org/package=photosynthesis</a>.
 </div>
 <div id="ref-stirbetRelationKautskyEffect2011" class="csl-entry" role="doc-biblioentry">
-Stirbet, Alexandrina, and Govindjee. 2011. <span>“On the Relation Between the <span>Kautsky</span> Effect (Chlorophyll a Fluorescence Induction) and <span>Photosystem</span> <span>II</span>: <span>Basics</span> and Applications of the <span>OJIP</span> Fluorescence Transient.”</span> <em>Journal of Photochemistry and Photobiology B: Biology</em>, Special <span>Issue</span> on <span>Recent</span> <span>Progress</span> in the <span>Studies</span> of <span>Structure</span> and <span>Function</span> of <span>Photosystem</span> <span>II</span>, 104 (1): 236–57. <a href="https://doi.org/10.1016/j.jphotobiol.2010.12.010">https://doi.org/10.1016/j.jphotobiol.2010.12.010</a>.
+Stirbet, Alexandrina, and Govindjee. 2011. <span>“On the Relation
+Between the <span>Kautsky</span> Effect (Chlorophyll a Fluorescence
+Induction) and <span>Photosystem</span> <span>II</span>:
+<span>Basics</span> and Applications of the <span>OJIP</span>
+Fluorescence Transient.”</span> <em>Journal of Photochemistry and
+Photobiology B: Biology</em>, Special <span>Issue</span> on
+<span>Recent</span> <span>Progress</span> in the <span>Studies</span> of
+<span>Structure</span> and <span>Function</span> of
+<span>Photosystem</span> <span>II</span>, 104 (1): 236–57. <a href="https://doi.org/10.1016/j.jphotobiol.2010.12.010">https://doi.org/10.1016/j.jphotobiol.2010.12.010</a>.
 </div>
 <div id="ref-stirbetChlorophyllFluorescenceInduction2012" class="csl-entry" role="doc-biblioentry">
-Stirbet, Alexandrina, and Govindjee. 2012. <span>“Chlorophyll a Fluorescence Induction: A Personal Perspective of the Thermal Phase, the <span>J</span>–<span>I</span>–<span>P</span> Rise.”</span> <em>Photosynthesis Research</em> 113 (1): 15–61. <a href="https://doi.org/10.1007/s11120-012-9754-5">https://doi.org/10.1007/s11120-012-9754-5</a>.
+Stirbet, Alexandrina, and Govindjee. 2012. <span>“Chlorophyll a
+Fluorescence Induction: A Personal Perspective of the Thermal Phase, the
+<span>J</span>–<span>I</span>–<span>P</span> Rise.”</span>
+<em>Photosynthesis Research</em> 113 (1): 15–61. <a href="https://doi.org/10.1007/s11120-012-9754-5">https://doi.org/10.1007/s11120-012-9754-5</a>.
 </div>
 <div id="ref-Thornley1976" class="csl-entry" role="doc-biblioentry">
-Thornley, J H M. 1976. <span>“Mathematical Models in Plant Physiology.”</span> <em>London: Academic Press</em>.
+Thornley, J H M. 1976. <span>“Mathematical Models in Plant
+Physiology.”</span> <em>London: Academic Press</em>.
 </div>
 <div id="ref-tsimilli_revisiting2019" class="csl-entry" role="doc-biblioentry">
-Tsimilli-Michael, Merope. 2019. <span>“Revisiting <span>JIP</span>-Test: <span>An</span> Educative Review on Concepts, Assumptions, Approximations, Definitions and Terminology.”</span> <em>Photosynthetica</em> 57 (December): 90–107. <a href="https://doi.org/10.32615/ps.2019.150">https://doi.org/10.32615/ps.2019.150</a>.
+Tsimilli-Michael, Merope. 2019. <span>“Revisiting <span>JIP</span>-Test:
+<span>An</span> Educative Review on Concepts, Assumptions,
+Approximations, Definitions and Terminology.”</span>
+<em>Photosynthetica</em> 57 (December): 90–107. <a href="https://doi.org/10.32615/ps.2019.150">https://doi.org/10.32615/ps.2019.150</a>.
 </div>
 <div id="ref-tuzet2003a" class="csl-entry" role="doc-biblioentry">
-Tuzet, A, A Perrier, and R Leuning. 2003. <span>“A Coupled Model of Stomatal Conductance, Photosynthesis and Transpiration.”</span> <em>Plant Cell and Environment</em> 26 (7): 1097–1116.
+Tuzet, A, A Perrier, and R Leuning. 2003. <span>“A Coupled Model of
+Stomatal Conductance, Photosynthesis and Transpiration.”</span>
+<em>Plant Cell and Environment</em> 26 (7): 1097–1116.
 </div>
 <div id="ref-walkerImprovedMethodMeasuring2015a" class="csl-entry" role="doc-biblioentry">
-Walker, Berkley J., and Donald R. Ort. 2015. <span>“Improved Method for Measuring the Apparent <span>Co2</span> Photocompensation Point Resolves the Impact of Multiple Internal Conductances to <span>Co2</span> to Net Gas Exchange.”</span> <em>Plant, Cell &amp; Environment</em> 38 (11): 2462–74. https://doi.org/<a href="https://doi.org/10.1111/pce.12562">https://doi.org/10.1111/pce.12562</a>.
+Walker, Berkley J., and Donald R. Ort. 2015. <span>“Improved Method for
+Measuring the Apparent <span>Co2</span> Photocompensation Point Resolves
+the Impact of Multiple Internal Conductances to <span>Co2</span> to Net
+Gas Exchange.”</span> <em>Plant, Cell &amp; Environment</em> 38 (11):
+2462–74. https://doi.org/<a href="https://doi.org/10.1111/pce.12562">https://doi.org/10.1111/pce.12562</a>.
 </div>
 <div id="ref-warton2012smatr" class="csl-entry" role="doc-biblioentry">
-Warton, David I, Remko A Duursma, Daniel S Falster, and Sara Taskinen. 2012. <span>“Smatr 3– an r Package for Estimation and Inference about Allometric Lines.”</span> <em>Methods in Ecology and Evolution</em> 3 (2): 257–59.
+Warton, David I, Remko A Duursma, Daniel S Falster, and Sara Taskinen.
+2012. <span>“Smatr 3– an r Package for Estimation and Inference about
+Allometric Lines.”</span> <em>Methods in Ecology and Evolution</em> 3
+(2): 257–59.
 </div>
 <div id="ref-warton2006smatr" class="csl-entry" role="doc-biblioentry">
-Warton, David I, Ian J Wright, Daniel S Falster, and Mark Westoby. 2006. <span>“Bivariate Line‐fitting Methods for Allometry.”</span> <em>Biological Reviews</em> 81 (2): 259–91.
+Warton, David I, Ian J Wright, Daniel S Falster, and Mark Westoby. 2006.
+<span>“Bivariate Line‐fitting Methods for Allometry.”</span>
+<em>Biological Reviews</em> 81 (2): 259–91.
 </div>
 <div id="ref-wayResponsesRespirationLight2019" class="csl-entry" role="doc-biblioentry">
-Way, Danielle A., Michael J. Aspinwall, John E. Drake, Kristine Y. Crous, Courtney E. Campany, Oula Ghannoum, David T. Tissue, and Mark G. Tjoelker. 2019. <span>“Responses of Respiration in the Light to Warming in Field-Grown Trees: A Comparison of the Thermal Sensitivity of the <span>Kok</span> and <span>Laisk</span> Methods.”</span> <em>New Phytologist</em> 222 (1): 132–43. https://doi.org/<a href="https://doi.org/10.1111/nph.15566">https://doi.org/10.1111/nph.15566</a>.
+Way, Danielle A., Michael J. Aspinwall, John E. Drake, Kristine Y.
+Crous, Courtney E. Campany, Oula Ghannoum, David T. Tissue, and Mark G.
+Tjoelker. 2019. <span>“Responses of Respiration in the Light to Warming
+in Field-Grown Trees: A Comparison of the Thermal Sensitivity of the
+<span>Kok</span> and <span>Laisk</span> Methods.”</span> <em>New
+Phytologist</em> 222 (1): 132–43. https://doi.org/<a href="https://doi.org/10.1111/nph.15566">https://doi.org/10.1111/nph.15566</a>.
 </div>
 <div id="ref-Wullschleger1993Biochemical" class="csl-entry" role="doc-biblioentry">
-Wullschleger, Stan D. 1993. <span>“Biochemical Limitations to Carbon Assimilation in C3 Plants—a Retrospective Analysis of the a-Ci Curves from 109 Species.”</span> <em>Journal of Experimental Botany</em> 44 (262): 907–20.
+Wullschleger, Stan D. 1993. <span>“Biochemical Limitations to Carbon
+Assimilation in C3 Plants—a Retrospective Analysis of the a-Ci Curves
+from 109 Species.”</span> <em>Journal of Experimental Botany</em> 44
+(262): 907–20.
 </div>
 <div id="ref-yin2009using" class="csl-entry" role="doc-biblioentry">
-Yin, Xinyou, P C Struik, Pascual Romero, Jeremy Harbinson, Jochem B Evers, Peter E L Van Der Putten, and J Vos. 2009. <span>“Using Combined Measurements of Gas Exchange and Chlorophyll Fluorescence to Estimate Parameters of a Biochemical C3 Photosynthesis Model: A Critical Appraisal and a New Integrated Approach Applied to Leaves in a Wheat (Triticum Aestivum) Canopy.”</span> <em>Plant Cell and Environment</em> 32 (5): 448–64.
+Yin, Xinyou, P C Struik, Pascual Romero, Jeremy Harbinson, Jochem B
+Evers, Peter E L Van Der Putten, and J Vos. 2009. <span>“Using Combined
+Measurements of Gas Exchange and Chlorophyll Fluorescence to Estimate
+Parameters of a Biochemical C3 Photosynthesis Model: A Critical
+Appraisal and a New Integrated Approach Applied to Leaves in a Wheat
+(Triticum Aestivum) Canopy.”</span> <em>Plant Cell and Environment</em>
+32 (5): 448–64.
 </div>
 <div id="ref-yinEvaluatingNewMethod2011" class="csl-entry" role="doc-biblioentry">
-Yin, Xinyou, Zhouping Sun, Paul C. Struik, and Junfei Gu. 2011. <span>“Evaluating a New Method to Estimate the Rate of Leaf Respiration in the Light by Analysis of Combined Gas Exchange and Chlorophyll Fluorescence Measurements.”</span> <em>Journal of Experimental Botany</em> 62 (10): 3489–99. <a href="https://doi.org/10.1093/jxb/err038">https://doi.org/10.1093/jxb/err038</a>.
+Yin, Xinyou, Zhouping Sun, Paul C. Struik, and Junfei Gu. 2011.
+<span>“Evaluating a New Method to Estimate the Rate of Leaf Respiration
+in the Light by Analysis of Combined Gas Exchange and Chlorophyll
+Fluorescence Measurements.”</span> <em>Journal of Experimental
+Botany</em> 62 (10): 3489–99. <a href="https://doi.org/10.1093/jxb/err038">https://doi.org/10.1093/jxb/err038</a>.
 </div>
 <div id="ref-yinC3C4Photosynthesis2009" class="csl-entry" role="doc-biblioentry">
-Yin, X., and P. C. Struik. 2009. <span>“C3 and <span>C4</span> Photosynthesis Models: <span>An</span> Overview from the Perspective of Crop Modelling.”</span> <em>NJAS - Wageningen Journal of Life Sciences</em>, Recent <span>Advances</span> in <span>Crop</span> <span>Growth</span> <span>Modelling</span>, 57 (1): 27–38. <a href="https://doi.org/10.1016/j.njas.2009.07.001">https://doi.org/10.1016/j.njas.2009.07.001</a>.
+Yin, X., and P. C. Struik. 2009. <span>“C3 and <span>C4</span>
+Photosynthesis Models: <span>An</span> Overview from the Perspective of
+Crop Modelling.”</span> <em>NJAS - Wageningen Journal of Life
+Sciences</em>, Recent <span>Advances</span> in <span>Crop</span>
+<span>Growth</span> <span>Modelling</span>, 57 (1): 27–38. <a href="https://doi.org/10.1016/j.njas.2009.07.001">https://doi.org/10.1016/j.njas.2009.07.001</a>.
 </div>
 <div id="ref-ZhangXS2009" class="csl-entry" role="doc-biblioentry">
-Zhang, XS, SH Shen, and J Song. 2009. <span>“The Vertical Distribution of Cotton Leaf Nitrogen Content and Photosynthetic Characteristics in the North China Plain.”</span> <em>Acta Ecologica Sinica</em>, no. 29: 1893–98.
+Zhang, XS, SH Shen, and J Song. 2009. <span>“The Vertical Distribution
+of Cotton Leaf Nitrogen Content and Photosynthetic Characteristics in
+the North China Plain.”</span> <em>Acta Ecologica Sinica</em>, no. 29:
+1893–98.
 </div>
 <div id="ref-YEZiPiao2010" class="csl-entry" role="doc-biblioentry">
-ZiPiao, YE. 2010. <span>“A Review on Modeling of Responses of Photosynthesis to Light and <span class="math inline"><em>C</em><em>O</em><sub>2</sub></span>.”</span> <em>Chinese Journal of Plant Ecology</em>, no. 06.
+ZiPiao, YE. 2010. <span>“A Review on Modeling of Responses of
+Photosynthesis to Light and <span class="math inline"><em>C</em><em>O</em><sub>2</sub></span>.”</span>
+<em>Chinese Journal of Plant Ecology</em>, no. 06.
 </div>
 </div>
 

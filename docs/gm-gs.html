@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 叶肉与气孔导度</title>
@@ -33,25 +33,6 @@
     }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -89,6 +70,25 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -196,7 +196,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -414,7 +414,7 @@
 <p><span class="citation" data-cites="Ball1987A">J. T. Ball, Woodrow, and Berry (<a href="references.html#ref-Ball1987A" role="doc-biblioref">1987</a>)</span> 发表的文章中的模型：</p>
 <p><span id="eq-ballberry"><span class="math display">
 g_s = g0 + g1(\frac{A h_r}{C_a})
- \qquad(1)</span></span></p>
+\qquad(1)</span></span></p>
 <p>其中 A 为净光合速率，g<sub>0</sub> 和 g<sub>1</sub> 为拟合参数，h<sub>r</sub> 为叶片表面的相对湿度，C<sub>a</sub> 为叶片处CO<sub>2</sub>浓度。</p>
 </section>
 </section>
@@ -423,7 +423,7 @@ g_s = g0 + g1(\frac{A h_r}{C_a})
 <p><span class="citation" data-cites="leuning1995a">R. Leuning (<a href="references.html#ref-leuning1995a" role="doc-biblioref">1995a</a>)</span> 发表的文章中的模型：</p>
 <p><span id="eq-BBLeuning"><span class="math display">
 g_s = g_0 + g_1(\frac{A}{(C_a - \Gamma)(1 + \frac{D}{D_0})})
- \qquad(2)</span></span></p>
+\qquad(2)</span></span></p>
 <p>其中 <span class="math inline">\Gamma</span> 为 CO<sub>2</sub> 补偿点，g<sub>0</sub>、g<sub>1</sub> 和 D<sub>0</sub> 为拟合参数。</p>
 </section>
 <section id="sec-bboptifull" class="level3">
@@ -431,29 +431,29 @@ g_s = g_0 + g_1(\frac{A}{(C_a - \Gamma)(1 + \frac{D}{D_0})})
 <p><span class="citation" data-cites="Medlyn2011Reconciling">Medlyn et al. (<a href="references.html#ref-Medlyn2011Reconciling" role="doc-biblioref">2011</a>)</span> 发表的文章中的模型：</p>
 <p><span id="eq-BBOptiFull"><span class="math display">
 g_s^* \approx g_0 + g_1(1 + \frac{g_1}{D}) \frac{A}{C_a}
- \qquad(3)</span></span></p>
+\qquad(3)</span></span></p>
 <p>额外的参数 g<sub>k</sub> 来自于 <span class="citation" data-cites="Duursma2013Near">Duursma et al. (<a href="references.html#ref-Duursma2013Near" role="doc-biblioref">2013b</a>)</span></p>
 <p><span id="eq-Duursm"><span class="math display">
 g_s = g_0 + 1.6(1 + \frac{g_1}{D}(1-g_k)) \frac{A}{C_a}
- \qquad(4)</span></span></p>
+\qquad(4)</span></span></p>
 <section id="sec-Medlyn_partial" class="level4">
 <h4 class="anchored" data-anchor-id="sec-Medlyn_partial">Medlyn 模型 (Medlyn_partial)</h4>
 <p><span class="citation" data-cites="ball_model_1987">J. Ball, Woodrow, and Berry (<a href="references.html#ref-ball_model_1987" role="doc-biblioref">1987</a>)</span> 和 <span class="citation" data-cites="leuning_critical_1995">R. Leuning (<a href="references.html#ref-leuning_critical_1995" role="doc-biblioref">1995b</a>)</span> 模型最为人批判的地方是他们都是经验模型，也就意味着对于他们参数的预测和解释并无理论依据。因而 <span class="citation" data-cites="Medlyn2011Reconciling">Medlyn et al. (<a href="references.html#ref-Medlyn2011Reconciling" role="doc-biblioref">2011</a>)</span> 提出了基于最优气控模型的方法来解决这个问题。也就是根据：</p>
 <p><span id="eq-medlyn-paritial"><span class="math display">
 \frac{\partial E}{\partial A} = \lambda
- \qquad(5)</span></span></p>
+\qquad(5)</span></span></p>
 <p>得到查看临界水分利用效率或者说植物损耗单位水分的碳生产量。然后将其考虑在模型内，两个基本的计算依据是：</p>
 <p>简化关系，使得 g0 等于零，确定胞间二氧化碳浓度和外界二氧化碳浓度的关系为：</p>
 <p><span id="eq-medlyn-parital1"><span class="math display">
 \frac{C_i}{C_a} \approx \frac{g_1}{g_1 + \sqrt{D}}
- \qquad(6)</span></span> 而 A 与 E 之间的关系（ITE）表示为：</p>
+\qquad(6)</span></span> 而 A 与 E 之间的关系（ITE）表示为：</p>
 <p><span id="eq-medlyn-parital2"><span class="math display">
 \frac{A}{E} = \frac{C_a P}{g_1\sqrt{D}+D}
- \qquad(7)</span></span></p>
+\qquad(7)</span></span></p>
 <p>最终得到的，考虑了最优气孔导度模型的模型为：</p>
 <p><span id="eq-medlyn-parital3"><span class="math display">
 g_s^* \approx g_0 + 1.6 \Bigg( 1 + \frac{g_1}{\sqrt{D}} \Bigg) A/C_a
- \qquad(8)</span></span> 这里 P 为大气压，单位是 kPa。文献附加材料里有详细推导说明，需要的可以参考一下。</p>
+\qquad(8)</span></span> 这里 P 为大气压，单位是 kPa。文献附加材料里有详细推导说明，需要的可以参考一下。</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -469,14 +469,14 @@ g_s^* \approx g_0 + 1.6 \Bigg( 1 + \frac{g_1}{\sqrt{D}} \Bigg) A/C_a
 </div>
 <p><span id="eq-medlyn-parital3"><span class="math display">
 g_s = g_0 +g_1(A h_r/C_a)
- \qquad(9)</span></span></p>
+\qquad(9)</span></span></p>
 </section>
 <section id="sec-Medlyn_full" class="level4">
 <h4 class="anchored" data-anchor-id="sec-Medlyn_full">Medlyn 模型 (Medlyn_full)</h4>
 <p><span class="citation" data-cites="duursma_near-optimal_2013">Duursma et al. (<a href="references.html#ref-duursma_near-optimal_2013" role="doc-biblioref">2013a</a>)</span> 考虑了同化速率对温度的响应，最终模型的形式（我们选择了 <code>plantecophys</code> 中 <code>fitBB</code> 函数的写法）：</p>
 <p><span id="eq-medlyn-full"><span class="math display">
 g_s = g_0 + 1.6(1+\frac{g_1}{D}(1-g_k))\frac{A}{C_a}
- \qquad(10)</span></span></p>
+\qquad(10)</span></span></p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">

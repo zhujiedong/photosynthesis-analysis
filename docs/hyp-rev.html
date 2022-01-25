@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 11&nbsp; 直角双曲线的修正模型</title>
@@ -96,25 +96,6 @@
     }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -152,6 +133,25 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -259,7 +259,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -456,14 +456,14 @@
 <p><span class="citation" data-cites="YEZiPiao2010">ZiPiao (<a href="references.html#ref-YEZiPiao2010" role="doc-biblioref">2010</a>)</span> 直角双曲线修正模型的表达式如式 <a href="#eq-mrec">公式&nbsp;<span>11.1</span></a> 所示：</p>
 <p><span id="eq-mrec"><span class="math display">
 P_{n} = \alpha \frac{1-\beta I}{1+\gamma I} I - R_{d}
- \qquad(11.1)</span></span></p>
+\qquad(11.1)</span></span></p>
 <p>其中，<span class="math inline">\beta</span> 和 <span class="math inline">\gamma</span> 为系数，<span class="math inline">\beta</span>光抑制项，<span class="math inline">\gamma</span>光饱和项，单位为 <span class="math inline">m^{2}\cdot s\cdot\mu mol^{-1}</span>，其他参数与上文相同，因为该式 <a href="#eq-mrec">公式&nbsp;<span>11.1</span></a> 存在极值，因此，必然存在饱和光强和最大净光合速率，分别用式 <a href="#eq-isat">公式&nbsp;<span>11.2</span></a> 和式 <a href="#eq-ic">公式&nbsp;<span>11.3</span></a> 求得。</p>
 <p><span id="eq-isat"><span class="math display">
 I_{sat} = \frac{\sqrt{\frac{(\beta+\gamma)}{\beta}} - 1}{\gamma}
- \qquad(11.2)</span></span></p>
+\qquad(11.2)</span></span></p>
 <p><span id="eq-ic"><span class="math display">
 P_{nmax} = \alpha\left(\frac{\sqrt{\beta+\gamma}-\sqrt{\beta}}{\gamma}\right)^{2}-R_{d}
- \qquad(11.3)</span></span></p>
+\qquad(11.3)</span></span></p>
 <p>该模型的优点为拟合结果中光饱和点和最大净光合速率均接近实测值，还可以拟合饱和光强之后光合速率随光强下降段的曲线。</p>
 <section id="sec-rev_rec_exam" class="level2" data-number="11.1">
 <h2 data-number="11.1" class="anchored" data-anchor-id="sec-rev_rec_exam"><span class="header-section-number">11.1</span> 直角双曲线修正模型的实现</h2>
@@ -537,7 +537,7 @@ P_{nmax} = \alpha\left(\frac{\sqrt{\beta+\gamma}-\sqrt{\beta}}{\gamma}\right)^{2
 <div class="cell-output-display">
 <div id="tbl-mrectable" class="anchored">
 <table class="table">
-<caption>表 11.1: 直角双曲线修正模型计算参数 </caption>
+<caption>表 11.1: 直角双曲线修正模型计算参数</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;"></th>

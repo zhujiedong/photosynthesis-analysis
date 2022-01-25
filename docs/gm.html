@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 22&nbsp; 叶肉导度计算</title>
@@ -96,25 +96,6 @@
     }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -152,6 +133,25 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -259,7 +259,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -465,11 +465,11 @@
 <p>从大气中 CO<sub>2</sub> 扩散到叶绿体中分压的下降与每个步骤的导度成反比：</p>
 <p><span id="eq-diffuse"><span class="math display">
 A=(C_a - C_i) \cdot g_s/P = (C_i - C_c) \cdot g_m/P
- \qquad(22.1)</span></span></p>
+\qquad(22.1)</span></span></p>
 <p>这里 P 指的是大气压。这个关于气体扩散的定理自然是后面计算所需的基石。之所以使用分压，是因为气体扩散经过叶肉细胞时，叶肉细胞内是液相空间，而根据 Henry’s law:</p>
 <p><span id="eq-henry-law"><span class="math display">
 P \propto C (or) P = k_H \cdot C
- \qquad(22.2)</span></span></p>
+\qquad(22.2)</span></span></p>
 <p>也就是描述气体溶于水的量，与其分压成正比。</p>
 <p>而对于 FvCB 模型，我们一般都认为 RuBP 的羧化受到下面三个因子的限制：</p>
 <ol type="1">
@@ -480,23 +480,23 @@ P \propto C (or) P = k_H \cdot C
 <p>当 Rubisco 限制阶段，光合作用的描述是：</p>
 <p><span id="eq-rubisco-limit"><span class="math display">
 A = \frac{V_{cmax} \cdot C_c}{C_c + K_c \cdot (1+O/K_O)} \cdot \bigg(1-\frac{\Gamma^*}{C_c} \bigg) - R_d
- \qquad(22.3)</span></span></p>
+\qquad(22.3)</span></span></p>
 <p>根据 Henry’s law 替换 C<sub>c</sub>：</p>
 <p><span id="eq-cc-henry"><span class="math display">
 A = \frac{V_{cmax} \cdot (C_i - A/g_m)}{C_c + K_c \cdot (1+O/K_O)} \cdot \bigg(1-\frac{\Gamma^*}{C_i - A/g_m)} \bigg) - R_d
- \qquad(22.4)</span></span></p>
+\qquad(22.4)</span></span></p>
 <p>当处于 RuBP 限制阶段时：</p>
 <p><span id="eq-rubp-limit"><span class="math display">
 A = J \cdot \frac{(C_i - A/g_m) - \Gamma^*}{4 \cdot ((C_i - A/g_m) +2\Gamma^*)} - R_d
- \qquad(22.5)</span></span></p>
+\qquad(22.5)</span></span></p>
 <p>而电子传递速率可以通过辐射的光量子密度来计算：</p>
 <p><span id="eq-cal-j"><span class="math display">
 J = \frac{0.24 \quad PPFD}{(1+0.24^2 \cdot PPFD^2 / J_{max})^{0.5}}
- \qquad(22.6)</span></span></p>
+\qquad(22.6)</span></span></p>
 <p>而 RuBP 限制阶段的公式也可以用写为电子传递速率的形式：</p>
 <p><span id="eq-rubp-j"><span class="math display">
 J = (A+R_d) \cdot\frac{4 \cdot ((C_i - A/g_m) + 2 \Gamma^*)}{(C_i - A/g_m)-\Gamma^*}
- \qquad(22.7)</span></span></p>
+\qquad(22.7)</span></span></p>
 <p>观察上面的公式我们可以看到，这个公式的适用性很广。而计算叶肉导度的方法，不管是可变电子流还是恒定电子流，都与其密切相关。</p>
 </section>
 <section id="sec-constant-j" class="level2" data-number="22.2">
@@ -508,18 +508,18 @@ J = (A+R_d) \cdot\frac{4 \cdot ((C_i - A/g_m) + 2 \Gamma^*)}{(C_i - A/g_m)-\Gamm
 <p>对于可变电子流，只是认为 J 是变化的，但是 J 可以通过叶绿素荧光测量直接获得。</p>
 <p><span id="eq-var-j"><span class="math display">
 g_m = \frac{A}{C_i - \frac{\Gamma^*[J+ 8 \cdot(A+ R_d)]}{J - 4 \cdot (A + R_d)}}
- \qquad(22.8)</span></span></p>
+\qquad(22.8)</span></span></p>
 <p>该方法测量相比来说比较简单。</p>
 <section id="sec-var-j-limit" class="level3" data-number="22.3.1">
 <h3 data-number="22.3.1" class="anchored" data-anchor-id="sec-var-j-limit"><span class="header-section-number">22.3.1</span> 可变电子流的限制因素</h3>
 <p>恒定电子流可以在一系列大的 CO<sub>2</sub> 跨度下使用，但是要解决 CO<sub>2</sub> 对 g<sub>m</sub> 影响的问题，则需要可变电子流的方式。但是可变电子流中参数 R<sub>d</sub>，<span class="math inline">\Gamma^*</span> 存在不确定性，而对 J 的计算错误则导致整个计算错误。因而作者确定了一个通过 C<sub>c</sub> 对 (A+R<sub>d</sub>) 斜率的阈值进行判定的计算叶肉导度是否合理的方法。因为：</p>
 <p><span id="eq-cc-j-judge"><span class="math display">
 C_c = \Gamma^*[J+8\cdot(A+R_d)]/[J-4 \cdot(A+R_d)]
- \qquad(22.9)</span></span></p>
+\qquad(22.9)</span></span></p>
 <p>那么：</p>
 <p><span id="eq-j-finall"><span class="math display">
 dC_c/dA = 12 \cdot \Gamma^* \cdot J/[J - 4 \cdot(A+R_d)]^2
- \qquad(22.10)</span></span></p>
+\qquad(22.10)</span></span></p>
 <p>最终确认的有限的计算数据必须满足 <span class="math inline">10 &lt; dC_c/dA &lt; 50</span>。这是 <code>fit_g_mc_variable</code> 所采用的合理的叶肉导度相关列所必须满足的条件。</p>
 </section>
 </section>

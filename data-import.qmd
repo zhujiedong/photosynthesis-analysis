@@ -1,4 +1,4 @@
-# Excel 转为 csv 格式 {#sec-excel2csv}
+# 数据读取的选项 {#sec-excel2csv}
 
 鉴于无论是 LI-6400 还是 LI-6800 数据 Excel 格式的复杂性，目前已知的能处理的软件包有 `R` 的 [`XLConnect`](https://cran.r-project.org/web/packages/XLConnect/index.html) 和 [`xlwings`](https://www.xlwings.org)，文中对直接下载的 Excel 格式的数据转换，均依赖于此进行。
 
@@ -119,6 +119,71 @@ df6$A/df_random$A
 ```
 
 光合速率的倍数的变化在预期之内。
+
+### 无需重计算直接读取 {#sec-6800-readxl-batch}
+
+:::{.callout-note}
+## 注意
+
+该功能需要启用 excel 的迭代计算，具体为**文件 --> 选项--> 公式 --> 启动迭代计算**，否则导入的带公式的单元格数值为 0。
+:::
+
+
+![7HarSf.gif](https://s4.ax1x.com/2022/01/25/7HarSf.gif)
+
+
+#### 安装
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+#devtools::install_github("zhujiedong/ReadLICOR6800")
+remotes::install_git("https://gitee.com/zhu_jie_dong/ReadLICOR6800")
+```
+
+使用比较简单，第一个函数用于读取单个数据文件：
+
+```{r example}
+library(ReadLICOR6800)
+aci <- read_li6800('data/batch6800/racirtest1.xlsx')
+aci[1:3, 1:6]
+names(aci)
+aci$data_tag
+```
+
+默认的参数会添加 `data_tag` 列，用于读取多个文件时候区分数据用，默认的不坐修改的标签是文件名，若要修改，指定 `tags` 参数为我们需要的标签即可。
+
+若单纯读取单个文件，也没有必要加标签，但加或者不加对我们分析数据没有任何影响：
+
+```{r}
+aci <- read_li6800("data/batch6800/racirtest1.xlsx", add_tags = FALSE)
+names(aci)
+head(aci$data_tags)
+```
+
+#### 批量读取多个数据文件
+
+与上面的函数类似，本身就是对其进行了包裹，方便不熟悉使用的人能够一次批量读取所有文件，需要注意所有文件的列数必须相同，这多数时候不会出现问题，多台光合仪同时使用时配置文件一致即可。否则只能分开读取再合并。使用 `tags=NULL`(默认), `data_tag`会显示文件名：
+
+
+```{r}
+list.files("data/batch6800/")
+
+aci <- read_li6800_folder("data/batch6800/")
+names(aci)
+head(aci$data_tag)
+tail(aci$data_tag)
+```
+当指定自定义标签时，需要 `tags` 给出的标签的长度和顺序要与 `list.files()` 显示的一致才可以。
+
+```{r}
+aci <- read_li6800_folder("data/batch6800/", tags = paste('test', 1:2))
+aci[1:3, 1:6]
+names(aci)
+head(aci$data_tag)
+tail(aci$data_tag)
+```
+
+也十分方便。
 
 ### 使用 Python 来处理 {#sec-6800-import-python}
 

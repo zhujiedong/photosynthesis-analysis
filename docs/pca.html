@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 24&nbsp; 大话 PCA</title>
@@ -96,25 +96,6 @@
     }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -152,6 +133,25 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -259,7 +259,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -588,13 +588,13 @@
 <p>特征向量和特征值的数学描述为：</p>
 <p><span id="eq-eign"><span class="math display">
 A \vec{x} = \lambda \vec{x}
- \qquad(24.1)</span></span></p>
+\qquad(24.1)</span></span></p>
 <p>其中 A 为 n <span class="math inline">\times</span> n 的矩阵，<span class="math inline">\vec{x}</span> 为非零 n <span class="math inline">\times</span> 1 列向量，<span class="math inline">\lambda</span> 是标量，那么 <span class="math inline">\vec{x}</span> 为 A 的特征向量，<span class="math inline">\lambda</span> 为 A 的特征值。</p>
 <p>如果仅从数学描述上看，是十分不适合我这样没基础的人来理解的，但我们可以这么理解：</p>
 <p>A 为我们观测值（也即我们生态学上测量的数据）组成的 <span class="math inline">n \times n</span> 矩阵，每行的数据代表了一个观测值，例如光合速率是其中的一行，我们有n 个， 那么 <span class="math inline">\vec{x}</span> 和 <span class="math inline">\lambda</span> 意味着什么呢？再看一眼上面的 <a href="#eq-eign">公式&nbsp;<span>24.1</span></a>，这是一个等式，而 <span class="math inline">\vec{x}</span> 是 n <span class="math inline">\times</span> 1 维度，原来的数据是 n <span class="math inline">\times</span> n 维度，这就是主轴分析是降维分析的意义了，一个一维的特征向量和特征值与我们多维的观测值之间有一个相等的关系。当然，也有很多人在描述时喜欢用坐标轴旋转或这投影来形容的，如果你觉得这样好理解也没问题，不过我脑袋不擅长想象这种多维的空间。这样描述并不十分准确，只是我觉得便于理解，更正确描述应为我们下面所述的例子 (<span class="citation" data-cites="Smith2002">Smith (<a href="references.html#ref-Smith2002" role="doc-biblioref">2002</a>)</span>) ，但降维的原理即来自此处：</p>
 <p><span id="eq-despca"><span class="math display">
 finaldata = rowfeaturevector \times rowdataajust
- \qquad(24.2)</span></span></p>
+\qquad(24.2)</span></span></p>
 <p>finaldata 很好理解，我们用于 PCA 的最终数据，rowfeature vector 则是我们根据协相关矩阵求得的特征向量的转置，最大的特征向量再最上面， rowdataadjust 则为<strong>原始数据减去标准值</strong>。</p>
 <p>因为我手头没有相关的数据，想来想去，我们在 R 里见到最多的与生态学相关的数据也就是 iris，一个关于不同 iris 品种的叶片性状相关的数据，非常生态，我们还是继续使用：</p>
 <p>数据并不复杂，但是想要得出一些规律性的东西确不那么容易，因为数据量太大了。R 语言里面很多函数可以直接实现 PCA，例如 <a href="#sec-geom-pca">小节&nbsp;<span>24.1</span></a> 内容。这里按照最原始的方法实现一下，加深对原理的理解：</p>

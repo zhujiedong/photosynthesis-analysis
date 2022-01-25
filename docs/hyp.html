@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
   <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.466">
+  <meta name="generator" content="quarto-0.3.32">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
   <title>LI-6800 和 LI-6400 光合数据分析指南 - 8&nbsp; 直角双曲线模型</title>
@@ -96,25 +96,6 @@
     }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
   <script src="site_libs/quarto-nav/headroom.min.js"></script>
   <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -152,6 +133,25 @@
       "search-submit-button-title": "Submit"
     }
   }</script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body class="floating">
 <div id="quarto-search-results"></div>
@@ -259,7 +259,7 @@
       <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Excel 转为 csv 格式</span></a>
+  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
 </li>
           <li class="sidebar-item">
   <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
@@ -457,7 +457,7 @@
 <p><span class="citation" data-cites="BalyEC1935">Baly (<a href="references.html#ref-BalyEC1935" role="doc-biblioref">1935</a>)</span> 提出了直角双曲线模型，它的表达式为：</p>
 <p><span id="eq-rec"><span class="math display">
 P_{n}  = \frac{\alpha I\ P_{nmax}}{\alpha I + P_{nmax}}- R_{d}
- \qquad(8.1)</span></span></p>
+\qquad(8.1)</span></span></p>
 <ul>
 <li>其中，<span class="math inline">P_{n}</span> 为净光合速率；</li>
 <li>I 为光强；</li>
@@ -469,7 +469,7 @@ P_{n}  = \frac{\alpha I\ P_{nmax}}{\alpha I + P_{nmax}}- R_{d}
 <p>因此就需要使用弱光条件下 (<span class="math inline">\leq</span> 200 <span class="math inline">\mu mol\cdot m^{-2}\cdot s^{-1}</span>) 的数据得到表观量子效率（apparent quantum efficiency，AQE），利用非线性最小二乘法估算 P<span class="math inline">_{nmax}</span> ，然后利用 <span class="citation" data-cites="YEZiPiao2010">ZiPiao (<a href="references.html#ref-YEZiPiao2010" role="doc-biblioref">2010</a>)</span> 的式 <a href="#eq-aqe">公式&nbsp;<span>8.2</span></a> 求解 <span class="math inline">I_{sat}</span>，</p>
 <p><span id="eq-aqe"><span class="math display">
 P_{nmax}= AQE \times I_{sat} - R_{d}
- \qquad(8.2)</span></span></p>
+\qquad(8.2)</span></span></p>
 <p>但此方法测得的光饱和点远小于实测值，我们人为光强达到最大光合速率的一定比例时值计算光强，人为此时的光强为饱和光强，例如 <span class="math inline">0.7P_{nmax}</span> <span class="citation" data-cites="ZhangXS2009">Zhang, Shen, and Song (<a href="references.html#ref-ZhangXS2009" role="doc-biblioref">2009</a>)</span>、<span class="math inline">0.9P_{nmax}</span> <span class="citation" data-cites="HuangHY2009">Huang et al. (<a href="references.html#ref-HuangHY2009" role="doc-biblioref">2009</a>)</span>、或其他设定的值来的来估算 <span class="math inline">I_{sat}</span>。</p>
 <section id="sec-rec_fit" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="sec-rec_fit"><span class="header-section-number">8.1</span> 直角双曲线模型的实现</h2>
@@ -575,7 +575,7 @@ P_{nmax}= AQE \times I_{sat} - R_{d}
 <div class="cell-output-display">
 <div id="tbl-rectable" class="anchored">
 <table class="table">
-<caption>表 8.1: 直角双曲线结果 </caption>
+<caption>表 8.1: 直角双曲线结果</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;"></th>
