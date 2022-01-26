@@ -4,7 +4,9 @@
 
 ## LI-6400 Excel 的处理 {#sec-6400-excel}
 
-todo，解决之前请临时参考原始文件的处理：
+### 整理为 csv 格式 {#sec-6400excel2csv}
+
+详见：[LI-6400 EXCEL2CSV](https://mp.weixin.qq.com/s?__biz=MzU4ODI3NjkzMg==&mid=2247486343&idx=1&sn=32a74ce02400450961c9c5fa0ea24919&chksm=fdde7e2ccaa9f73aabda254928707b9ccf08305b7198466cc0b298c7214c9236a3b399df9fa6&token=787620345&lang=zh_CN#rd)
 
 ### 安装 {#sec-install_readphoto}
 
