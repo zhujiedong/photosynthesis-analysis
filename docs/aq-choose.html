@@ -1,447 +1,478 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.3.32">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
-  <title>LI-6800 和 LI-6400 光合数据分析指南 - 12&nbsp; 如何选择合适的模型</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    div.csl-bib-body { }
-    div.csl-entry {
-      clear: both;
-    }
-    .hanging div.csl-entry {
-      margin-left:2em;
-      text-indent:-2em;
-    }
-    div.csl-left-margin {
-      min-width:2em;
-      float:left;
-    }
-    div.csl-right-inline {
-      margin-left:2em;
-      padding-left:1em;
-    }
-    div.csl-indent {
-      margin-left: 2em;
-    }
-  </style>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="description" content="介绍使用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+<title>LI-6800 和 LI-6400 光合数据分析指南 - 12&nbsp; 如何选择合适的模型</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
-  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="./">
-  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="site_libs/quarto-search/fuse.min.js"></script>
-  <script src="site_libs/quarto-search/quarto-search.js"></script>
-  <link href="./big-leaf.html" rel="next">
-  <link href="./hyp-rev.html" rel="prev">
-  <script src="site_libs/quarto-html/quarto.js"></script>
-  <script src="site_libs/quarto-html/popper.min.js"></script>
-  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="site_libs/quarto-html/anchor.min.js"></script>
-  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "sidebar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "start",
-    "type": "textbox",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./big-leaf.html" rel="next">
+<link href="./hyp-rev.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "搜索"
+  }
+}</script>
 </head>
-<body class="floating">
+<body class="nav-sidebar floating">
+
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></h1>
-      <button type="button" class="quarto-btn-toggle btn">
-        <i class="bi bi-chevron-right"></i>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="切换侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./light-response.html">光响应曲线简介</a></li><li class="breadcrumb-item"><a href="./aq-choose.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="切换侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/zhujiedong/photosynthesis-analysis/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/zhujiedong/photosynthesis-analysis/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
     </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">欢迎</span></a>
   </div>
-    <div class="mt-2 flex-shrink-0 align-items-center">
-      <div class="sidebar-search">
-      <div id="quarto-search" class="" title="Search"></div>
-      </div>
-    </div>
-  <div class="sidebar-menu-container"> 
-  <ul class="list-unstyled mt-1">
-      <li class="sidebar-item">
-  <a href="./index.html" class="">欢迎</a>
 </li>
-      <li class="sidebar-item">
-  <a href="./thanks.html" class="">致谢</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./preface.html" class="">序言</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./intro.html" class="">介绍</a>
-</li>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./basics.html" class="">必备工具</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-basics.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-basics.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./packages.html" class="">光合相关的软件包</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-packages.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-packages.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./data-prepare.html" class="">数据准备</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-data-prepare.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./light-response.html" class="">光响应曲线简介</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-light-response.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-light-response.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./aq-choose.html" class="active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-aci-curve.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-aci-curve.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-fluorescence.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-fluorescence.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-gm-gs.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-gm-gs.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./other-stat.html" class="">其他统计方法</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-other-stat.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-other-stat.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <li class="sidebar-item">
-  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
-</li>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-appendices" aria-expanded="true">
-              <div class="me-auto sidebar-section-item">Appendices</div>
-            <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-appendices">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-  </ul>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./thanks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">致谢</span></a>
   </div>
-</nav>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">序言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">介绍</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">必备工具</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rbasics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">光合相关的软件包</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phtosyn-pacakges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./general-packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./data-prepare.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./batch-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./light-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">光响应曲线简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nls-start.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./non-hypo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyp-rev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aq-choose.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./big-leaf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-aq-gui.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./aci-curve.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">二氧化碳响应曲线概述</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DAT-vs-racir.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plantecowraps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Rd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C4-related.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./fluorescence.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">叶绿素荧光数据的处理</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./jiptest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-fluor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./gm-gs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">叶肉与气孔导度</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./other-stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">其他统计方法</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./common-stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">正态分布检验</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">大话 PCA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smatr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">参考文献</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./a1-run-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-      <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of contents</h2>
-<ul>
-<li><a href="#sec-aic-bic" class="nav-link active" data-scroll-target="#sec-aic-bic"> <span class="header-section-number">12.1</span> AIC 与 BIC</a></li>
-<li><a href="#sec-f-test" class="nav-link" data-scroll-target="#sec-f-test"> <span class="header-section-number">12.2</span> 方差分析</a></li>
-<li><a href="#sec-aq-eye" class="nav-link" data-scroll-target="#sec-aq-eye"> <span class="header-section-number">12.3</span> 肉眼判断</a></li>
-</ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/aq-choose.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#sec-aic-bic" id="toc-sec-aic-bic" class="nav-link active" data-scroll-target="#sec-aic-bic"><span class="header-section-number">12.1</span> AIC 与 BIC</a></li>
+  <li><a href="#sec-f-test" id="toc-sec-f-test" class="nav-link" data-scroll-target="#sec-f-test"><span class="header-section-number">12.2</span> 方差分析</a></li>
+  <li><a href="#sec-aq-eye" id="toc-sec-aq-eye" class="nav-link" data-scroll-target="#sec-aq-eye"><span class="header-section-number">12.3</span> 肉眼判断</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/aq-choose.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content">
-<header id="title-block-header">
-<h1 class="title display-7"><span id="sec-mod-choose" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></span></h1>
-</header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./light-response.html">光响应曲线简介</a></li><li class="breadcrumb-item"><a href="./aq-choose.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-mod-choose" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></span></h1>
+</div>
 
-<p>实际工作中，其实经常遇到有人问选择哪个模型，这个问题简单点的回答就是所有的都试一遍，再看看哪个更合适，但是比较好的做法当然是要通过统计上的验证和根据植物生理来判断，生理上判断比较好解决，拟合参数是不是合适，对于做了一个季节实验的我们来讲，那是相当简单，那统计上的判定呢？那有下面几种方式可供参考。</p>
-<section id="sec-aic-bic" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="sec-aic-bic"><span class="header-section-number">12.1</span> AIC 与 BIC</h2>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>实际工作中，其实经常遇到有人问选择哪个模型，这个问题简单点的回答就是所有的都试一遍，再看看哪个更合适，但是比较好的做法当然是要通过统计上的验证和根据植物生理来判断，生理上判断比较好解决，拟合参数是不是合适，对于做了一个季节实验的我们来讲，那是相当简单，那统计上的判定呢？那有下面几种方式可供参考。</p>
+<section id="sec-aic-bic" class="level2" data-number="12.1"><h2 data-number="12.1" class="anchored" data-anchor-id="sec-aic-bic">
+<span class="header-section-number">12.1</span> AIC 与 BIC</h2>
 <p>AIC 和 BIC 都是用于模型选择的标准<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>， 其中他们主要的差别是：</p>
 <blockquote class="blockquote">
 <p>其中 AIC 主要应用目的是，对于<strong>给定数据集</strong>的多个模型，判定哪个模型对该数据集最合适，该值越小越合适。</p>
@@ -449,66 +480,60 @@
 <blockquote class="blockquote">
 <p>而 BIC 的主要目的是对于不同数量拟合参数的模型来选择。同样，该值是越小越好。</p>
 </blockquote>
-<p>但需要注意，如果样本数量过低，那么就需要使用修正的 AIC 指数 <span class="citation" data-cites="fabozzi_basics_2014">(<a href="references.html#ref-fabozzi_basics_2014" role="doc-biblioref">Fabozzi et al. 2014</a>)</span>，即 AICc，这个函数不在 base 中，需要第三方的软件包，例如 <code>AICcmodavg</code>。</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'AICcmodavg'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>但需要注意，如果样本数量过低，那么就需要使用修正的 AIC 指数 <span class="citation" data-cites="fabozzi_basics_2014">(<a href="references.html#ref-fabozzi_basics_2014" role="doc-biblioref">Fabozzi 等 2014</a>)</span>，即 AICc，这个函数不在 base 中，需要第三方的软件包，例如 <code>AICcmodavg</code>。</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">'AICcmodavg'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>为方便，我们使用 <code>nlsLM</code> 来进行四种模型的比较：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(minpack.lm)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AICcmodavg)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 读取数据，同fitaci数据格式</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>lrc <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/lrc.csv"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>lrc <span class="ot">&lt;-</span> <span class="fu">subset</span>(lrc, Obs <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 光响应曲线没有太多参数，</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 直接调出相应的光强和光合速率</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 方便后面调用</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>lrc_Q <span class="ot">&lt;-</span> lrc<span class="sc">$</span>PARi</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>lrc_A <span class="ot">&lt;-</span> lrc<span class="sc">$</span>Photo </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 非直角双曲线模型的拟合</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>non_rec_aq <span class="ot">&lt;-</span> <span class="fu">nlsLM</span>(lrc_A <span class="sc">~</span> </span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                (<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>theta))<span class="sc">*</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                (alpha<span class="sc">*</span>lrc_Q<span class="sc">+</span>Am<span class="sc">-</span><span class="fu">sqrt</span>((alpha<span class="sc">*</span>lrc_Q<span class="sc">+</span>Am)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                <span class="dv">4</span><span class="sc">*</span>alpha<span class="sc">*</span>theta<span class="sc">*</span>Am<span class="sc">*</span>lrc_Q))<span class="sc">-</span> Rd,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                <span class="at">start=</span><span class="fu">list</span>(<span class="at">Am=</span>(<span class="fu">max</span>(lrc_A)<span class="sc">-</span><span class="fu">min</span>(lrc_A)),</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">alpha=</span><span class="fl">0.05</span>,<span class="at">Rd=</span><span class="sc">-</span><span class="fu">min</span>(lrc_A),<span class="at">theta=</span><span class="dv">1</span>)) </span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 直角双曲线</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>rec_aq <span class="ot">&lt;-</span> <span class="fu">nlsLM</span>(lrc_A <span class="sc">~</span> (alpha <span class="sc">*</span> lrc_Q <span class="sc">*</span> Am) <span class="sc">*</span> </span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                (<span class="dv">1</span><span class="sc">/</span>(alpha <span class="sc">*</span> lrc_Q <span class="sc">+</span> Am)) <span class="sc">-</span> Rd,  </span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">start=</span><span class="fu">list</span>(<span class="at">Am=</span>(<span class="fu">max</span>(lrc_A)<span class="sc">-</span><span class="fu">min</span>(lrc_A)),</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>              <span class="at">alpha=</span><span class="fl">0.05</span>,<span class="at">Rd=</span><span class="sc">-</span><span class="fu">min</span>(lrc_A))</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 指数模型的拟合</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>exp_aq <span class="ot">&lt;-</span> <span class="fu">nlsLM</span>(lrc_A <span class="sc">~</span> Am<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>((<span class="sc">-</span>b)<span class="sc">*</span>(lrc_Q<span class="sc">-</span>Ic))),</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                <span class="at">start=</span><span class="fu">list</span>(<span class="at">Am=</span>(<span class="fu">max</span>(lrc_A)<span class="sc">-</span><span class="fu">min</span>(lrc_A)),</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>                           <span class="at">Ic=</span><span class="dv">5</span>, <span class="at">b=</span><span class="dv">1</span>)</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>                )</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 直角双曲线修正模型的拟合</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>mod_rec_aq <span class="ot">&lt;-</span> <span class="fu">nlsLM</span>(lrc_A <span class="sc">~</span> alpha <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">-</span> </span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>              beta<span class="sc">*</span>lrc_Q)<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> gamma <span class="sc">*</span> lrc_Q)) <span class="sc">*</span> lrc_Q <span class="sc">-</span> Rd,</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>                <span class="at">start=</span><span class="fu">list</span>(<span class="at">alpha =</span> <span class="fl">0.07</span>, <span class="at">beta =</span> <span class="fl">0.00005</span>,</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>                           <span class="at">gamma=</span><span class="fl">0.004</span>, <span class="at">Rd =</span> <span class="fl">0.2</span>)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>                )</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(rec_aq, non_rec_aq, exp_aq, mod_rec_aq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">minpack.lm</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">AICcmodavg</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 读取数据，同fitaci数据格式</span></span>
+<span><span class="va">lrc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"data/lrc.csv"</span><span class="op">)</span></span>
+<span><span class="va">lrc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">lrc</span>, <span class="va">Obs</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 光响应曲线没有太多参数，</span></span>
+<span><span class="co"># 直接调出相应的光强和光合速率</span></span>
+<span><span class="co"># 方便后面调用</span></span>
+<span><span class="va">lrc_Q</span> <span class="op">&lt;-</span> <span class="va">lrc</span><span class="op">$</span><span class="va">PARi</span></span>
+<span><span class="va">lrc_A</span> <span class="op">&lt;-</span> <span class="va">lrc</span><span class="op">$</span><span class="va">Photo</span> </span>
+<span></span>
+<span><span class="co"># 非直角双曲线模型的拟合</span></span>
+<span><span class="va">non_rec_aq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM</a></span><span class="op">(</span><span class="va">lrc_A</span> <span class="op">~</span> </span>
+<span>                <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">*</span></span>
+<span>                <span class="op">(</span><span class="va">alpha</span><span class="op">*</span><span class="va">lrc_Q</span><span class="op">+</span><span class="va">Am</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">alpha</span><span class="op">*</span><span class="va">lrc_Q</span><span class="op">+</span><span class="va">Am</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> </span>
+<span>                <span class="fl">4</span><span class="op">*</span><span class="va">alpha</span><span class="op">*</span><span class="va">theta</span><span class="op">*</span><span class="va">Am</span><span class="op">*</span><span class="va">lrc_Q</span><span class="op">)</span><span class="op">)</span><span class="op">-</span> <span class="va">Rd</span>,</span>
+<span>                start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Am<span class="op">=</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                alpha<span class="op">=</span><span class="fl">0.05</span>,Rd<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span>,theta<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="co"># 直角双曲线</span></span>
+<span><span class="va">rec_aq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM</a></span><span class="op">(</span><span class="va">lrc_A</span> <span class="op">~</span> <span class="op">(</span><span class="va">alpha</span> <span class="op">*</span> <span class="va">lrc_Q</span> <span class="op">*</span> <span class="va">Am</span><span class="op">)</span> <span class="op">*</span> </span>
+<span>                <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">alpha</span> <span class="op">*</span> <span class="va">lrc_Q</span> <span class="op">+</span> <span class="va">Am</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="va">Rd</span>,  </span>
+<span>              start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Am<span class="op">=</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>              alpha<span class="op">=</span><span class="fl">0.05</span>,Rd<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 指数模型的拟合</span></span>
+<span><span class="va">exp_aq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM</a></span><span class="op">(</span><span class="va">lrc_A</span> <span class="op">~</span> <span class="va">Am</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">(</span><span class="op">-</span><span class="va">b</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">lrc_Q</span><span class="op">-</span><span class="va">Ic</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Am<span class="op">=</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                           Ic<span class="op">=</span><span class="fl">5</span>, b<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span>                <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 直角双曲线修正模型的拟合</span></span>
+<span><span class="va">mod_rec_aq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM</a></span><span class="op">(</span><span class="va">lrc_A</span> <span class="op">~</span> <span class="va">alpha</span> <span class="op">*</span> <span class="op">(</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> </span>
+<span>              <span class="va">beta</span><span class="op">*</span><span class="va">lrc_Q</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">gamma</span> <span class="op">*</span> <span class="va">lrc_Q</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="va">lrc_Q</span> <span class="op">-</span> <span class="va">Rd</span>,</span>
+<span>                start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.07</span>, beta <span class="op">=</span> <span class="fl">0.00005</span>,</span>
+<span>                           gamma<span class="op">=</span><span class="fl">0.004</span>, Rd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span>                <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span><span class="op">(</span><span class="va">rec_aq</span>, <span class="va">non_rec_aq</span>, <span class="va">exp_aq</span>, <span class="va">mod_rec_aq</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>           df        AIC
 rec_aq      4  -9.142650
 non_rec_aq  5 -27.611987
 exp_aq      4   7.099285
 mod_rec_aq  5 -19.268459</code></pre>
 </div>
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(rec_aq, non_rec_aq, exp_aq, mod_rec_aq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">BIC</a></span><span class="op">(</span><span class="va">rec_aq</span>, <span class="va">non_rec_aq</span>, <span class="va">exp_aq</span>, <span class="va">mod_rec_aq</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>           df        BIC
 rec_aq      4  -6.882852
 non_rec_aq  5 -24.787240
@@ -518,11 +543,8 @@ mod_rec_aq  5 -16.443712</code></pre>
 </div>
 <p>对于 <code>AICc</code> 使用则略微麻烦，因为它没有直接支持向量化操作：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">list</span>(rec_aq, non_rec_aq, exp_aq, mod_rec_aq), AICc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">rec_aq</span>, <span class="va">non_rec_aq</span>, <span class="va">exp_aq</span>, <span class="va">mod_rec_aq</span><span class="op">)</span>, <span class="va">AICc</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [1] -4.14265
 
@@ -537,20 +559,16 @@ mod_rec_aq  5 -16.443712</code></pre>
 </div>
 </div>
 <p>我们可以看到，结果里出现了负数，这是合理的，我们所讲的越小越好，没有说必须是正直，负值是合理的，而且是常见的。</p>
-</section>
-<section id="sec-f-test" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="sec-f-test"><span class="header-section-number">12.2</span> 方差分析</h2>
+</section><section id="sec-f-test" class="level2" data-number="12.2"><h2 data-number="12.2" class="anchored" data-anchor-id="sec-f-test">
+<span class="header-section-number">12.2</span> 方差分析</h2>
 <p>这个经典方法常常因为就在眼前而让人忽视，实际上他也是可以的，看看 R 是怎么描述 <code>anova</code> 的：</p>
 <blockquote class="blockquote">
 <p>Compute analysis of variance (or deviance) tables for one or more fitted model objects.</p>
 </blockquote>
 <p>当然了，过程很简单:</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(rec_aq, non_rec_aq, exp_aq, mod_rec_aq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">rec_aq</span>, <span class="va">non_rec_aq</span>, <span class="va">exp_aq</span>, <span class="va">mod_rec_aq</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Model 1: lrc_A ~ (alpha * lrc_Q * Am) * (1/(alpha * lrc_Q + Am)) - Rd
@@ -567,98 +585,109 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <p>不管是从残差的平方和还是 p 值上看，都与 AIC 和 BIC 结果一致。</p>
-</section>
-<section id="sec-aq-eye" class="level2" data-number="12.3">
-<h2 data-number="12.3" class="anchored" data-anchor-id="sec-aq-eye"><span class="header-section-number">12.3</span> 肉眼判断</h2>
+</section><section id="sec-aq-eye" class="level2" data-number="12.3"><h2 data-number="12.3" class="anchored" data-anchor-id="sec-aq-eye">
+<span class="header-section-number">12.3</span> 肉眼判断</h2>
 <p>标题有点搞笑，但其实是可以快速筛选判断的，只不过文章里面或附录里面才需要上面的方法来提供数据支持。例如我们把前面几个方程作图的代码整合在一起看一下数据的情况：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 直角双曲线</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>rectangular <span class="ot">&lt;-</span> y <span class="sc">~</span> (alpha <span class="sc">*</span> x <span class="sc">*</span> Am) <span class="sc">*</span> (<span class="dv">1</span><span class="sc">/</span>(alpha <span class="sc">*</span> x <span class="sc">+</span> Am)) <span class="sc">-</span> Rd</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 非直角双曲线</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>non_rectangular <span class="ot">&lt;-</span> y <span class="sc">~</span> </span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>theta))<span class="sc">*</span>(alpha<span class="sc">*</span>x<span class="sc">+</span>Am<span class="sc">-</span><span class="fu">sqrt</span>((alpha<span class="sc">*</span>x<span class="sc">+</span>Am)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> </span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>   <span class="dv">4</span><span class="sc">*</span>alpha<span class="sc">*</span>theta<span class="sc">*</span>Am<span class="sc">*</span>x))<span class="sc">-</span> Rd</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 指数模型</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>exponential <span class="ot">&lt;-</span> y <span class="sc">~</span> Am<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>((<span class="sc">-</span>b)<span class="sc">*</span>(x <span class="sc">-</span>Ic)))</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 修改模型</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>rectangular_revised <span class="ot">&lt;-</span>  y <span class="sc">~</span> </span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  alpha <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">-</span> beta<span class="sc">*</span>x)<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> gamma <span class="sc">*</span> x)) <span class="sc">*</span> x <span class="sc">-</span> Rd</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(lrc, <span class="fu">aes</span>(<span class="at">x =</span> lrc_Q, <span class="at">y =</span> lrc_A)) <span class="sc">+</span> </span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">16</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"gray"</span>)<span class="sc">+</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"nls"</span>, <span class="at">formula =</span> rectangular, </span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color=</span><span class="st">'black'</span>,</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">start =</span> <span class="fu">c</span>(</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">Am =</span> (<span class="fu">max</span>(lrc_A) <span class="sc">-</span> <span class="fu">min</span>(lrc_A)),</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.05</span>,</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">Rd =</span> <span class="sc">-</span><span class="fu">min</span>(lrc_A)),</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span>lrc_Q, <span class="at">y =</span> lrc_A, </span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>   <span class="at">size =</span> <span class="fl">0.9</span>))</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  )  <span class="sc">+</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"nls"</span>, <span class="at">formula =</span> non_rectangular, </span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color=</span><span class="st">'red'</span>, </span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">start =</span> <span class="fu">c</span>(<span class="at">Am=</span>(<span class="fu">max</span>(lrc_A)<span class="sc">-</span><span class="fu">min</span>(lrc_A)), </span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha=</span><span class="fl">0.05</span>, <span class="at">Rd=</span><span class="sc">-</span><span class="fu">min</span>(lrc_A), <span class="at">theta=</span><span class="dv">1</span>), </span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span>lrc_Q, <span class="at">y =</span> lrc_A, <span class="at">size =</span> <span class="fl">1.2</span>))) <span class="sc">+</span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"nls"</span>, <span class="at">formula =</span> exponential, </span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">se =</span> <span class="cn">FALSE</span>,  <span class="at">color=</span><span class="st">'green'</span>,</span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">method.args =</span> <span class="fu">list</span>(</span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">start =</span> <span class="fu">c</span>(<span class="at">Am=</span>(<span class="fu">max</span>(lrc_A)<span class="sc">-</span><span class="fu">min</span>(lrc_A)),</span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">Ic=</span><span class="dv">5</span>, <span class="at">b=</span><span class="fl">0.002</span>), <span class="fu">aes</span>(<span class="at">x =</span>lrc_Q, <span class="at">y =</span> lrc_A, </span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.9</span>))</span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"nls"</span>, </span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> rectangular_revised,  <span class="at">color=</span><span class="st">'blue'</span>,</span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">method.args =</span> <span class="fu">list</span>(</span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">start =</span> <span class="fu">c</span>(<span class="at">alpha =</span> <span class="fl">0.07</span>, <span class="at">beta =</span> <span class="fl">0.00005</span>,</span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>              <span class="at">gamma=</span><span class="fl">0.004</span>, <span class="at">Rd =</span> <span class="fl">0.2</span>), </span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span>lrc_Q, <span class="at">y =</span> lrc_A, </span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.9</span>))</span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"photosynthetic rate  "</span>, </span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>          <span class="st">"("</span>, mu, mol<span class="sc">%.%</span>m<span class="sc">^-</span><span class="dv">2</span><span class="sc">%.%</span>s<span class="sc">^-</span><span class="dv">1</span>, <span class="st">")"</span>)), </span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>       <span class="at">x=</span><span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"PAR "</span>, </span>
-<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>           <span class="st">"("</span>, mu, mol<span class="sc">%.%</span>m<span class="sc">^-</span><span class="dv">2</span><span class="sc">%.%</span>s<span class="sc">^-</span><span class="dv">1</span>, <span class="st">")"</span>)))<span class="sc">+</span></span>
-<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div id="fig-cominbe-aq" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="aq-choose_files/figure-html/fig-cominbe-aq-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 12.1: 可以明显淘汰一种模型的例子</figcaption><p></p>
-</figure>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 直角双曲线</span></span>
+<span><span class="va">rectangular</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">~</span> <span class="op">(</span><span class="va">alpha</span> <span class="op">*</span> <span class="va">x</span> <span class="op">*</span> <span class="va">Am</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">alpha</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="va">Am</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="va">Rd</span></span>
+<span><span class="co"># 非直角双曲线</span></span>
+<span><span class="va">non_rectangular</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">~</span> </span>
+<span>  <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">alpha</span><span class="op">*</span><span class="va">x</span><span class="op">+</span><span class="va">Am</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">alpha</span><span class="op">*</span><span class="va">x</span><span class="op">+</span><span class="va">Am</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> </span>
+<span>   <span class="fl">4</span><span class="op">*</span><span class="va">alpha</span><span class="op">*</span><span class="va">theta</span><span class="op">*</span><span class="va">Am</span><span class="op">*</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">-</span> <span class="va">Rd</span></span>
+<span></span>
+<span><span class="co"># 指数模型</span></span>
+<span><span class="va">exponential</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">~</span> <span class="va">Am</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">(</span><span class="op">-</span><span class="va">b</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">x</span> <span class="op">-</span><span class="va">Ic</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 修改模型</span></span>
+<span></span>
+<span><span class="va">rectangular_revised</span> <span class="op">&lt;-</span>  <span class="va">y</span> <span class="op">~</span> </span>
+<span>  <span class="va">alpha</span> <span class="op">*</span> <span class="op">(</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">beta</span><span class="op">*</span><span class="va">x</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">gamma</span> <span class="op">*</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="va">x</span> <span class="op">-</span> <span class="va">Rd</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">lrc</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lrc_Q</span>, y <span class="op">=</span> <span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">16</span>, size <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"nls"</span>, formula <span class="op">=</span> <span class="va">rectangular</span>, </span>
+<span>              se <span class="op">=</span> <span class="cn">FALSE</span>, color<span class="op">=</span><span class="st">'black'</span>,</span>
+<span>  method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>  Am <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  Rd <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span><span class="va">lrc_Q</span>, y <span class="op">=</span> <span class="va">lrc_A</span>, </span>
+<span>   size <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>  <span class="op">+</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"nls"</span>, formula <span class="op">=</span> <span class="va">non_rectangular</span>, </span>
+<span>              se <span class="op">=</span> <span class="cn">FALSE</span>, color<span class="op">=</span><span class="st">'red'</span>, </span>
+<span>  method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Am<span class="op">=</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>  alpha<span class="op">=</span><span class="fl">0.05</span>, Rd<span class="op">=</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span>, theta<span class="op">=</span><span class="fl">1</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span><span class="va">lrc_Q</span>, y <span class="op">=</span> <span class="va">lrc_A</span>, size <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>                </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"nls"</span>, formula <span class="op">=</span> <span class="va">exponential</span>, </span>
+<span>    se <span class="op">=</span> <span class="cn">FALSE</span>,  color<span class="op">=</span><span class="st">'green'</span>,</span>
+<span>    method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Am<span class="op">=</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lrc_A</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    Ic<span class="op">=</span><span class="fl">5</span>, b<span class="op">=</span><span class="fl">0.002</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span><span class="va">lrc_Q</span>, y <span class="op">=</span> <span class="va">lrc_A</span>, </span>
+<span>    size <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">+</span></span>
+<span>      </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"nls"</span>, </span>
+<span>    formula <span class="op">=</span> <span class="va">rectangular_revised</span>,  color<span class="op">=</span><span class="st">'blue'</span>,</span>
+<span>    se <span class="op">=</span> <span class="cn">FALSE</span>, method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.07</span>, beta <span class="op">=</span> <span class="fl">0.00005</span>,</span>
+<span>              gamma<span class="op">=</span><span class="fl">0.004</span>, Rd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span><span class="va">lrc_Q</span>, y <span class="op">=</span> <span class="va">lrc_A</span>, </span>
+<span>    size <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"photosynthetic rate  "</span>, </span>
+<span>          <span class="st">"("</span>, <span class="va">mu</span>, <span class="va">mol</span><span class="op">%.%</span><span class="va">m</span><span class="op">^</span><span class="op">-</span><span class="fl">2</span><span class="op">%.%</span><span class="va">s</span><span class="op">^</span><span class="op">-</span><span class="fl">1</span>, <span class="st">")"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>       x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"PAR "</span>, </span>
+<span>           <span class="st">"("</span>, <span class="va">mu</span>, <span class="va">mol</span><span class="op">%.%</span><span class="va">m</span><span class="op">^</span><span class="op">-</span><span class="fl">2</span><span class="op">%.%</span><span class="va">s</span><span class="op">^</span><span class="op">-</span><span class="fl">1</span>, <span class="st">")"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_light</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-cominbe-aq" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cominbe-aq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="aq-choose_files/figure-html/fig-cominbe-aq-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cominbe-aq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.1: 可以明显淘汰一种模型的例子
+</figcaption></figure>
 </div>
 </div>
 </div>
 <p>该例子并不是特别典型，但结果上来看，红线和蓝线，也就是非直角双曲线和直角双曲线修改模型，看上去比较符合变化趋势。</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-fabozzi_basics_2014" class="csl-entry" role="doc-biblioentry">
-Fabozzi, Frank J., Sergio M. Focardi, Svetlozar T. Rachev, and Bala G. Arshanapalli. 2014. <em>The <span>Basics</span> of <span>Financial</span> <span>Econometrics</span>: <span>Tools</span>, <span>Concepts</span>, and <span>Asset</span> <span>Management</span> <span>Applications</span></em>. 1st edition. Wiley.
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-fabozzi_basics_2014" class="csl-entry" role="listitem">
+Fabozzi, Frank J., Sergio M. Focardi, Svetlozar T. Rachev, 和 Bala G. Arshanapalli. 2014. <em>The <span>Basics</span> of <span>Financial</span> <span>Econometrics</span>: <span>Tools</span>, <span>Concepts</span>, and <span>Asset</span> <span>Management</span> <span>Applications</span></em>. 1st edition. Wiley.
 </div>
 </div>
-</section>
-<section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2>Footnotes</h2>
-
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>https://www.rhumbarlv.com/what-does-aic-and-bic-mean/#:~:text=AIC%20means%20Akaike%E2%80%99s%20Information%20Criteria%20and%20BIC%20means,parameters.%20Do%20you%20want%20higher%20or%20lower%20AIC%3F<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
-</main> <!-- /main -->
-<script type="application/javascript">
+<li id="fn1"><p>https://www.rhumbarlv.com/what-does-aic-and-bic-mean/#:~:text=AIC%20means%20Akaike%E2%80%99s%20Information%20Criteria%20and%20BIC%20means,parameters.%20Do%20you%20want%20higher%20or%20lower%20AIC%3F<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -666,9 +695,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -678,16 +721,53 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/zhujiedong\.github\.io\/photosynthesis-analysis\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -697,50 +777,312 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./hyp-rev.html">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./hyp-rev.html" class="pagination-link" aria-label="直角双曲线的修正模型">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./big-leaf.html">
+      <a href="./big-leaf.html" class="pagination-link" aria-label="大叶模型">
         <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -748,4 +1090,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 
 
-</body></html>
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/aq-choose.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

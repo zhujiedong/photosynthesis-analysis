@@ -1,140 +1,123 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.3.32">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
-  <title>LI-6800 和 LI-6400 光合数据分析指南 - 17&nbsp; Rd 呼吸 相关</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    div.csl-bib-body { }
-    div.csl-entry {
-      clear: both;
-    }
-    .hanging div.csl-entry {
-      margin-left:2em;
-      text-indent:-2em;
-    }
-    div.csl-left-margin {
-      min-width:2em;
-      float:left;
-    }
-    div.csl-right-inline {
-      margin-left:2em;
-      padding-left:1em;
-    }
-    div.csl-indent {
-      margin-left: 2em;
-    }
-  </style>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="description" content="介绍使用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+<title>LI-6800 和 LI-6400 光合数据分析指南 - 18&nbsp; Rd 呼吸 相关</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
-  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="./">
-  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="site_libs/quarto-search/fuse.min.js"></script>
-  <script src="site_libs/quarto-search/quarto-search.js"></script>
-  <link href="./C4-related.html" rel="next">
-  <link href="./plantecowraps.html" rel="prev">
-  <script src="site_libs/quarto-html/quarto.js"></script>
-  <script src="site_libs/quarto-html/popper.min.js"></script>
-  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="site_libs/quarto-html/anchor.min.js"></script>
-  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "sidebar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "start",
-    "type": "textbox",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./C4-related.html" rel="next">
+<link href="./plantecowraps.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "搜索"
+  }
+}</script><script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
  for (var i = 0; i < mathElements.length; i++) {
@@ -147,478 +130,542 @@
     fleqn: false
    });
 }}});
-  </script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 </head>
-<body class="floating">
+<body class="nav-sidebar floating">
+
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></h1>
-      <button type="button" class="quarto-btn-toggle btn">
-        <i class="bi bi-chevron-right"></i>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="切换侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./aci-curve.html">二氧化碳响应曲线概述</a></li><li class="breadcrumb-item"><a href="./Rd.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="切换侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/zhujiedong/photosynthesis-analysis/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/zhujiedong/photosynthesis-analysis/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
     </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">欢迎</span></a>
   </div>
-    <div class="mt-2 flex-shrink-0 align-items-center">
-      <div class="sidebar-search">
-      <div id="quarto-search" class="" title="Search"></div>
-      </div>
-    </div>
-  <div class="sidebar-menu-container"> 
-  <ul class="list-unstyled mt-1">
-      <li class="sidebar-item">
-  <a href="./index.html" class="">欢迎</a>
 </li>
-      <li class="sidebar-item">
-  <a href="./thanks.html" class="">致谢</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./preface.html" class="">序言</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./intro.html" class="">介绍</a>
-</li>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./basics.html" class="">必备工具</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-basics.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-basics.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./packages.html" class="">光合相关的软件包</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-packages.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-packages.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./data-prepare.html" class="">数据准备</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-data-prepare.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./light-response.html" class="">光响应曲线简介</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-light-response.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-light-response.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-aci-curve.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-aci-curve.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./Rd.html" class="active"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-fluorescence.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-fluorescence.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-gm-gs.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-gm-gs.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./other-stat.html" class="">其他统计方法</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-other-stat.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-other-stat.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <li class="sidebar-item">
-  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
-</li>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-appendices" aria-expanded="true">
-              <div class="me-auto sidebar-section-item">Appendices</div>
-            <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-appendices">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-  </ul>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./thanks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">致谢</span></a>
   </div>
-</nav>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">序言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">介绍</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">必备工具</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rbasics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">光合相关的软件包</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phtosyn-pacakges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./general-packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./data-prepare.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./batch-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./light-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">光响应曲线简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nls-start.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./non-hypo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyp-rev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aq-choose.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./big-leaf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-aq-gui.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./aci-curve.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">二氧化碳响应曲线概述</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DAT-vs-racir.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plantecowraps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Rd.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C4-related.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./fluorescence.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">叶绿素荧光数据的处理</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./jiptest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-fluor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./gm-gs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">叶肉与气孔导度</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./other-stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">其他统计方法</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./common-stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">正态分布检验</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">大话 PCA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smatr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">参考文献</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./a1-run-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-      <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of contents</h2>
-<ul>
-<li><a href="#sec-laisk-method" class="nav-link active" data-scroll-target="#sec-laisk-method"> <span class="header-section-number">17.1</span> Laisk 方法概述</a>
-<ul class="collapse">
-<li><a href="#sec-laisk-cal-method" class="nav-link" data-scroll-target="#sec-laisk-cal-method"> <span class="header-section-number">17.1.1</span> 基本计算方法</a></li>
-</ul></li>
-<li><a href="#sec-kok-method" class="nav-link" data-scroll-target="#sec-kok-method"> <span class="header-section-number">17.2</span> Kok 方法</a></li>
-<li><a href="#sec-yin-method" class="nav-link" data-scroll-target="#sec-yin-method"> <span class="header-section-number">17.3</span> Yin 方法</a></li>
-<li><a href="#sec-rd-func-intr" class="nav-link" data-scroll-target="#sec-rd-func-intr"> <span class="header-section-number">17.4</span> 函数简介</a></li>
-<li><a href="#sec-in-action" class="nav-link" data-scroll-target="#sec-in-action"> <span class="header-section-number">17.5</span> 实践</a></li>
-</ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/Rd.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#sec-laisk-method" id="toc-sec-laisk-method" class="nav-link active" data-scroll-target="#sec-laisk-method"><span class="header-section-number">18.1</span> Laisk 方法概述</a>
+  <ul class="collapse">
+<li><a href="#sec-laisk-cal-method" id="toc-sec-laisk-cal-method" class="nav-link" data-scroll-target="#sec-laisk-cal-method"><span class="header-section-number">18.1.1</span> 基本计算方法</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-kok-method" id="toc-sec-kok-method" class="nav-link" data-scroll-target="#sec-kok-method"><span class="header-section-number">18.2</span> Kok 方法</a></li>
+  <li><a href="#sec-yin-method" id="toc-sec-yin-method" class="nav-link" data-scroll-target="#sec-yin-method"><span class="header-section-number">18.3</span> Yin 方法</a></li>
+  <li><a href="#sec-rd-func-intr" id="toc-sec-rd-func-intr" class="nav-link" data-scroll-target="#sec-rd-func-intr"><span class="header-section-number">18.4</span> 函数简介</a></li>
+  <li><a href="#sec-in-action" id="toc-sec-in-action" class="nav-link" data-scroll-target="#sec-in-action"><span class="header-section-number">18.5</span> 实践</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/Rd.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content">
-<header id="title-block-header">
-<h1 class="title display-7"><span id="sec-rd-related" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></span></h1>
-</header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./aci-curve.html">二氧化碳响应曲线概述</a></li><li class="breadcrumb-item"><a href="./Rd.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-rd-related" class="quarto-section-identifier"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></span></h1>
+</div>
 
-<p>本节标题的翻译足够让我头大，<span class="citation" data-cites="Farquhar1980A">Farquhar, Caemmerer, and Berry (<a href="references.html#ref-Farquhar1980A" role="doc-biblioref">1980</a>)</span> 对 R<sub>d</sub> 的解释为：</p>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>本节标题的翻译足够让我头大，<span class="citation" data-cites="Farquhar1980A">Farquhar, Caemmerer, 和 Berry (<a href="references.html#ref-Farquhar1980A" role="doc-biblioref">1980</a>)</span> 对 R<sub>d</sub> 的解释为：</p>
 <blockquote class="blockquote">
 <p>The symbol R<sub>d</sub> represents CO<sub>2</sub> evolution from mitochondria in the light, other than that associated with the PCO cycle. Mitochondrial oxygen uptake and electron transport associated with normal dark respiration are likely to be inhibited by illumination but CO<sub>2</sub> release may continue. For want of a better term we call this <strong>“dark respiration”</strong>.</p>
 </blockquote>
-<p>然而我不喜欢这个叫法，感觉容易误解。本文的主要目的是使用 <code>photosynthesis</code> 来计算有光条件下呼吸，软件包对这个过程的叫法叫做 light respiration，具体说是两个参数，具体的翻译我采用了 <span class="citation" data-cites="yinC3C4Photosynthesis2009">X. Yin and Struik (<a href="references.html#ref-yinC3C4Photosynthesis2009" role="doc-biblioref">2009</a>)</span> 的表述：</p>
+<p>然而我不喜欢这个叫法，感觉容易误解。本文的主要目的是使用 <code>photosynthesis</code> 来计算有光条件下呼吸，软件包对这个过程的叫法叫做 light respiration，具体说是两个参数，具体的翻译我采用了 <span class="citation" data-cites="yinC3C4Photosynthesis2009">X. Yin 和 Struik (<a href="references.html#ref-yinC3C4Photosynthesis2009" role="doc-biblioref">2009</a>)</span> 的表述：</p>
 <ol type="1">
-<li><span class="math inline">R_d</span>：通常称之为明呼吸速率，是指无光呼吸的 <span class="math inline">CO_2</span> 释放。</li>
-<li><span class="math inline">\Gamma^*</span>：在无光呼吸的情况下的基于 <span class="math inline">C_c</span> 的 <span class="math inline">CO_2</span> 补偿点。</li>
+<li>
+<span class="math inline">R_d</span>：通常称之为明呼吸速率，是指无光呼吸的 <span class="math inline">CO_2</span> 释放。</li>
+<li>
+<span class="math inline">\Gamma^*</span>：在无光呼吸的情况下的基于 <span class="math inline">C_c</span> 的 <span class="math inline">CO_2</span> 补偿点。</li>
 </ol>
 <p>我作为非专业人士，若觉得我写错了或者难以难以理解，请参考文献原文。</p>
-<section id="sec-laisk-method" class="level2" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="sec-laisk-method"><span class="header-section-number">17.1</span> Laisk 方法概述</h2>
-<p>Laisk 方法参考的文献为 <span class="citation" data-cites="brooksEffectTemperatureCO21985">Brooks and Farquhar (<a href="references.html#ref-brooksEffectTemperatureCO21985" role="doc-biblioref">1985</a>)</span>，基本实验方法和原则是：</p>
+<section id="sec-laisk-method" class="level2" data-number="18.1"><h2 data-number="18.1" class="anchored" data-anchor-id="sec-laisk-method">
+<span class="header-section-number">18.1</span> Laisk 方法概述</h2>
+<p>Laisk 方法参考的文献为 <span class="citation" data-cites="brooksEffectTemperatureCO21985">Brooks 和 Farquhar (<a href="references.html#ref-brooksEffectTemperatureCO21985" role="doc-biblioref">1985</a>)</span>，基本实验方法和原则是：</p>
 <p>在不同的低光条件下测量 <span class="math inline">CO_2</span> 响应曲线（例如该文采用了四个低光条件），这样寻找这几个响应曲线的交点，也就是四条曲线 A 值相同的点，然后采用该 A 值下的 <span class="math inline">C_i</span> 值作为对 <span class="math inline">\Gamma^*</span> 的估计，而 A 值则作为对 <span class="math inline">-R_d</span> 的估计。</p>
 <p>采用的 <span class="math inline">C_i</span> 范围较小，此范围内响应曲线是近线性的，每个光强下的响应曲线采用的是线性拟合。他们的交点是通过计算获得，从而计算上面的 <span class="math inline">\Gamma^*</span> 和 <span class="math inline">-R_d</span>。</p>
 <p>当然这篇文献里还提到的 <span class="math inline">R_n</span>，这是和 <span class="math inline">R_d</span> 相对的概念，是我们通常称为暗呼吸速率的参数。测量方式是当光源关闭后，呼吸速率快速下降，然后在 30-45 min 的黑暗处理后，该速率基本停止后作为暗呼吸速率。</p>
-<p><span class="citation" data-cites="walkerImprovedMethodMeasuring2015a">Walker and Ort (<a href="references.html#ref-walkerImprovedMethodMeasuring2015a" role="doc-biblioref">2015</a>)</span> 给出了上述方式的示意图：</p>
-<div id="fig-laisk-exam" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="img/laisk.png" class="img-fluid figure-img"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 17.1: Laisk 方法示例</figcaption><p></p>
-</figure>
+<p><span class="citation" data-cites="walkerImprovedMethodMeasuring2015a">Walker 和 Ort (<a href="references.html#ref-walkerImprovedMethodMeasuring2015a" role="doc-biblioref">2015</a>)</span> 给出了上述方式的示意图：</p>
+<div id="fig-laisk-exam" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-laisk-exam-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/laisk.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-laisk-exam-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.1: Laisk 方法示例
+</figcaption></figure>
 </div>
 <p>上面的图形使用的是三项式拟合的结果。</p>
-<section id="sec-laisk-cal-method" class="level3" data-number="17.1.1">
-<h3 data-number="17.1.1" class="anchored" data-anchor-id="sec-laisk-cal-method"><span class="header-section-number">17.1.1</span> 基本计算方法</h3>
-<p><span class="citation" data-cites="walkerImprovedMethodMeasuring2015a">Walker and Ort (<a href="references.html#ref-walkerImprovedMethodMeasuring2015a" role="doc-biblioref">2015</a>)</span> 对于交点的判定给出了详细论述，如上图所示，这几条曲线（或最初的线性）并不是总会完全相交于一点。通常采用的方法是将所有曲线（或直线）的交点进行取均值。实践中，这些点很少收敛于单点，<strong>通常移除某交点或重新测量直到交点的标准差在某范围内</strong>。但总之会存在一定缺陷，因而 <span class="citation" data-cites="walkerImprovedMethodMeasuring2015a">Walker and Ort (<a href="references.html#ref-walkerImprovedMethodMeasuring2015a" role="doc-biblioref">2015</a>)</span> 对上述方法做了一个改变：</p>
+<section id="sec-laisk-cal-method" class="level3" data-number="18.1.1"><h3 data-number="18.1.1" class="anchored" data-anchor-id="sec-laisk-cal-method">
+<span class="header-section-number">18.1.1</span> 基本计算方法</h3>
+<p><span class="citation" data-cites="walkerImprovedMethodMeasuring2015a">Walker 和 Ort (<a href="references.html#ref-walkerImprovedMethodMeasuring2015a" role="doc-biblioref">2015</a>)</span> 对于交点的判定给出了详细论述，如上图所示，这几条曲线（或最初的线性）并不是总会完全相交于一点。通常采用的方法是将所有曲线（或直线）的交点进行取均值。实践中，这些点很少收敛于单点，<strong>通常移除某交点或重新测量直到交点的标准差在某范围内</strong>。但总之会存在一定缺陷，因而 <span class="citation" data-cites="walkerImprovedMethodMeasuring2015a">Walker 和 Ort (<a href="references.html#ref-walkerImprovedMethodMeasuring2015a" role="doc-biblioref">2015</a>)</span> 对上述方法做了一个改变：</p>
 <p><span id="eq-laisk-walker1"><span class="math display">
 C_i^* = \frac{b1-b2}{m_2 -m_1}
-\qquad(17.1)</span></span></p>
+\tag{18.1}</span></span></p>
 <p>其中 <span class="math inline">C_i^*</span> 的意义为上文提到的计算的 <span class="math inline">\Gamma^*</span>, m 表示两条响应曲线线性部分的直线的斜率，b 表示截距。之后再进行计算：</p>
 <p><span id="eq-laisk-walker2"><span class="math display">
 R_d = m C_i^* + b
-\qquad(17.2)</span></span></p>
+\tag{18.2}</span></span></p>
 <p>该方法的基本步骤是：</p>
 <ol type="1">
 <li>将每条曲线的 m 值作为 x 轴，b 值作为 y 轴，那么对其做一个标准的线性回归，这条回归线的斜率为：</li>
 </ol>
 <p><span id="eq-laisk-walker3"><span class="math display">
 m_{reg} = \frac{b_2-b_1}{m_2 -m_1}
-\qquad(17.3)</span></span></p>
+\tag{18.3}</span></span></p>
 <p>将其乘以 -1，并整理方程，那么我们可以得到下面的公式：</p>
 <p><span id="eq-laisk-walker4"><span class="math display">
 b=-C_i^* + b_{reg}
-\qquad(17.4)</span></span></p>
+\tag{18.4}</span></span></p>
 <p>那么：</p>
 <p><span id="eq-laisk-walker5"><span class="math display">
 R_d = b_{reg}
-\qquad(17.5)</span></span></p>
-</section>
-</section>
-<section id="sec-kok-method" class="level2" data-number="17.2">
-<h2 data-number="17.2" class="anchored" data-anchor-id="sec-kok-method"><span class="header-section-number">17.2</span> Kok 方法</h2>
-<p>由于 <span class="citation" data-cites="kokInhibitionPhotosynthesisIntense1956">Kok (<a href="references.html#ref-kokInhibitionPhotosynthesisIntense1956" role="doc-biblioref">1956</a>)</span> 的方法是基于氧气的测量，尽管原则一样，但我不想浪费精力学习现在基本抛弃的测量方式，所以下面的描述基于 <span class="citation" data-cites="wayResponsesRespirationLight2019">Way et al. (<a href="references.html#ref-wayResponsesRespirationLight2019" role="doc-biblioref">2019</a>)</span>：</p>
+\tag{18.5}</span></span></p>
+</section></section><section id="sec-kok-method" class="level2" data-number="18.2"><h2 data-number="18.2" class="anchored" data-anchor-id="sec-kok-method">
+<span class="header-section-number">18.2</span> Kok 方法</h2>
+<p>由于 <span class="citation" data-cites="kokInhibitionPhotosynthesisIntense1956">Kok (<a href="references.html#ref-kokInhibitionPhotosynthesisIntense1956" role="doc-biblioref">1956</a>)</span> 的方法是基于氧气的测量，尽管原则一样，但我不想浪费精力学习现在基本抛弃的测量方式，所以下面的描述基于 <span class="citation" data-cites="wayResponsesRespirationLight2019">Way 等 (<a href="references.html#ref-wayResponsesRespirationLight2019" role="doc-biblioref">2019</a>)</span>：</p>
 <p>Kok 方法基于在弱光 ( <span class="math inline">\lt 100 \mu mol \cdot m^{-2} \cdot m^{-1}</span> ) 下测量净光合速率。当光强从低到高渐变时，净光合速率增加，但这个增加的斜率通常存在一个中断。计算 <span class="math inline">R_d</span> 通常是基于该中断代表了从 <span class="math inline">R_n</span> 到光下对 <span class="math inline">R_n</span> 的已知阶段。因此 <span class="math inline">R_d</span> 可以通过拟合高于该断点的数据点并进行差值后与 y 轴的交点来表示。如下图作者测量了不同温度下的 <span class="math inline">R_d</span>:</p>
-<div id="fig-kok-method-fig" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="img/kok-temp.png" class="img-fluid figure-img"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 17.2: Kok 方法示例</figcaption><p></p>
-</figure>
+<div id="fig-kok-method-fig" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-kok-method-fig-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/kok-temp.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kok-method-fig-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.2: Kok 方法示例
+</figcaption></figure>
 </div>
 <p>当然该方法存在争论，但是他的测量比较简单，争论内容不在本文讨论之列。</p>
-</section>
-<section id="sec-yin-method" class="level2" data-number="17.3">
-<h2 data-number="17.3" class="anchored" data-anchor-id="sec-yin-method"><span class="header-section-number">17.3</span> Yin 方法</h2>
-<p><span class="citation" data-cites="yinEvaluatingNewMethod2011">Xinyou Yin et al. (<a href="references.html#ref-yinEvaluatingNewMethod2011" role="doc-biblioref">2011</a>)</span> 使用 LI-6400 进行光合荧光同步测量来进行，光强的设置为：</p>
+</section><section id="sec-yin-method" class="level2" data-number="18.3"><h2 data-number="18.3" class="anchored" data-anchor-id="sec-yin-method">
+<span class="header-section-number">18.3</span> Yin 方法</h2>
+<p><span class="citation" data-cites="yinEvaluatingNewMethod2011">Xinyou Yin 等 (<a href="references.html#ref-yinEvaluatingNewMethod2011" role="doc-biblioref">2011</a>)</span> 使用 LI-6400 进行光合荧光同步测量来进行，光强的设置为：</p>
 <p><span class="math display">5,10,15,20,30,50,70,100,150,200</span> 设置 C<sub>a</sub> 的浓度为 <span class="math inline">370 \mu mol \cdot mol</span>，但外界的 <span class="math inline">O_2</span> 浓度为 2%。并且为验证光强设置的方向是否影响 <span class="math inline">R_d</span>，单独进行了正向和反向的光强实验。荧光测量遵循了 LI-6400 的测量原则。</p>
-<div id="fig-yin" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="img/yin-rd.png" class="img-fluid figure-img"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 17.3: Yin 方法测量 Rd 示例</figcaption><p></p>
-</figure>
+<div id="fig-yin" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-yin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/yin-rd.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-yin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.3: Yin 方法测量 Rd 示例
+</figcaption></figure>
 </div>
 <p><span class="math inline">R_d</span> 的计算使用了上图的方法，与 Kok 类似，不过横坐标的数值为 <span class="math inline">\Phi PSII/4</span>。该方法只适用于改进的 <span class="math inline">R_d</span> 的计算。</p>
-</section>
-<section id="sec-rd-func-intr" class="level2" data-number="17.4">
-<h2 data-number="17.4" class="anchored" data-anchor-id="sec-rd-func-intr"><span class="header-section-number">17.4</span> 函数简介</h2>
+</section><section id="sec-rd-func-intr" class="level2" data-number="18.4"><h2 data-number="18.4" class="anchored" data-anchor-id="sec-rd-func-intr">
+<span class="header-section-number">18.4</span> 函数简介</h2>
 <p>实际上有三个函数，但他们有共同的参数，道理很简单，他们基于的理论大部分相同：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fit_r_light_kok</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(<span class="at">A_net =</span> <span class="st">"A_net"</span>, <span class="at">PPFD =</span> <span class="st">"PPFD"</span>),</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_lower =</span> <span class="dv">40</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_upper =</span> <span class="dv">100</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fit_r_light_WalkerOrt</span>(</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  data,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(<span class="at">A_net =</span> <span class="st">"A_net"</span>, <span class="at">C_i =</span> <span class="st">"C_i"</span>, <span class="at">PPFD =</span> <span class="st">"PPFD"</span>),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">P =</span> <span class="dv">100</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">C_i_threshold =</span> <span class="dv">300</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">fit_r_light_yin</span>(</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  data,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(<span class="at">A_net =</span> <span class="st">"A_net"</span>, <span class="at">PPFD =</span> <span class="st">"PPFD"</span>, <span class="at">phi_PSII =</span> <span class="st">"phi_PSII"</span>),</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_lower =</span> <span class="dv">40</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_upper =</span> <span class="dv">100</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">fit_r_light_kok</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>A_net <span class="op">=</span> <span class="st">"A_net"</span>, PPFD <span class="op">=</span> <span class="st">"PPFD"</span><span class="op">)</span>,</span>
+<span>  PPFD_lower <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  PPFD_upper <span class="op">=</span> <span class="fl">100</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fit_r_light_WalkerOrt</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>A_net <span class="op">=</span> <span class="st">"A_net"</span>, C_i <span class="op">=</span> <span class="st">"C_i"</span>, PPFD <span class="op">=</span> <span class="st">"PPFD"</span><span class="op">)</span>,</span>
+<span>  P <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  C_i_threshold <span class="op">=</span> <span class="fl">300</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fit_r_light_yin</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>A_net <span class="op">=</span> <span class="st">"A_net"</span>, PPFD <span class="op">=</span> <span class="st">"PPFD"</span>, phi_PSII <span class="op">=</span> <span class="st">"phi_PSII"</span><span class="op">)</span>,</span>
+<span>  PPFD_lower <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  PPFD_upper <span class="op">=</span> <span class="fl">100</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>主要的参数，我们通过上面的介绍部分都能看明白，分别是适用于 LI-6400 或 LI-6800 的 <code>varnames</code>，以及最小光强或者最大光强，外界气压 <code>P</code>，以及部分方法中 <span class="math inline">C_i</span> 的临界点 <code>C_i_threshold</code>。</p>
-</section>
-<section id="sec-in-action" class="level2" data-number="17.5">
-<h2 data-number="17.5" class="anchored" data-anchor-id="sec-in-action"><span class="header-section-number">17.5</span> 实践</h2>
+</section><section id="sec-in-action" class="level2" data-number="18.5"><h2 data-number="18.5" class="anchored" data-anchor-id="sec-in-action">
+<span class="header-section-number">18.5</span> 实践</h2>
 <p>实践还是采用叶肉导度测试的数据，来自于软件包自带。代码来自于 <code>vignette</code>，主要对其中内容做相关解释。</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data/A_Ci_Q_data_1.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cdmuir/photosynthesis">photosynthesis</a></span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">'data/A_Ci_Q_data_1.csv'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>加载软件包并读取示例数据。</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>r_light <span class="ot">&lt;-</span> <span class="fu">fit_r_light_yin</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">A_net =</span> <span class="st">"A"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">PPFD =</span> <span class="st">"Qin"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">phi_PSII =</span> <span class="st">"PhiPS2"</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_lower =</span> <span class="dv">20</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_upper =</span> <span class="dv">250</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">r_light</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/fit_r_light.html">fit_r_light_yin</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    A_net <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>    PPFD <span class="op">=</span> <span class="st">"Qin"</span>,</span>
+<span>    phi_PSII <span class="op">=</span> <span class="st">"PhiPS2"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  PPFD_lower <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  PPFD_upper <span class="op">=</span> <span class="fl">250</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><span class="math inline">R_d</span> 为截距：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>r_light</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">r_light</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>(Intercept) 
  -0.7721399 </code></pre>
 </div>
 </div>
 <p>当然，Kok 方法与之类似：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>r_light <span class="ot">&lt;-</span> <span class="fu">fit_r_light_kok</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">A_net =</span> <span class="st">"A"</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">PPFD =</span> <span class="st">"Qin"</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">phi_PSII =</span> <span class="st">"PhiPS2"</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_lower =</span> <span class="dv">20</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_upper =</span> <span class="dv">250</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>r_light</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">r_light</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/fit_r_light.html">fit_r_light_kok</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    A_net <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>    PPFD <span class="op">=</span> <span class="st">"Qin"</span>,</span>
+<span>    phi_PSII <span class="op">=</span> <span class="st">"PhiPS2"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  PPFD_lower <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  PPFD_upper <span class="op">=</span> <span class="fl">250</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">r_light</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>(Intercept) 
  -0.5237011 </code></pre>
 </div>
@@ -626,26 +673,23 @@ R_d = b_{reg}
 <p>结果为负值当然表示这是呼吸的意思。</p>
 <p>示例程序还演示了不同分组的数据批量的处理，这里的分组是使用了 sample 气路的二氧化碳浓度，首先将其取整，然后转化为 <code>factor</code> 后处理，也就是前两行代码所做的处理。之后使用 <code>Yin</code> 的方法将所有分组的数据同时处理；</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>C_s <span class="ot">&lt;-</span> (<span class="fu">round</span>(data<span class="sc">$</span>CO2_s, <span class="at">digits =</span> <span class="dv">0</span>))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>C_s <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">round</span>(data<span class="sc">$</span>C_s, <span class="at">digits =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>r_lights <span class="ot">&lt;-</span> <span class="fu">fit_many</span>(</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">funct =</span> fit_r_light_yin,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="st">"C_s"</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">A_net =</span> <span class="st">"A"</span>,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">PPFD =</span> <span class="st">"Qin"</span>,</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">phi_PSII =</span> <span class="st">"PhiPS2"</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_lower =</span> <span class="dv">20</span>,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">PPFD_upper =</span> <span class="dv">250</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span><span class="op">$</span><span class="va">C_s</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">CO2_s</span>, digits <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span><span class="op">$</span><span class="va">C_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">C_s</span>, digits <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">r_lights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/fit_many.html">fit_many</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  funct <span class="op">=</span> <span class="va">fit_r_light_yin</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"C_s"</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    A_net <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>    PPFD <span class="op">=</span> <span class="st">"Qin"</span>,</span>
+<span>    phi_PSII <span class="op">=</span> <span class="st">"PhiPS2"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  PPFD_lower <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  PPFD_upper <span class="op">=</span> <span class="fl">250</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>
   |                                                                            
   |                                                                      |   0%
@@ -671,27 +715,26 @@ R_d = b_{reg}
 </div>
 <p>然后将数据整理一下：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">names</span>(r_lights)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>r_lights <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">"c"</span>, r_lights)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>r_light_yin <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> group, <span class="at">y =</span> r_lights, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>r_light_yin<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(r_light_yin<span class="sc">$</span>x)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(r_light_yin) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"C_s"</span>, <span class="st">"r_light"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">r_lights</span><span class="op">)</span></span>
+<span><span class="va">r_lights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="st">"c"</span>, <span class="va">r_lights</span><span class="op">)</span></span>
+<span><span class="va">r_light_yin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">group</span>, y <span class="op">=</span> <span class="va">r_lights</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">r_light_yin</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">r_light_yin</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">r_light_yin</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"C_s"</span>, <span class="st">"r_light"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>首先提取不同的分组，这里是浓度的数据，然后将其转化为一个向量。最终将数据整理为一个数据框，第一列是分组名，第二列是对应的截距，或者说是 <span class="math inline">R_d</span>。最后将数据框的表头修改为所需要的表头，结果为：</p>
 <div class="cell">
 <div class="cell-output-display">
-<table class="table">
-<caption>{} </caption>
-<thead>
-<tr class="header">
+<div id="tbl-yin-kable" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-yin-kable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;18.1: Yin 的方法测量的结果
+</figcaption><div aria-describedby="tbl-yin-kable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table table-sm table-striped small">
+<thead><tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: right;">C_s</th>
 <th style="text-align: right;">r_light</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">50.(Intercept)</td>
@@ -741,17 +784,17 @@ R_d = b_{reg}
 </tbody>
 </table>
 </div>
+</figure>
+</div>
+</div>
 </div>
 <p>walker 方法相比来说要复杂一些，因为多求了一个参数：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>walker_ort <span class="ot">&lt;-</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_r_light_WalkerOrt</span>(data, <span class="at">varnames =</span> <span class="fu">list</span>(<span class="at">A_net =</span> <span class="st">"A"</span>, <span class="at">C_i =</span> <span class="st">"Ci"</span>, <span class="at">PPFD =</span> <span class="st">"Qin"</span>))</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(walker_ort[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">walker_ort</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/fit_r_light.html">fit_r_light_WalkerOrt</a></span><span class="op">(</span><span class="va">data</span>, varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>A_net <span class="op">=</span> <span class="st">"A"</span>, C_i <span class="op">=</span> <span class="st">"Ci"</span>, PPFD <span class="op">=</span> <span class="st">"Qin"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">walker_ort</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = Intercept ~ Slope, data = coefs)
@@ -774,71 +817,88 @@ F-statistic: 127.8 on 1 and 10 DF,  p-value: 5.103e-07</code></pre>
 </div>
 <p>通过图形才能很好的反应他使用单条线的斜率和截距来计算的情况：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>walker_ort[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div id="fig-yin-plot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="Rd_files/figure-html/fig-yin-plot-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 17.4: 图形方式查看 Walker 的测量方法</figcaption><p></p>
-</figure>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">walker_ort</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-yin-plot" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-yin-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Rd_files/figure-html/fig-yin-plot-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-yin-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.4: 图形方式查看 Walker 的测量方法
+</figcaption></figure>
 </div>
 </div>
 </div>
 <p>数据的结果：</p>
 <div class="cell">
 <div class="cell-output-display">
-<table class="table">
-<caption>{} </caption>
-<thead>
-<tr class="header">
+<div id="tbl-walker-kable" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-walker-kable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;18.2: Walker 的方法测量的结果
+</figcaption><div aria-describedby="tbl-walker-kable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table table-sm table-striped small">
+<thead><tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: right;">GammaStar</th>
 <th style="text-align: right;">r_light</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
+</tr></thead>
+<tbody><tr class="odd">
 <td style="text-align: left;">Slope</td>
 <td style="text-align: right;">46.00427</td>
 <td style="text-align: right;">-0.152643</td>
-</tr>
-</tbody>
+</tr></tbody>
 </table>
+</div>
+</figure>
+</div>
 </div>
 </div>
 <p>就是这些内容了，属于比较使用的函数。</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-brooksEffectTemperatureCO21985" class="csl-entry" role="doc-biblioentry">
-Brooks, A., and G. D. Farquhar. 1985. <span>“Effect of Temperature on the <span>Co2</span>/<span>O2</span> Specificity of Ribulose-1,5-Bisphosphate Carboxylase/Oxygenase and the Rate of Respiration in the Light.”</span> <em>Planta</em> 165 (3): 397–406. <a href="https://doi.org/10.1007/BF00392238">https://doi.org/10.1007/BF00392238</a>.
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-brooksEffectTemperatureCO21985" class="csl-entry" role="listitem">
+Brooks, A., 和 G. D. Farquhar. 1985. <span>《Effect of temperature on the <span>CO2</span>/<span>O2</span> specificity of ribulose-1,5-bisphosphate carboxylase/oxygenase and the rate of respiration in the light》</span>. <em>Planta</em> 165 (3): 397–406. <a href="https://doi.org/10.1007/BF00392238">https://doi.org/10.1007/BF00392238</a>.
 </div>
-<div id="ref-Farquhar1980A" class="csl-entry" role="doc-biblioentry">
-Farquhar, G. D., S. Von Caemmerer, and J. A. Berry. 1980. <span>“A Biochemical Model of Photosynthetic CO<span class="math inline">_2</span> Assimilation in Leaves of C3 Species.”</span> <em>Planta</em> 149 (1): 78–90.
+<div id="ref-Farquhar1980A" class="csl-entry" role="listitem">
+Farquhar, G. D., S. Von Caemmerer, 和 J. A. Berry. 1980. <span>《A biochemical model of photosynthetic CO<span class="math inline">_2</span> assimilation in leaves of C3 species.》</span> <em>Planta</em> 149 (1): 78–90.
 </div>
-<div id="ref-kokInhibitionPhotosynthesisIntense1956" class="csl-entry" role="doc-biblioentry">
-Kok, Bessel. 1956. <span>“On the Inhibition of Photosynthesis by Intense Light.”</span> <em>Biochimica Et Biophysica Acta</em> 21 (2): 234–44. <a href="https://doi.org/10.1016/0006-3002(56)90003-8">https://doi.org/10.1016/0006-3002(56)90003-8</a>.
+<div id="ref-kokInhibitionPhotosynthesisIntense1956" class="csl-entry" role="listitem">
+Kok, Bessel. 1956. <span>《On the inhibition of photosynthesis by intense light》</span>. <em>Biochimica et Biophysica Acta</em> 21 (2): 234–44. <a href="https://doi.org/10.1016/0006-3002(56)90003-8">https://doi.org/10.1016/0006-3002(56)90003-8</a>.
 </div>
-<div id="ref-walkerImprovedMethodMeasuring2015a" class="csl-entry" role="doc-biblioentry">
-Walker, Berkley J., and Donald R. Ort. 2015. <span>“Improved Method for Measuring the Apparent <span>Co2</span> Photocompensation Point Resolves the Impact of Multiple Internal Conductances to <span>Co2</span> to Net Gas Exchange.”</span> <em>Plant, Cell &amp; Environment</em> 38 (11): 2462–74. https://doi.org/<a href="https://doi.org/10.1111/pce.12562">https://doi.org/10.1111/pce.12562</a>.
+<div id="ref-walkerImprovedMethodMeasuring2015a" class="csl-entry" role="listitem">
+Walker, Berkley J., 和 Donald R. Ort. 2015. <span>《Improved method for measuring the apparent <span>CO2</span> photocompensation point resolves the impact of multiple internal conductances to <span>CO2</span> to net gas exchange》</span>. <em>Plant, Cell &amp; Environment</em> 38 (11): 2462–74. https://doi.org/<a href="https://doi.org/10.1111/pce.12562">https://doi.org/10.1111/pce.12562</a>.
 </div>
-<div id="ref-wayResponsesRespirationLight2019" class="csl-entry" role="doc-biblioentry">
-Way, Danielle A., Michael J. Aspinwall, John E. Drake, Kristine Y. Crous, Courtney E. Campany, Oula Ghannoum, David T. Tissue, and Mark G. Tjoelker. 2019. <span>“Responses of Respiration in the Light to Warming in Field-Grown Trees: A Comparison of the Thermal Sensitivity of the <span>Kok</span> and <span>Laisk</span> Methods.”</span> <em>New Phytologist</em> 222 (1): 132–43. https://doi.org/<a href="https://doi.org/10.1111/nph.15566">https://doi.org/10.1111/nph.15566</a>.
+<div id="ref-wayResponsesRespirationLight2019" class="csl-entry" role="listitem">
+Way, Danielle A., Michael J. Aspinwall, John E. Drake, Kristine Y. Crous, Courtney E. Campany, Oula Ghannoum, David T. Tissue, 和 Mark G. Tjoelker. 2019. <span>《Responses of respiration in the light to warming in field-grown trees: a comparison of the thermal sensitivity of the <span>Kok</span> and <span>Laisk</span> methods》</span>. <em>New Phytologist</em> 222 (1): 132–43. https://doi.org/<a href="https://doi.org/10.1111/nph.15566">https://doi.org/10.1111/nph.15566</a>.
 </div>
-<div id="ref-yinEvaluatingNewMethod2011" class="csl-entry" role="doc-biblioentry">
-Yin, Xinyou, Zhouping Sun, Paul C. Struik, and Junfei Gu. 2011. <span>“Evaluating a New Method to Estimate the Rate of Leaf Respiration in the Light by Analysis of Combined Gas Exchange and Chlorophyll Fluorescence Measurements.”</span> <em>Journal of Experimental Botany</em> 62 (10): 3489–99. <a href="https://doi.org/10.1093/jxb/err038">https://doi.org/10.1093/jxb/err038</a>.
+<div id="ref-yinEvaluatingNewMethod2011" class="csl-entry" role="listitem">
+Yin, Xinyou, Zhouping Sun, Paul C. Struik, 和 Junfei Gu. 2011. <span>《Evaluating a new method to estimate the rate of leaf respiration in the light by analysis of combined gas exchange and chlorophyll fluorescence measurements》</span>. <em>Journal of Experimental Botany</em> 62 (10): 3489–99. <a href="https://doi.org/10.1093/jxb/err038">https://doi.org/10.1093/jxb/err038</a>.
 </div>
-<div id="ref-yinC3C4Photosynthesis2009" class="csl-entry" role="doc-biblioentry">
-Yin, X., and P. C. Struik. 2009. <span>“C3 and <span>C4</span> Photosynthesis Models: <span>An</span> Overview from the Perspective of Crop Modelling.”</span> <em>NJAS - Wageningen Journal of Life Sciences</em>, Recent <span>Advances</span> in <span>Crop</span> <span>Growth</span> <span>Modelling</span>, 57 (1): 27–38. <a href="https://doi.org/10.1016/j.njas.2009.07.001">https://doi.org/10.1016/j.njas.2009.07.001</a>.
+<div id="ref-yinC3C4Photosynthesis2009" class="csl-entry" role="listitem">
+Yin, X., 和 P. C. Struik. 2009. <span>《C3 and <span>C4</span> photosynthesis models: <span>An</span> overview from the perspective of crop modelling》</span>. <em>NJAS - Wageningen Journal of Life Sciences</em>, Recent <span>Advances</span> in <span>Crop</span> <span>Growth</span> <span>Modelling</span>, 57 (1): 27–38. <a href="https://doi.org/10.1016/j.njas.2009.07.001">https://doi.org/10.1016/j.njas.2009.07.001</a>.
 </div>
 </div>
-</section>
-</main> <!-- /main -->
-<script type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -846,9 +906,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -858,16 +932,53 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/zhujiedong\.github\.io\/photosynthesis-analysis\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -877,55 +988,318 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./plantecowraps.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></span>
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./plantecowraps.html" class="pagination-link" aria-label="plantecowrap 温度相关拟合">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./C4-related.html">
-        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./C4-related.html" class="pagination-link" aria-label="C4 植物光合模拟">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 
 
-</body></html>
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/Rd.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

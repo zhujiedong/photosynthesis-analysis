@@ -1,8 +1,13 @@
 # 数据读取的选项 {#sec-excel2csv}
 
-鉴于无论是 LI-6400 还是 LI-6800 数据 Excel 格式的复杂性，目前已知的能处理的软件包有 `R` 的 [`XLConnect`](https://cran.r-project.org/web/packages/XLConnect/index.html) 和 [`xlwings`](https://www.xlwings.org)，文中对直接下载的 Excel 格式的数据转换，均依赖于此进行。
+下面的 R 软件包不再维护，建议参考@sec-6800-import-python中python图形界面的批量处理方式。
+
+~~鉴于无论是 LI-6400 还是 LI-6800 数据 Excel 格式的复杂性，目前已知的能处理的软件包有 `R` 的 [`XLConnect`](https://cran.r-project.org/web/packages/XLConnect/index.html) 和 [`xlwings`](https://www.xlwings.org)，文中对直接下载的 Excel 格式的数据转换，均依赖于此进行。~~
 
 ## LI-6400 Excel 的处理 {#sec-6400-excel}
+
+## 以下内容不再推荐，建议参考：
+
 
 ### 整理为 csv 格式 {#sec-6400excel2csv}
 
@@ -22,7 +27,7 @@ remotes::install_git("https://gitee.com/zhu_jie_dong/readphoto")
 
 将所有 LI-6400 的 **原始数据文件** 放置于一个文件夹下，例如下面代码放在了名为 6400 的文件夹内，基本参数如下：
 
-```{r}
+```r
 #| label: read_bat_6400
 library(readphoto)
 df64  <- read_bat_6400("data/6400", header_line = 17, data_start = 27)
@@ -30,9 +35,8 @@ df64  <- read_bat_6400("data/6400", header_line = 17, data_start = 27)
 
 其中 header_line 是表头所在行，即 `obs` 开始的那一行的行号，data_start 也就是我们实际测量数据开始的行号，数据输出如下所示(仅显示前8列数据)：
 
-```{r,echo=FALSE}
+```r
 #| label: 6400kable
-#| tbl-cap: 
 #| echo: false
 
 kable(head(df64), caption = 'LI-6400 批量整合数据{#tbl-6400-importkable}')
@@ -40,7 +44,7 @@ kable(head(df64), caption = 'LI-6400 批量整合数据{#tbl-6400-importkable}')
 
 如果想另存为 csv 格式：
 
-```{r, eval=FALSE}
+```r
 write.csv(df64, "./combined.csv")
 ```
 
@@ -56,7 +60,7 @@ header_line 表示你数据表头所在行，data_start 表示你数据起始行
 
 参数的重计算函数为 `recomp_6400`, 其参数除了 `read_bat_6400` 所包含的参数外，还有叶面积 S, 以及叶片正反面的气孔比例，默认值分别为 6 和 0.5。
 
-```{r}
+```r
 #| label: revise-6400-area
 
 library(readphoto)
@@ -102,7 +106,7 @@ LI-6800 的数据我们可以直接处理 Excel 即可，我们分开来看两�
 
 我们直接使用下面的例子解释，导入的数据是 6 cm^2^ 的默认面积：
 
-```{r}
+```r
 #| label: revise-6800-area
 
 library(readphoto)
@@ -136,7 +140,7 @@ df6$A/df_random$A
 
 #### 安装
 
-```{r, eval=FALSE}
+```r
 # install.packages("devtools")
 #devtools::install_github("zhujiedong/ReadLICOR6800")
 remotes::install_git("https://gitee.com/zhu_jie_dong/ReadLICOR6800")
@@ -144,7 +148,7 @@ remotes::install_git("https://gitee.com/zhu_jie_dong/ReadLICOR6800")
 
 使用比较简单，第一个函数用于读取单个数据文件：
 
-```{r example}
+```r
 library(ReadLICOR6800)
 aci <- read_li6800('data/batch6800/racirtest1.xlsx')
 aci[1:3, 1:6]
@@ -156,7 +160,7 @@ aci$data_tag
 
 若单纯读取单个文件，也没有必要加标签，但加或者不加对我们分析数据没有任何影响：
 
-```{r}
+```r
 aci <- read_li6800("data/batch6800/racirtest1.xlsx", add_tags = FALSE)
 names(aci)
 head(aci$data_tags)
@@ -167,7 +171,7 @@ head(aci$data_tags)
 与上面的函数类似，本身就是对其进行了包裹，方便不熟悉使用的人能够一次批量读取所有文件，需要注意所有文件的列数必须相同，这多数时候不会出现问题，多台光合仪同时使用时配置文件一致即可。否则只能分开读取再合并。使用 `tags=NULL`(默认), `data_tag`会显示文件名：
 
 
-```{r}
+```r
 list.files("data/batch6800/")
 
 aci <- read_li6800_folder("data/batch6800/")
@@ -177,7 +181,7 @@ tail(aci$data_tag)
 ```
 当指定自定义标签时，需要 `tags` 给出的标签的长度和顺序要与 `list.files()` 显示的一致才可以。
 
-```{r}
+```r
 aci <- read_li6800_folder("data/batch6800/", tags = paste('test', 1:2))
 aci[1:3, 1:6]
 names(aci)
@@ -190,15 +194,24 @@ tail(aci$data_tag)
 ### 使用 Python 来处理 {#sec-6800-import-python}
 
 
-目前版本的使用非常简单，首先选择 `excel` 数据文件所在的文件夹，通过点击 `Choose the data folder` 来实现，然后点击 `Run LI-6800 Excel Converter` 来运行整个转换过程即可，最后转换的 csv 文件存放于数据文件夹内新生成的一个叫做 `final-csv-data` 的文件夹内，当前版本无需指定表头所在的行号，直接运行即可。程序很简单，如果不是要整理为图形界面，那么没有几行，已经上传 github：
+目前版本的使用非常简单，可参考：
 
-[python 源代码](https://github.com/zhujiedong/LI6800_excel2csv)
+[批量处理数据](https://mp.weixin.qq.com/s/ZTb6hUfgpubC7BsB8i2VJA)
 
+下载连接：
 
-如果不嫌弃图形界面打开需要等待 1 min 左右的时间，那么可以从下面的链接下周 exe 程序双击直接运行即可。
+```
+# 百度网盘
+链接：https://pan.baidu.com/s/18vi3jAd_T1m8UjAHa4TfoQ 
+提取码：1111
 
-[LI6800_excel2csv](https://www.aliyundrive.com/s/FPcqSoUfYQJ)
+# 夸克网盘
+链接：https://pan.quark.cn/s/3aa949607afd
 
+# 阿里云盘
+https://www.aliyundrive.com/s/43nmbKCqEve
+
+```
 
 ### 批量处理 csv 文件 {#sec-6800-batch}
 
@@ -229,10 +242,9 @@ n <- ncol(df_remark)
 
 ```{r}
 #| label: 6800-remark
-#| tbl-cap: 
 #| echo: false
 
-datatable(head(df_remark), caption = "LI-6800 数据批量导入后添加标注信息{#tbl-6800-add-remark}")
+knitr::kable(head(df_remark), caption = "LI-6800 数据批量导入后添加标注信息{#tbl-6800-add-remark}")
 ```
 
 

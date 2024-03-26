@@ -1,140 +1,123 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.3.32">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
-  <title>LI-6800 和 LI-6400 光合数据分析指南 - 21&nbsp; 气孔导度模型的拟合</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    div.csl-bib-body { }
-    div.csl-entry {
-      clear: both;
-    }
-    .hanging div.csl-entry {
-      margin-left:2em;
-      text-indent:-2em;
-    }
-    div.csl-left-margin {
-      min-width:2em;
-      float:left;
-    }
-    div.csl-right-inline {
-      margin-left:2em;
-      padding-left:1em;
-    }
-    div.csl-indent {
-      margin-left: 2em;
-    }
-  </style>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="description" content="介绍使用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+<title>LI-6800 和 LI-6400 光合数据分析指南 - 22&nbsp; 气孔导度模型的拟合</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
-  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="./">
-  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="site_libs/quarto-search/fuse.min.js"></script>
-  <script src="site_libs/quarto-search/quarto-search.js"></script>
-  <link href="./gm.html" rel="next">
-  <link href="./gm-gs.html" rel="prev">
-  <script src="site_libs/quarto-html/quarto.js"></script>
-  <script src="site_libs/quarto-html/popper.min.js"></script>
-  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="site_libs/quarto-html/anchor.min.js"></script>
-  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "sidebar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "start",
-    "type": "textbox",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./gm.html" rel="next">
+<link href="./gm-gs.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "搜索"
+  }
+}</script><script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
  for (var i = 0; i < mathElements.length; i++) {
@@ -147,352 +130,429 @@
     fleqn: false
    });
 }}});
-  </script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 </head>
-<body class="floating">
+<body class="nav-sidebar floating">
+
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></h1>
-      <button type="button" class="quarto-btn-toggle btn">
-        <i class="bi bi-chevron-right"></i>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="切换侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gm-gs.html">叶肉与气孔导度</a></li><li class="breadcrumb-item"><a href="./gs.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="切换侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/zhujiedong/photosynthesis-analysis/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/zhujiedong/photosynthesis-analysis/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
     </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">欢迎</span></a>
   </div>
-    <div class="mt-2 flex-shrink-0 align-items-center">
-      <div class="sidebar-search">
-      <div id="quarto-search" class="" title="Search"></div>
-      </div>
-    </div>
-  <div class="sidebar-menu-container"> 
-  <ul class="list-unstyled mt-1">
-      <li class="sidebar-item">
-  <a href="./index.html" class="">欢迎</a>
 </li>
-      <li class="sidebar-item">
-  <a href="./thanks.html" class="">致谢</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./preface.html" class="">序言</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./intro.html" class="">介绍</a>
-</li>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./basics.html" class="">必备工具</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-basics.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-basics.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./packages.html" class="">光合相关的软件包</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-packages.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-packages.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./data-prepare.html" class="">数据准备</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-data-prepare.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./light-response.html" class="">光响应曲线简介</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-light-response.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-light-response.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-aci-curve.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-aci-curve.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-fluorescence.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-fluorescence.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-gm-gs.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-gm-gs.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./gs.html" class="active"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./other-stat.html" class="">其他统计方法</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-other-stat.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-other-stat.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <li class="sidebar-item">
-  <a href="./references.html" class=""><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
-</li>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-appendices" aria-expanded="true">
-              <div class="me-auto sidebar-section-item">Appendices</div>
-            <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-appendices">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-  </ul>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./thanks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">致谢</span></a>
   </div>
-</nav>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">序言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">介绍</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">必备工具</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rbasics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">光合相关的软件包</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phtosyn-pacakges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./general-packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./data-prepare.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./batch-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./light-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">光响应曲线简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nls-start.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./non-hypo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyp-rev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aq-choose.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./big-leaf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-aq-gui.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./aci-curve.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">二氧化碳响应曲线概述</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DAT-vs-racir.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plantecowraps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Rd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C4-related.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./fluorescence.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">叶绿素荧光数据的处理</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./jiptest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-fluor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./gm-gs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">叶肉与气孔导度</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gs.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./other-stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">其他统计方法</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./common-stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">正态分布检验</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">大话 PCA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smatr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">参考文献</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./a1-run-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-      <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of contents</h2>
-<ul>
-<li><a href="#sec-plantecophys-stamo" class="nav-link active" data-scroll-target="#sec-plantecophys-stamo"> <span class="header-section-number">21.1</span> <code>plantecophys</code> 气孔导度相关函数</a>
-<ul class="collapse">
-<li><a href="#sec-fitbb-p" class="nav-link" data-scroll-target="#sec-fitbb-p"> <span class="header-section-number">21.1.1</span> <code>fitBB</code> 函数</a></li>
-<li><a href="#sec-fitbbs" class="nav-link" data-scroll-target="#sec-fitbbs"> <span class="header-section-number">21.1.2</span> <code>fitBBs</code> 函数</a></li>
-</ul></li>
-<li><a href="#sec-photosynthesi-stamo" class="nav-link" data-scroll-target="#sec-photosynthesi-stamo"> <span class="header-section-number">21.2</span> <code>photosynthesis</code> 气孔导度相关函数</a>
-<ul class="collapse">
-<li><a href="#sec-single-photo-stamo" class="nav-link" data-scroll-target="#sec-single-photo-stamo"> <span class="header-section-number">21.2.1</span> 无分组模型的实现过程</a></li>
-<li><a href="#sec-multi-photo-stoma" class="nav-link" data-scroll-target="#sec-multi-photo-stoma"> <span class="header-section-number">21.2.2</span> 分组模型的实现</a></li>
-</ul></li>
-<li><a href="#stomotal_couple" class="nav-link" data-scroll-target="#stomotal_couple"> <span class="header-section-number">21.3</span> 光合最优气孔导度耦合模型</a>
-<ul class="collapse">
-<li><a href="#sec-farao" class="nav-link" data-scroll-target="#sec-farao"> <span class="header-section-number">21.3.1</span> <code>FARAO</code> 函数</a></li>
-</ul></li>
-<li><a href="#sec-photo_stomo" class="nav-link" data-scroll-target="#sec-photo_stomo"> <span class="header-section-number">21.4</span> 光合气孔导度耦合模型</a>
-<ul class="collapse">
-<li><a href="#sec-photosyn" class="nav-link" data-scroll-target="#sec-photosyn"> <span class="header-section-number">21.4.1</span> <code>Photosyn</code> 函数</a></li>
-<li><a href="#photsyneb" class="nav-link" data-scroll-target="#photsyneb"> <span class="header-section-number">21.4.2</span> <code>PhotosynEB</code> 函数</a></li>
-<li><a href="#sec-photosyntuzet" class="nav-link" data-scroll-target="#sec-photosyntuzet"> <span class="header-section-number">21.4.3</span> <code>PhotosynTuzet</code> 函数</a></li>
-</ul></li>
-</ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/gs.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#sec-plantecophys-stamo" id="toc-sec-plantecophys-stamo" class="nav-link active" data-scroll-target="#sec-plantecophys-stamo"><span class="header-section-number">22.1</span> <code>plantecophys</code> 气孔导度相关函数</a>
+  <ul class="collapse">
+<li><a href="#sec-fitbb-p" id="toc-sec-fitbb-p" class="nav-link" data-scroll-target="#sec-fitbb-p"><span class="header-section-number">22.1.1</span> <code>fitBB</code> 函数</a></li>
+  <li><a href="#sec-fitbbs" id="toc-sec-fitbbs" class="nav-link" data-scroll-target="#sec-fitbbs"><span class="header-section-number">22.1.2</span> <code>fitBBs</code> 函数</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-photosynthesi-stamo" id="toc-sec-photosynthesi-stamo" class="nav-link" data-scroll-target="#sec-photosynthesi-stamo"><span class="header-section-number">22.2</span> <code>photosynthesis</code> 气孔导度相关函数</a>
+  <ul class="collapse">
+<li><a href="#sec-single-photo-stamo" id="toc-sec-single-photo-stamo" class="nav-link" data-scroll-target="#sec-single-photo-stamo"><span class="header-section-number">22.2.1</span> 无分组模型的实现过程</a></li>
+  <li><a href="#sec-multi-photo-stoma" id="toc-sec-multi-photo-stoma" class="nav-link" data-scroll-target="#sec-multi-photo-stoma"><span class="header-section-number">22.2.2</span> 分组模型的实现</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#stomotal_couple" id="toc-stomotal_couple" class="nav-link" data-scroll-target="#stomotal_couple"><span class="header-section-number">22.3</span> 光合最优气孔导度耦合模型</a>
+  <ul class="collapse">
+<li><a href="#sec-farao" id="toc-sec-farao" class="nav-link" data-scroll-target="#sec-farao"><span class="header-section-number">22.3.1</span> <code>FARAO</code> 函数</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-photo_stomo" id="toc-sec-photo_stomo" class="nav-link" data-scroll-target="#sec-photo_stomo"><span class="header-section-number">22.4</span> 光合气孔导度耦合模型</a>
+  <ul class="collapse">
+<li><a href="#sec-photosyn" id="toc-sec-photosyn" class="nav-link" data-scroll-target="#sec-photosyn"><span class="header-section-number">22.4.1</span> <code>Photosyn</code> 函数</a></li>
+  <li><a href="#photsyneb" id="toc-photsyneb" class="nav-link" data-scroll-target="#photsyneb"><span class="header-section-number">22.4.2</span> <code>PhotosynEB</code> 函数</a></li>
+  <li><a href="#sec-photosyntuzet" id="toc-sec-photosyntuzet" class="nav-link" data-scroll-target="#sec-photosyntuzet"><span class="header-section-number">22.4.3</span> <code>PhotosynTuzet</code> 函数</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/gs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content">
-<header id="title-block-header">
-<h1 class="title display-7"><span id="sec-stamotal_sim" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></span></h1>
-</header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gm-gs.html">叶肉与气孔导度</a></li><li class="breadcrumb-item"><a href="./gs.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-stamotal_sim" class="quarto-section-identifier"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></span></h1>
+</div>
 
-<p>在<del>暂时还没时间</del>多年没时间整理的情况下，先简单记录一下基本操作。</p>
-<section id="sec-plantecophys-stamo" class="level2" data-number="21.1">
-<h2 data-number="21.1" class="anchored" data-anchor-id="sec-plantecophys-stamo"><span class="header-section-number">21.1</span> <code>plantecophys</code> 气孔导度相关函数</h2>
-<section id="sec-fitbb-p" class="level3" data-number="21.1.1">
-<h3 data-number="21.1.1" class="anchored" data-anchor-id="sec-fitbb-p"><span class="header-section-number">21.1.1</span> <code>fitBB</code> 函数</h3>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>在<del>暂时还没时间</del>多年没时间整理的情况下，先简单记录一下基本操作。</p>
+<section id="sec-plantecophys-stamo" class="level2" data-number="22.1"><h2 data-number="22.1" class="anchored" data-anchor-id="sec-plantecophys-stamo">
+<span class="header-section-number">22.1</span> <code>plantecophys</code> 气孔导度相关函数</h2>
+<section id="sec-fitbb-p" class="level3" data-number="22.1.1"><h3 data-number="22.1.1" class="anchored" data-anchor-id="sec-fitbb-p">
+<span class="header-section-number">22.1.1</span> <code>fitBB</code> 函数</h3>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitBB</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ALEAF =</span> <span class="st">"A"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">GS =</span> <span class="st">"gsw"</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">VPD =</span> <span class="st">"VPDleaf"</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Ca =</span> <span class="st">"CO2_s"</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">RH =</span> <span class="st">"RHcham"</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsmodel =</span> <span class="fu">c</span>(<span class="st">"BBOpti"</span>, <span class="st">"BBLeuning"</span>, <span class="st">"BallBerry"</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">"BBOptiFull"</span>),</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">fitg0 =</span> <span class="cn">FALSE</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">fitBB</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    ALEAF <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>    GS <span class="op">=</span> <span class="st">"gsw"</span>,</span>
+<span>    VPD <span class="op">=</span> <span class="st">"VPDleaf"</span>,</span>
+<span>    Ca <span class="op">=</span> <span class="st">"CO2_s"</span>,</span>
+<span>    RH <span class="op">=</span> <span class="st">"RHcham"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  gsmodel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BBOpti"</span>, <span class="st">"BBLeuning"</span>, <span class="st">"BallBerry"</span>,</span>
+<span>              <span class="st">"BBOptiFull"</span><span class="op">)</span>,</span>
+<span>  fitg0 <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><strong>参数的意义:</strong></p>
@@ -504,26 +564,23 @@
 </ul>
 <p><strong>代码示例：</strong></p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecophys)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>aci <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/aci.csv"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>aci <span class="ot">&lt;-</span> <span class="fu">subset</span>(aci, Obs <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fitBB</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  aci,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">ALEAF =</span> <span class="st">"Photo"</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">GS =</span> <span class="st">"Cond"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">VPD =</span> <span class="st">"VpdL"</span>,</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Ca =</span> <span class="st">"CO2S"</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">RH =</span> <span class="st">"RH_S"</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsmodel =</span> <span class="st">"BBOpti"</span>,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">fitg0 =</span> <span class="cn">TRUE</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bitbucket.org/remkoduursma/plantecophys">plantecophys</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">aci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"data/aci.csv"</span><span class="op">)</span></span>
+<span><span class="va">aci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">aci</span>, <span class="va">Obs</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/fitBB.html">fitBB</a></span><span class="op">(</span></span>
+<span>  <span class="va">aci</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    ALEAF <span class="op">=</span> <span class="st">"Photo"</span>,</span>
+<span>    GS <span class="op">=</span> <span class="st">"Cond"</span>,</span>
+<span>    VPD <span class="op">=</span> <span class="st">"VpdL"</span>,</span>
+<span>    Ca <span class="op">=</span> <span class="st">"CO2S"</span>,</span>
+<span>    RH <span class="op">=</span> <span class="st">"RH_S"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  gsmodel <span class="op">=</span> <span class="st">"BBOpti"</span>,</span>
+<span>  fitg0 <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>Result of fitBB.
 Model :  BBOpti 
 Both g0 and g1 were estimated.
@@ -537,58 +594,50 @@ To return coefficients, do coef(myfit).
 (where myfit is the name of the object returned by fitBB)</code></pre>
 </div>
 </div>
-</section>
-<section id="sec-fitbbs" class="level3" data-number="21.1.2">
-<h3 data-number="21.1.2" class="anchored" data-anchor-id="sec-fitbbs"><span class="header-section-number">21.1.2</span> <code>fitBBs</code> 函数</h3>
+</section><section id="sec-fitbbs" class="level3" data-number="22.1.2"><h3 data-number="22.1.2" class="anchored" data-anchor-id="sec-fitbbs">
+<span class="header-section-number">22.1.2</span> <code>fitBBs</code> 函数</h3>
 <p>如果我们有多个物种或分组的数据，那么使用 <code>fitBBs</code> 则可以快速拟合多条曲线的数据。我们先整合两次的数据，然后来查看一下运行结果：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>aci01 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/aci01.csv"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>aci01 <span class="ot">&lt;-</span> <span class="fu">subset</span>(aci01, Obs <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>multiBB <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">A =</span> <span class="fu">c</span>(aci<span class="sc">$</span>Photo, aci01<span class="sc">$</span>Photo),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">GS =</span> <span class="fu">c</span>(aci<span class="sc">$</span>Cond, aci01<span class="sc">$</span>Cond),</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">CO2S =</span> <span class="fu">c</span>(aci<span class="sc">$</span>CO2S, aci01<span class="sc">$</span>CO2S),</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">VPD =</span> <span class="fu">c</span>(aci<span class="sc">$</span>VpdL, aci01<span class="sc">$</span>VpdL),</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">RH =</span> <span class="fu">c</span>(aci<span class="sc">$</span>RH_S, aci01<span class="sc">$</span>RH_S),</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">species =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"species1"</span>, <span class="fu">length</span>(aci<span class="sc">$</span>Photo)),</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">rep</span>(<span class="st">"species2"</span>, <span class="fu">length</span>(aci01<span class="sc">$</span>Photo)))</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">fitBBs</span>(</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  multiBB,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="st">"species"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">ALEAF =</span> <span class="st">"A"</span>,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">GS =</span> <span class="st">"GS"</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">VPD =</span> <span class="st">"VPD"</span>,</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">Ca =</span> <span class="st">"CO2S"</span>,</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">RH =</span> <span class="st">"RH"</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsmodel =</span> <span class="st">"BallBerry"</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">fitg0 =</span> <span class="cn">TRUE</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">aci01</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"data/aci01.csv"</span><span class="op">)</span></span>
+<span><span class="va">aci01</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">aci01</span>, <span class="va">Obs</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">multiBB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
+<span>  A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">aci</span><span class="op">$</span><span class="va">Photo</span>, <span class="va">aci01</span><span class="op">$</span><span class="va">Photo</span><span class="op">)</span>,</span>
+<span>  GS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">aci</span><span class="op">$</span><span class="va">Cond</span>, <span class="va">aci01</span><span class="op">$</span><span class="va">Cond</span><span class="op">)</span>,</span>
+<span>  CO2S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">aci</span><span class="op">$</span><span class="va">CO2S</span>, <span class="va">aci01</span><span class="op">$</span><span class="va">CO2S</span><span class="op">)</span>,</span>
+<span>  VPD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">aci</span><span class="op">$</span><span class="va">VpdL</span>, <span class="va">aci01</span><span class="op">$</span><span class="va">VpdL</span><span class="op">)</span>,</span>
+<span>  RH <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">aci</span><span class="op">$</span><span class="va">RH_S</span>, <span class="va">aci01</span><span class="op">$</span><span class="va">RH_S</span><span class="op">)</span>,</span>
+<span>  species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"species1"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">aci</span><span class="op">$</span><span class="va">Photo</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>              <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"species2"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">aci01</span><span class="op">$</span><span class="va">Photo</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/fitBBs.html">fitBBs</a></span><span class="op">(</span></span>
+<span>  <span class="va">multiBB</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"species"</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    ALEAF <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>    GS <span class="op">=</span> <span class="st">"GS"</span>,</span>
+<span>    VPD <span class="op">=</span> <span class="st">"VPD"</span>,</span>
+<span>    Ca <span class="op">=</span> <span class="st">"CO2S"</span>,</span>
+<span>    RH <span class="op">=</span> <span class="st">"RH"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  gsmodel <span class="op">=</span> <span class="st">"BallBerry"</span>,</span>
+<span>  fitg0 <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>结果为：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">mod2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<table class="table">
-<caption>{} </caption>
-<thead>
-<tr class="header">
+<table class="table table-sm table-striped small">
+<thead><tr class="header">
 <th style="text-align: left;">group</th>
 <th style="text-align: right;">g0</th>
 <th style="text-align: right;">g1</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">species1</td>
@@ -604,322 +653,276 @@ To return coefficients, do coef(myfit).
 </table>
 </div>
 </div>
-</section>
-</section>
-<section id="sec-photosynthesi-stamo" class="level2" data-number="21.2">
-<h2 data-number="21.2" class="anchored" data-anchor-id="sec-photosynthesi-stamo"><span class="header-section-number">21.2</span> <code>photosynthesis</code> 气孔导度相关函数</h2>
-<section id="sec-single-photo-stamo" class="level3" data-number="21.2.1">
-<h3 data-number="21.2.1" class="anchored" data-anchor-id="sec-single-photo-stamo"><span class="header-section-number">21.2.1</span> 无分组模型的实现过程</h3>
+</section></section><section id="sec-photosynthesi-stamo" class="level2" data-number="22.2"><h2 data-number="22.2" class="anchored" data-anchor-id="sec-photosynthesi-stamo">
+<span class="header-section-number">22.2</span> <code>photosynthesis</code> 气孔导度相关函数</h2>
+<section id="sec-single-photo-stamo" class="level3" data-number="22.2.1"><h3 data-number="22.2.1" class="anchored" data-anchor-id="sec-single-photo-stamo">
+<span class="header-section-number">22.2.1</span> 无分组模型的实现过程</h3>
 <p>内容与上面 的重复，这里不在运行，仅列出代码。</p>
 <p>读取数据：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(photosynthesis)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/A_Ci_Q_data_1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cdmuir/photosynthesis">photosynthesis</a></span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"data/A_Ci_Q_data_1.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>BallBerry 模型需要相对湿度，而 LI-6800 的相对湿度数据实际上是转换为百分数后的数据，因此需要处理一下，然后这个函数的方便之处是，它可以一次拟合出所有的模型来：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>RH <span class="ot">&lt;-</span> df<span class="sc">$</span>RHcham <span class="sc">/</span> <span class="dv">100</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">&lt;-</span> <span class="fu">fit_gs_model</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">A_net =</span> <span class="st">"A"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">C_air =</span> <span class="st">"Ca"</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">g_sw =</span> <span class="st">"gsw"</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">RH =</span> <span class="st">"RH"</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">VPD =</span> <span class="st">"VPDleaf"</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="fu">c</span>(<span class="st">"BallBerry"</span>,</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Leuning"</span>,</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Medlyn_partial"</span>,</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Medlyn_full"</span>),</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">D0 =</span> <span class="dv">3</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span><span class="op">$</span><span class="va">RH</span> <span class="op">&lt;-</span> <span class="va">df</span><span class="op">$</span><span class="va">RHcham</span> <span class="op">/</span> <span class="fl">100</span></span>
+<span></span>
+<span><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/fit_gs_model.html">fit_gs_model</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">df</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    A_net <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>    C_air <span class="op">=</span> <span class="st">"Ca"</span>,</span>
+<span>    g_sw <span class="op">=</span> <span class="st">"gsw"</span>,</span>
+<span>    RH <span class="op">=</span> <span class="st">"RH"</span>,</span>
+<span>    VPD <span class="op">=</span> <span class="st">"VPDleaf"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BallBerry"</span>,</span>
+<span>            <span class="st">"Leuning"</span>,</span>
+<span>            <span class="st">"Medlyn_partial"</span>,</span>
+<span>            <span class="st">"Medlyn_full"</span><span class="op">)</span>,</span>
+<span>  D0 <span class="op">=</span> <span class="fl">3</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>函数的参数其实都比较简单，如果对非线性拟合不满意，也可以传入 <code>nlsLM</code> 的参数。</p>
-<section id="sec-photo-stoma-result" class="level4">
-<h4 class="anchored" data-anchor-id="sec-photo-stoma-result">结果的查看</h4>
+<section id="sec-photo-stoma-result" class="level4"><h4 class="anchored" data-anchor-id="sec-photo-stoma-result">结果的查看</h4>
 <p><code>fit_gs_model</code> 结果有两个水平，第一层 list 是拟合模型，第二层则是模型相关的参数、图形等，可以通过位置查看：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fits[[<span class="dv">1</span>]][<span class="dv">1</span>]</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fits[[<span class="dv">1</span>]][<span class="dv">2</span>]</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>fits[[<span class="dv">1</span>]][<span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">fits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
+<span><span class="va">fits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>也可以通过名称查看：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fits<span class="sc">$</span>BallBerry<span class="sc">$</span>Parameters</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fits<span class="sc">$</span>Leuning<span class="sc">$</span>Graph</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fits<span class="sc">$</span>Medlyn_partial<span class="sc">$</span>Parameters</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fits<span class="sc">$</span>Medlyn_full<span class="sc">$</span>Parameters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fits</span><span class="op">$</span><span class="va">BallBerry</span><span class="op">$</span><span class="va">Parameters</span></span>
+<span><span class="va">fits</span><span class="op">$</span><span class="va">Leuning</span><span class="op">$</span><span class="va">Graph</span></span>
+<span><span class="va">fits</span><span class="op">$</span><span class="va">Medlyn_partial</span><span class="op">$</span><span class="va">Parameters</span></span>
+<span><span class="va">fits</span><span class="op">$</span><span class="va">Medlyn_full</span><span class="op">$</span><span class="va">Parameters</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section>
-</section>
-<section id="sec-multi-photo-stoma" class="level3" data-number="21.2.2">
-<h3 data-number="21.2.2" class="anchored" data-anchor-id="sec-multi-photo-stoma"><span class="header-section-number">21.2.2</span> 分组模型的实现</h3>
+</section></section><section id="sec-multi-photo-stoma" class="level3" data-number="22.2.2"><h3 data-number="22.2.2" class="anchored" data-anchor-id="sec-multi-photo-stoma">
+<span class="header-section-number">22.2.2</span> 分组模型的实现</h3>
 <p>分组数据处理起来也比较方便，例如下面以光强为分组，<code>photosynthesis</code> 提供了两个方便的函数，帮助进行分组数据的操作，<code>fit_many</code> 用于选择函数用于分组数据，<code>compile_data</code> 用于将 <code>list</code> 结果转为 <code>dataframe</code>：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Q_2 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">round</span>(df<span class="sc">$</span>Qin, <span class="at">digits =</span> <span class="dv">0</span>))</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">&lt;-</span> <span class="fu">fit_many</span>(</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  df,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">list</span>(</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">A_net =</span> <span class="st">"A"</span>,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">C_air =</span> <span class="st">"Ca"</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">g_sw =</span> <span class="st">"gsw"</span>,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">RH =</span> <span class="st">"RH"</span>,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">VPD =</span> <span class="st">"VPDleaf"</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">funct =</span> fit_gs_model,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="st">"Q_2"</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span><span class="op">$</span><span class="va">Q_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">Qin</span>, digits <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/fit_many.html">fit_many</a></span><span class="op">(</span></span>
+<span>  <span class="va">df</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    A_net <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>    C_air <span class="op">=</span> <span class="st">"Ca"</span>,</span>
+<span>    g_sw <span class="op">=</span> <span class="st">"gsw"</span>,</span>
+<span>    RH <span class="op">=</span> <span class="st">"RH"</span>,</span>
+<span>    VPD <span class="op">=</span> <span class="st">"VPDleaf"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  funct <span class="op">=</span> <span class="va">fit_gs_model</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"Q_2"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>数据的查看比之前又多了一个水平，例如 750 光强下的数据：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fits[[<span class="st">"750"</span>]][[<span class="st">"Medlyn_partial"</span>]][[<span class="st">"Parameters"</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fits</span><span class="op">[[</span><span class="st">"750"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"Medlyn_partial"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"Parameters"</span><span class="op">]</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>这里转换过程分两部，首先是将所有的参数转为 <code>list</code> 形式，转换对象是 1，也就是第一个模型 BallBerry。然后再将这个 <code>list</code> 进行一次转换，不同分组的参数 <code>Parameters</code>（顺序可参考未分组数据的结果）：</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bbmods <span class="ot">&lt;-</span> <span class="fu">compile_data</span>(<span class="at">data =</span> fits,</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">output_type =</span> <span class="st">"list"</span>,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">list_element =</span> <span class="dv">1</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>bbpars <span class="ot">&lt;-</span> <span class="fu">compile_data</span>(<span class="at">data =</span> bbmods,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">output_type =</span> <span class="st">"dataframe"</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">list_element =</span> <span class="dv">2</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>bbpars<span class="sc">$</span>ID <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(bbpars<span class="sc">$</span>ID)</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g0 <span class="sc">~</span> ID, bbpars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bbmods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/compile_data.html">compile_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">fits</span>,</span>
+<span>                     output_type <span class="op">=</span> <span class="st">"list"</span>,</span>
+<span>                     list_element <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">bbpars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/compile_data.html">compile_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bbmods</span>,</span>
+<span>                     output_type <span class="op">=</span> <span class="st">"dataframe"</span>,</span>
+<span>                     list_element <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bbpars</span><span class="op">$</span><span class="va">ID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">bbpars</span><span class="op">$</span><span class="va">ID</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">g0</span> <span class="op">~</span> <span class="va">ID</span>, <span class="va">bbpars</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>最后展示的图形是不同光强下，拟合的截距的差异。多个图形也可以使用这种方式转换，不过存储的类型最好是 <code>list</code>（存储的是 <code>ggplot2</code> 对象的类）。例如 <code>vignette</code> 使用下面的方式查看第三幅图的结果。</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>graphs <span class="ot">&lt;-</span> <span class="fu">compile_data</span>(<span class="at">data =</span> bbmods,</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">output_type =</span> <span class="st">"list"</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">list_element =</span> <span class="dv">3</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>graphs[[<span class="dv">3</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">graphs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/photosynthesis/man/compile_data.html">compile_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bbmods</span>,</span>
+<span>                       output_type <span class="op">=</span> <span class="st">"list"</span>,</span>
+<span>                       list_element <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">graphs</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section>
-</section>
-<section id="stomotal_couple" class="level2" data-number="21.3">
-<h2 data-number="21.3" class="anchored" data-anchor-id="stomotal_couple"><span class="header-section-number">21.3</span> 光合最优气孔导度耦合模型</h2>
-<p><span class="citation" data-cites="Cowan1977Stomatal">Cowan and Farquhar (<a href="references.html#ref-Cowan1977Stomatal" role="doc-biblioref">1977</a>)</span> 关于最优气孔导度的描述概括如下： 最优气孔行为理论认为气孔的最优化行为，指的是在某一时间段内， 最大化的进行光合碳固定的同时最小化的进行蒸腾作用，也就是说，对于一定的水分消耗，得到最大化的光合碳固定。即使得：</p>
+</section></section><section id="stomotal_couple" class="level2" data-number="22.3"><h2 data-number="22.3" class="anchored" data-anchor-id="stomotal_couple">
+<span class="header-section-number">22.3</span> 光合最优气孔导度耦合模型</h2>
+<p><span class="citation" data-cites="Cowan1977Stomatal">Cowan 和 Farquhar (<a href="references.html#ref-Cowan1977Stomatal" role="doc-biblioref">1977</a>)</span> 关于最优气孔导度的描述概括如下： 最优气孔行为理论认为气孔的最优化行为，指的是在某一时间段内， 最大化的进行光合碳固定的同时最小化的进行蒸腾作用，也就是说，对于一定的水分消耗，得到最大化的光合碳固定。即使得：</p>
 <p><span id="eq-weff"><span class="math display">
 A - \lambda E
-\qquad(21.1)</span></span></p>
+\tag{22.1}</span></span></p>
 <p>最大化，其中 <span class="math inline">\lambda</span> 是临界水分利用效率，也即植物损耗单位水分的 C 生产量，单位一般为 <span class="math inline">mol \: CO_2 \cdot mol^{-1} H_2O</span>，可通过光合速率和蒸腾速率的比值计算。<code>plantecophys</code> 包含了相关的函数来处理。</p>
-<section id="sec-farao" class="level3" data-number="21.3.1">
-<h3 data-number="21.3.1" class="anchored" data-anchor-id="sec-farao"><span class="header-section-number">21.3.1</span> <code>FARAO</code> 函数</h3>
+<section id="sec-farao" class="level3" data-number="22.3.1"><h3 data-number="22.3.1" class="anchored" data-anchor-id="sec-farao">
+<span class="header-section-number">22.3.1</span> <code>FARAO</code> 函数</h3>
 <p><code>FARAO</code> 函数用于找到最大化 <span class="math inline">A - \lambda E</span> 解的** Ci **值，这里是利用数值解的形式求解方程。</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FARAO</span>(<span class="at">lambda =</span> <span class="fl">0.002</span>, <span class="at">Ca =</span> <span class="dv">400</span>, <span class="at">VPD =</span> <span class="dv">1</span>,</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">photo =</span> <span class="fu">c</span>(<span class="st">"BOTH"</span>, <span class="st">"VCMAX"</span>,<span class="st">"JMAX"</span>), </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">energybalance =</span> <span class="cn">FALSE</span>, <span class="at">C4 =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">Tair =</span> <span class="dv">25</span>, <span class="at">Wind =</span> <span class="dv">2</span>, <span class="at">Wleaf =</span> <span class="fl">0.02</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">StomatalRatio =</span> <span class="dv">1</span>, <span class="at">LeafAbs =</span> <span class="fl">0.86</span>, ...)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">FARAO2</span>(<span class="at">lambda =</span> <span class="fl">0.002</span>, <span class="at">Ca =</span> <span class="dv">400</span>, </span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">energybalance =</span> <span class="cn">FALSE</span>, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/FARAO.html">FARAO</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">0.002</span>, Ca <span class="op">=</span> <span class="fl">400</span>, VPD <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>      photo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BOTH"</span>, <span class="st">"VCMAX"</span>,<span class="st">"JMAX"</span><span class="op">)</span>, </span>
+<span>      energybalance <span class="op">=</span> <span class="cn">FALSE</span>, C4 <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>      Tair <span class="op">=</span> <span class="fl">25</span>, Wind <span class="op">=</span> <span class="fl">2</span>, Wleaf <span class="op">=</span> <span class="fl">0.02</span>,</span>
+<span>      StomatalRatio <span class="op">=</span> <span class="fl">1</span>, LeafAbs <span class="op">=</span> <span class="fl">0.86</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/FARAO.html">FARAO2</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">0.002</span>, Ca <span class="op">=</span> <span class="fl">400</span>, </span>
+<span>       energybalance <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>其参数同 <code>fitaci</code> 和 <code>Photosyn</code>，在此不多做介绍，<code>FARAO</code> 使用的是 <span class="citation" data-cites="Cowan1977Stomatal">Cowan and Farquhar (<a href="references.html#ref-Cowan1977Stomatal" role="doc-biblioref">1977</a>)</span> 的方法得到最优化的 Ci 值, <code>FARAO2</code> 则更简单或可能更稳定，利用 <span class="citation" data-cites="Buckley2014Is">Buckley et al. (<a href="references.html#ref-Buckley2014Is" role="doc-biblioref">2014</a>)</span> 的方法来计算, <span class="citation" data-cites="Medlyn2011Reconciling">Medlyn et al. (<a href="references.html#ref-Medlyn2011Reconciling" role="doc-biblioref">2011</a>)</span> 的方法是这个数值解的近似值。</p>
-</section>
-</section>
-<section id="sec-photo_stomo" class="level2" data-number="21.4">
-<h2 data-number="21.4" class="anchored" data-anchor-id="sec-photo_stomo"><span class="header-section-number">21.4</span> 光合气孔导度耦合模型</h2>
+<p>其参数同 <code>fitaci</code> 和 <code>Photosyn</code>，在此不多做介绍，<code>FARAO</code> 使用的是 <span class="citation" data-cites="Cowan1977Stomatal">Cowan 和 Farquhar (<a href="references.html#ref-Cowan1977Stomatal" role="doc-biblioref">1977</a>)</span> 的方法得到最优化的 Ci 值, <code>FARAO2</code> 则更简单或可能更稳定，利用 <span class="citation" data-cites="Buckley2014Is">Buckley 等 (<a href="references.html#ref-Buckley2014Is" role="doc-biblioref">2014</a>)</span> 的方法来计算, <span class="citation" data-cites="Medlyn2011Reconciling">Medlyn 等 (<a href="references.html#ref-Medlyn2011Reconciling" role="doc-biblioref">2011</a>)</span> 的方法是这个数值解的近似值。</p>
+</section></section><section id="sec-photo_stomo" class="level2" data-number="22.4"><h2 data-number="22.4" class="anchored" data-anchor-id="sec-photo_stomo">
+<span class="header-section-number">22.4</span> 光合气孔导度耦合模型</h2>
 <p><span class="citation" data-cites="Duursma2015Plantecophys">Remko A. Duursma (<a href="references.html#ref-Duursma2015Plantecophys" role="doc-biblioref">2015</a>)</span> 对于气体交换耦合模型的简述如下：</p>
 <ul>
 <li>对于 FvCB 模型有：</li>
 </ul>
 <p><span id="eq-minfvcb"><span class="math display">
 A_n = min(A_c, A_j)-R_d
-\qquad(21.2)</span></span></p>
+\tag{22.2}</span></span></p>
 <ul>
 <li>在假定 gm 为恒定的前提下：</li>
 </ul>
 <p><span id="eq-cgm"><span class="math display">
 C_c = C_i - \frac{A_n}{g_m}
-\qquad(21.3)</span></span></p>
+\tag{22.3}</span></span></p>
 <ul>
 <li>根据 Ficker 定理</li>
 </ul>
 <p><span id="eq-ficker"><span class="math display">
 A_n = \frac{g_s}{1.6}(C_a - C_i)
-\qquad(21.4)</span></span></p>
+\tag{22.4}</span></span></p>
 <p>以及 BallBerry 气孔导度模型 <span id="eq-driver"><span class="math display">
 g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
-\qquad(21.5)</span></span></p>
-<p>整合公式 <a href="#eq-minfvcb">公式&nbsp;<span>21.2</span></a>, <a href="#eq-cgm">公式&nbsp;<span>21.3</span></a>, <a href="#eq-ficker">公式&nbsp;<span>21.4</span></a> 和 <a href="#eq-driver">公式&nbsp;<span>21.5</span></a> 后得到气体交换的耦合模型，气体交换耦合模型有很多更大尺度上的应用，例如 <span class="citation" data-cites="Duursma2012MAESPA">R. A. Duursma and Medlyn (<a href="references.html#ref-Duursma2012MAESPA" role="doc-biblioref">2012</a>)</span> 和 wang1998a，可用于预测 An，gs 和蒸腾速率对主要环境驱动因子的响应（除土壤水分），并包含了主要的叶片性状（g1，V<sub>cmax</sub>, J<sub>max</sub>, R<sub>d</sub> 以及他们的温度依赖性）。</p>
-<section id="sec-photosyn" class="level3" data-number="21.4.1">
-<h3 data-number="21.4.1" class="anchored" data-anchor-id="sec-photosyn"><span class="header-section-number">21.4.1</span> <code>Photosyn</code> 函数</h3>
+\tag{22.5}</span></span></p>
+<p>整合公式 <a href="#eq-minfvcb" class="quarto-xref">公式 &nbsp;<span>22.2</span></a>, <a href="#eq-cgm" class="quarto-xref">公式 &nbsp;<span>22.3</span></a>, <a href="#eq-ficker" class="quarto-xref">公式 &nbsp;<span>22.4</span></a> 和 <a href="#eq-driver" class="quarto-xref">公式 &nbsp;<span>22.5</span></a> 后得到气体交换的耦合模型，气体交换耦合模型有很多更大尺度上的应用，例如 <span class="citation" data-cites="Duursma2012MAESPA">R. A. Duursma 和 Medlyn (<a href="references.html#ref-Duursma2012MAESPA" role="doc-biblioref">2012</a>)</span> 和 wang1998a，可用于预测 An，gs 和蒸腾速率对主要环境驱动因子的响应（除土壤水分），并包含了主要的叶片性状（g1，V<sub>cmax</sub>, J<sub>max</sub>, R<sub>d</sub> 以及他们的温度依赖性）。</p>
+<section id="sec-photosyn" class="level3" data-number="22.4.1"><h3 data-number="22.4.1" class="anchored" data-anchor-id="sec-photosyn">
+<span class="header-section-number">22.4.1</span> <code>Photosyn</code> 函数</h3>
 <p>Photosyn 为耦合的光合–气孔导度模型，基于 Farquhar 光合模型和 Ball-Berry 气孔导度模型。</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Photosyn</span>(<span class="at">VPD =</span> <span class="fl">1.5</span>, <span class="at">Ca =</span> <span class="dv">400</span>, <span class="at">PPFD =</span> <span class="dv">1500</span>,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">Tleaf =</span> <span class="dv">25</span>, <span class="at">Patm =</span> <span class="dv">100</span>,<span class="at">RH =</span> <span class="cn">NULL</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">gsmodel =</span> <span class="fu">c</span>(<span class="st">"BBOpti"</span>, <span class="st">"BBLeuning"</span>, </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"BallBerry"</span>, <span class="st">"BBdefine"</span>),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">g1 =</span> <span class="dv">4</span>, <span class="at">g0 =</span> <span class="dv">0</span>, <span class="at">gk =</span> <span class="fl">0.5</span>, <span class="at">vpdmin =</span> <span class="fl">0.5</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">D0 =</span> <span class="dv">5</span>, <span class="at">GS =</span> <span class="cn">NULL</span>, <span class="at">BBmult =</span> <span class="cn">NULL</span>, </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">alpha =</span> <span class="fl">0.24</span>, <span class="at">theta =</span> <span class="fl">0.85</span>, <span class="at">Jmax =</span> <span class="dv">100</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">Vcmax =</span> <span class="dv">50</span>, <span class="at">gmeso =</span> <span class="cn">NULL</span>, <span class="at">TPU =</span> <span class="dv">1000</span>, </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">alphag =</span> <span class="dv">0</span>, <span class="at">Rd0 =</span> <span class="fl">0.92</span>, <span class="at">Q10 =</span> <span class="fl">1.92</span>,</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">Rd =</span> <span class="cn">NULL</span>, <span class="at">TrefR =</span> <span class="dv">25</span>, <span class="at">Rdayfrac =</span> <span class="dv">1</span>, </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">EaV =</span> <span class="fl">82620.87</span>, <span class="at">EdVC =</span> <span class="dv">0</span>, <span class="at">delsC =</span> <span class="fl">645.1013</span>, </span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">EaJ =</span> <span class="fl">39676.89</span>, <span class="at">EdVJ =</span> <span class="fl">2e+05</span>, <span class="at">delsJ =</span> <span class="fl">641.3615</span>,</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">GammaStar =</span> <span class="cn">NULL</span>, <span class="at">Km =</span> <span class="cn">NULL</span>, <span class="at">Ci =</span> <span class="cn">NULL</span>, </span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">Tcorrect =</span> <span class="cn">TRUE</span>,<span class="at">returnParsOnly =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">whichA =</span> <span class="fu">c</span>(<span class="st">"Ah"</span>, <span class="st">"Amin"</span>, <span class="st">"Ac"</span>, <span class="st">"Aj"</span>))</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="fu">Aci</span>(Ci, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Photosyn</a></span><span class="op">(</span>VPD <span class="op">=</span> <span class="fl">1.5</span>, Ca <span class="op">=</span> <span class="fl">400</span>, PPFD <span class="op">=</span> <span class="fl">1500</span>,</span>
+<span>         Tleaf <span class="op">=</span> <span class="fl">25</span>, Patm <span class="op">=</span> <span class="fl">100</span>,RH <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>         gsmodel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BBOpti"</span>, <span class="st">"BBLeuning"</span>, </span>
+<span>                     <span class="st">"BallBerry"</span>, <span class="st">"BBdefine"</span><span class="op">)</span>,</span>
+<span>         g1 <span class="op">=</span> <span class="fl">4</span>, g0 <span class="op">=</span> <span class="fl">0</span>, gk <span class="op">=</span> <span class="fl">0.5</span>, vpdmin <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>         D0 <span class="op">=</span> <span class="fl">5</span>, GS <span class="op">=</span> <span class="cn">NULL</span>, BBmult <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>         alpha <span class="op">=</span> <span class="fl">0.24</span>, theta <span class="op">=</span> <span class="fl">0.85</span>, Jmax <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>         Vcmax <span class="op">=</span> <span class="fl">50</span>, gmeso <span class="op">=</span> <span class="cn">NULL</span>, TPU <span class="op">=</span> <span class="fl">1000</span>, </span>
+<span>         alphag <span class="op">=</span> <span class="fl">0</span>, Rd0 <span class="op">=</span> <span class="fl">0.92</span>, Q10 <span class="op">=</span> <span class="fl">1.92</span>,</span>
+<span>         Rd <span class="op">=</span> <span class="cn">NULL</span>, TrefR <span class="op">=</span> <span class="fl">25</span>, Rdayfrac <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>         EaV <span class="op">=</span> <span class="fl">82620.87</span>, EdVC <span class="op">=</span> <span class="fl">0</span>, delsC <span class="op">=</span> <span class="fl">645.1013</span>, </span>
+<span>         EaJ <span class="op">=</span> <span class="fl">39676.89</span>, EdVJ <span class="op">=</span> <span class="fl">2e+05</span>, delsJ <span class="op">=</span> <span class="fl">641.3615</span>,</span>
+<span>         GammaStar <span class="op">=</span> <span class="cn">NULL</span>, Km <span class="op">=</span> <span class="cn">NULL</span>, Ci <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>         Tcorrect <span class="op">=</span> <span class="cn">TRUE</span>,returnParsOnly <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>         whichA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ah"</span>, <span class="st">"Amin"</span>, <span class="st">"Ac"</span>, <span class="st">"Aj"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Aci</a></span><span class="op">(</span><span class="va">Ci</span>, <span class="va">...</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>因为是光合气孔导度模型的耦合，故而参数与之前的函数相同，参见 <a href="#sec-fitbb-p">小节&nbsp;<span>21.1.1</span></a> 和 <a href="aci.html">小节&nbsp;<span>14</span></a> 部分的内容。</p>
-<section id="sec-photo_exam" class="level4">
-<h4 class="anchored" data-anchor-id="sec-photo_exam"><code>Photosyn</code> 使用举例</h4>
+<p>因为是光合气孔导度模型的耦合，故而参数与之前的函数相同，参见 <a href="#sec-fitbb-p" class="quarto-xref"><span>sec. 22.1.1</span></a> 和 <a href="aci.html" class="quarto-xref"><span>章节 15</span></a> 部分的内容。</p>
+<section id="sec-photo_exam" class="level4"><h4 class="anchored" data-anchor-id="sec-photo_exam">
+<code>Photosyn</code> 使用举例</h4>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plantecophys)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 仅使用下面几个参数运行模型</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#（其他参数使用默认值）</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 利用已测量或计算的参数</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Photosyn</span>(<span class="at">VPD=</span><span class="dv">2</span>, <span class="at">g1=</span><span class="dv">4</span>, <span class="at">Ca=</span><span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-stdout">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bitbucket.org/remkoduursma/plantecophys">plantecophys</a></span><span class="op">)</span></span>
+<span><span class="co"># 仅使用下面几个参数运行模型</span></span>
+<span><span class="co">#（其他参数使用默认值）</span></span>
+<span><span class="co"># 利用已测量或计算的参数</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Photosyn</a></span><span class="op">(</span>VPD<span class="op">=</span><span class="fl">2</span>, g1<span class="op">=</span><span class="fl">4</span>, Ca<span class="op">=</span><span class="fl">500</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
 <pre><code>        Ci    ALEAF        GS    ELEAF       Ac       Aj   Ap   Rd VPD Tleaf
 1 369.3981 14.19466 0.1706377 3.412753 15.12654 17.03685 1000 0.92   2    25
    Ca       Cc PPFD Patm
 1 500 369.3981 1500  100</code></pre>
 </div>
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 部分参数相同，而某一参数或某几个参数不同时，</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 可以将不同的参数设置为一个序列（vectors）</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">Photosyn</span>(<span class="at">VPD=</span><span class="fu">seq</span>(<span class="fl">0.5</span>, <span class="dv">4</span>, <span class="at">length=</span><span class="dv">25</span>), </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">Vcmax=</span><span class="dv">50</span>, <span class="at">Jmax=</span><span class="dv">100</span>)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(r, <span class="fu">plot</span>(VPD, ALEAF, <span class="at">type=</span><span class="st">'l'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div id="fig-vpd" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="gs_files/figure-html/fig-vpd-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 21.1: VPD VS. An</figcaption><p></p>
-</figure>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 部分参数相同，而某一参数或某几个参数不同时，</span></span>
+<span><span class="co"># 可以将不同的参数设置为一个序列（vectors）</span></span>
+<span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Photosyn</a></span><span class="op">(</span>VPD<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">4</span>, length<span class="op">=</span><span class="fl">25</span><span class="op">)</span>, </span>
+<span>              Vcmax<span class="op">=</span><span class="fl">50</span>, Jmax<span class="op">=</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">VPD</span>, <span class="va">ALEAF</span>, type<span class="op">=</span><span class="st">'l'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-vpd" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-vpd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="gs_files/figure-html/fig-vpd-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vpd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;22.1: VPD VS. An
+</figcaption></figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-vpd">图&nbsp;<span>21.1</span></a> 显示了不同 VPD 下的光合速率。</p>
+<p><a href="#fig-vpd" class="quarto-xref">Figure&nbsp;<span>22.1</span></a> 显示了不同 VPD 下的光合速率。</p>
 <div class="cell" data-abel="fig-ppfd">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 设定叶肉导度的拟合</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>run1 <span class="ot">&lt;-</span> <span class="fu">Photosyn</span>(<span class="at">PPFD=</span><span class="fu">seq</span>(<span class="dv">50</span>,<span class="dv">1000</span>,<span class="at">length=</span><span class="dv">25</span>), </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">gmeso=</span><span class="fl">0.15</span>, <span class="at">Vcmax=</span><span class="dv">40</span>, <span class="at">Jmax=</span><span class="dv">85</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(run1, <span class="fu">plot</span>(PPFD, GS, <span class="at">type=</span><span class="st">'l'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 设定叶肉导度的拟合</span></span>
+<span><span class="va">run1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Photosyn</a></span><span class="op">(</span>PPFD<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">50</span>,<span class="fl">1000</span>,length<span class="op">=</span><span class="fl">25</span><span class="op">)</span>, </span>
+<span>                 gmeso<span class="op">=</span><span class="fl">0.15</span>, Vcmax<span class="op">=</span><span class="fl">40</span>, Jmax<span class="op">=</span><span class="fl">85</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">run1</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">PPFD</span>, <span class="va">GS</span>, type<span class="op">=</span><span class="st">'l'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gs_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">PPFD VS. GS</figcaption><p></p>
-</figure>
+<figure class="figure"><p><img src="gs_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>PPFD VS. GS</figcaption></figure>
 </div>
 </div>
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 运行ACi曲线数据（提供Ci值而不是计算）</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>arun1 <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="at">Ci=</span><span class="fu">seq</span>(<span class="dv">50</span>, <span class="dv">1200</span>, <span class="at">length=</span><span class="dv">101</span>), </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">Vcmax=</span><span class="dv">40</span>, <span class="at">Jmax=</span><span class="dv">85</span>)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>arun2 <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="at">Ci=</span><span class="fu">seq</span>(<span class="dv">50</span>, <span class="dv">1200</span>, <span class="at">length=</span><span class="dv">101</span>), </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">Vcmax=</span><span class="dv">30</span>, <span class="at">Jmax=</span><span class="dv">70</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(arun1, <span class="fu">plot</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>))</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(arun2, <span class="fu">points</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>, <span class="at">lty=</span><span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 运行ACi曲线数据（提供Ci值而不是计算）</span></span>
+<span><span class="va">arun1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Aci</a></span><span class="op">(</span>Ci<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">1200</span>, length<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, </span>
+<span>             Vcmax<span class="op">=</span><span class="fl">40</span>, Jmax<span class="op">=</span><span class="fl">85</span><span class="op">)</span></span>
+<span><span class="va">arun2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Aci</a></span><span class="op">(</span>Ci<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">1200</span>, length<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, </span>
+<span>             Vcmax<span class="op">=</span><span class="fl">30</span>, Jmax<span class="op">=</span><span class="fl">70</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">arun1</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">Ci</span>, <span class="va">ALEAF</span>, type<span class="op">=</span><span class="st">'l'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">arun2</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">Ci</span>, <span class="va">ALEAF</span>, type<span class="op">=</span><span class="st">'l'</span>, lty<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gs_files/figure-html/unnamed-chunk-32-2.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">PPFD VS. GS</figcaption><p></p>
-</figure>
+<figure class="figure"><p><img src="gs_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>PPFD VS. GS</figcaption></figure>
 </div>
 </div>
 </div>
 <p><span class="quarto-unresolved-ref">?fig-ppfd</span> 显示不同 C<sub>i</sub> 下的光合速率。</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 找出CO2需求和供给的交叉点</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 设定部分参数</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>gs <span class="ot">&lt;-</span> <span class="fl">0.2</span> <span class="co"># 对水的气孔导度</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>Ca <span class="ot">&lt;-</span> <span class="dv">400</span> <span class="co"># 外部CO2</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>gctogw <span class="ot">&lt;-</span> <span class="fl">1.57</span> <span class="co"># 转换系数</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>gc <span class="ot">&lt;-</span> gs <span class="sc">/</span> gctogw <span class="co"># 对 CO2 的气孔导度</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 需求曲线</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">Aci</span>(<span class="fu">seq</span>(<span class="dv">60</span>,<span class="dv">500</span>,<span class="at">length=</span><span class="dv">101</span>), <span class="at">Ca=</span><span class="dv">400</span>)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 提供气孔导度及交叉点</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">Photosyn</span>(<span class="at">GS=</span>gs, <span class="at">Ca=</span>Ca)</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 交叉点可视化</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">yaxs=</span><span class="st">"i"</span>)</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(p, <span class="fu">plot</span>(Ci, ALEAF, <span class="at">type=</span><span class="st">'l'</span>, </span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fu">max</span>(ALEAF))))</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(g, <span class="fu">points</span>(Ci, ALEAF, <span class="at">pch=</span><span class="dv">19</span>, <span class="at">col=</span><span class="st">"red"</span>))</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(gc <span class="sc">*</span> Ca, <span class="sc">-</span>gc, <span class="at">lty=</span><span class="dv">5</span>)</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="fu">c</span>(<span class="fu">expression</span>(</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Demand:"</span><span class="sc">~</span><span class="er">~</span>A<span class="sc">==</span><span class="fu">f</span>(C[i])),</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">expression</span>(<span class="st">"Supply:"</span><span class="sc">~</span><span class="er">~</span>A<span class="sc">==</span>g[c]<span class="sc">*</span>(C[a]<span class="sc">-</span>C[i])),</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Operating point"</span>),</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>   <span class="at">lty=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">1</span>),<span class="at">pch=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">19</span>),</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>   <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>,<span class="st">"black"</span>,<span class="st">"red"</span>),</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>   <span class="at">bty=</span><span class="st">'n'</span>, <span class="at">cex=</span><span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div id="fig-supply" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="gs_files/figure-html/fig-supply-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">图 21.2: supply VS. demand</figcaption><p></p>
-</figure>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 找出CO2需求和供给的交叉点</span></span>
+<span><span class="co"># 设定部分参数</span></span>
+<span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fl">0.2</span> <span class="co"># 对水的气孔导度</span></span>
+<span><span class="va">Ca</span> <span class="op">&lt;-</span> <span class="fl">400</span> <span class="co"># 外部CO2</span></span>
+<span><span class="va">gctogw</span> <span class="op">&lt;-</span> <span class="fl">1.57</span> <span class="co"># 转换系数</span></span>
+<span><span class="va">gc</span> <span class="op">&lt;-</span> <span class="va">gs</span> <span class="op">/</span> <span class="va">gctogw</span> <span class="co"># 对 CO2 的气孔导度</span></span>
+<span><span class="co"># 需求曲线</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Aci</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">60</span>,<span class="fl">500</span>,length<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, Ca<span class="op">=</span><span class="fl">400</span><span class="op">)</span></span>
+<span><span class="co"># 提供气孔导度及交叉点</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/Photosyn.html">Photosyn</a></span><span class="op">(</span>GS<span class="op">=</span><span class="va">gs</span>, Ca<span class="op">=</span><span class="va">Ca</span><span class="op">)</span></span>
+<span><span class="co"># 交叉点可视化</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>yaxs<span class="op">=</span><span class="st">"i"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">p</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">Ci</span>, <span class="va">ALEAF</span>, type<span class="op">=</span><span class="st">'l'</span>, </span>
+<span>             ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">ALEAF</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">g</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">Ci</span>, <span class="va">ALEAF</span>, pch<span class="op">=</span><span class="fl">19</span>, col<span class="op">=</span><span class="st">"red"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span><span class="va">gc</span> <span class="op">*</span> <span class="va">Ca</span>, <span class="op">-</span><span class="va">gc</span>, lty<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Demand:"</span><span class="op">~</span><span class="op">~</span><span class="va">A</span><span class="op">==</span><span class="fu">f</span><span class="op">(</span><span class="va">C</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>   <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"Supply:"</span><span class="op">~</span><span class="op">~</span><span class="va">A</span><span class="op">==</span><span class="va">g</span><span class="op">[</span><span class="va">c</span><span class="op">]</span><span class="op">*</span><span class="op">(</span><span class="va">C</span><span class="op">[</span><span class="va">a</span><span class="op">]</span><span class="op">-</span><span class="va">C</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>              <span class="st">"Operating point"</span><span class="op">)</span>,</span>
+<span>   lty<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">5</span>,<span class="op">-</span><span class="fl">1</span><span class="op">)</span>,pch<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>,<span class="fl">19</span><span class="op">)</span>,</span>
+<span>   col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"black"</span>,<span class="st">"black"</span>,<span class="st">"red"</span><span class="op">)</span>,</span>
+<span>   bty<span class="op">=</span><span class="st">'n'</span>, cex<span class="op">=</span><span class="fl">0.9</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-supply" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-supply-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="gs_files/figure-html/fig-supply-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-supply-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;22.2: supply VS. demand
+</figcaption></figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-supply">图&nbsp;<span>21.2</span></a> 需求与供给的关系。</p>
-</section>
-</section>
-<section id="photsyneb" class="level3" data-number="21.4.2">
-<h3 data-number="21.4.2" class="anchored" data-anchor-id="photsyneb"><span class="header-section-number">21.4.2</span> <code>PhotosynEB</code> 函数</h3>
+<p><a href="#fig-supply" class="quarto-xref">Figure&nbsp;<span>22.2</span></a> 需求与供给的关系。</p>
+</section></section><section id="photsyneb" class="level3" data-number="22.4.2"><h3 data-number="22.4.2" class="anchored" data-anchor-id="photsyneb">
+<span class="header-section-number">22.4.2</span> <code>PhotosynEB</code> 函数</h3>
 <p>使用同 <code>Photosyn</code>，只不过使用能量平衡法来计算叶温。</p>
-<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 警告
 </div>
 </div>
@@ -927,28 +930,25 @@ g_s = g_0 + g_1 \frac{A_n}{C_a} f(D)
 <p>目前版本尚存在bug，不能直接提供 GS 来计算，否则会出现未知错误。</p>
 </div>
 </div>
-</section>
-<section id="sec-photosyntuzet" class="level3" data-number="21.4.3">
-<h3 data-number="21.4.3" class="anchored" data-anchor-id="sec-photosyntuzet"><span class="header-section-number">21.4.3</span> <code>PhotosynTuzet</code> 函数</h3>
-<p>同样为光合气孔导度耦合模型，只不过基于 <span class="citation" data-cites="tuzet2003a">Tuzet, Perrier, and Leuning (<a href="references.html#ref-tuzet2003a" role="doc-biblioref">2003</a>)</span> 的气孔导度模型，现将其描述如下：</p>
+</section><section id="sec-photosyntuzet" class="level3" data-number="22.4.3"><h3 data-number="22.4.3" class="anchored" data-anchor-id="sec-photosyntuzet">
+<span class="header-section-number">22.4.3</span> <code>PhotosynTuzet</code> 函数</h3>
+<p>同样为光合气孔导度耦合模型，只不过基于 <span class="citation" data-cites="tuzet2003a">Tuzet, Perrier, 和 Leuning (<a href="references.html#ref-tuzet2003a" role="doc-biblioref">2003</a>)</span> 的气孔导度模型，现将其描述如下：</p>
 <p><span id="eq-tuzet"><span class="math display">
 g_{co2} = g_0 + \frac{a A}{C_i - \Gamma} f_{\Psi v}
-\qquad(21.6)</span></span></p>
+\tag{22.6}</span></span></p>
 <p>其中 g<sub>co2</sub> 为对 CO<sub>2</sub> 的气孔导度， g<sub>0</sub> 是残余导度（residual conductance）(在补偿点时限制 g<sub>CO2</sub> 的值）， A 为光合速率，C<sub>i</sub> 为胞间二氧化碳浓度，<span class="math inline">\Gamma</span> 为 CO<sub>2</sub> 补偿点，a 是经验系数。</p>
 <p>一个根据经验的逻辑方程用于描述气孔对水势的敏感性：</p>
 <p><span id="eq-ftuzet"><span class="math display">
 f_{\Psi v} = \frac{1 + exp(s_f \Psi_f)}{1 + exp(s_f(\Psi_f - \Psi_v))}
-\qquad(21.7)</span></span></p>
+\tag{22.7}</span></span></p>
 <p><span class="math inline">\Psi_v</span> 是指叶片水势，<span class="math inline">\Psi_f</span> 是参比势能， 该方程假设在水势接近于 0 时，气孔对叶片水势不敏感，并且气孔随着 <span class="math inline">\Psi_v</span> 的下降快速关闭。<span class="math inline">\Psi_f</span> 和 <span class="math inline">s_f</span> (曲线形状参数) 依赖于不同物种的形态学适应以及生长过程中所处的环境。</p>
-<section id="sec-photosyntuzet_para" class="level4">
-<h4 class="anchored" data-anchor-id="sec-photosyntuzet_para"><code>PhotosynTuzet</code> 的参数</h4>
-<p>除 <span class="citation" data-cites="tuzet2003a">Tuzet, Perrier, and Leuning (<a href="references.html#ref-tuzet2003a" role="doc-biblioref">2003</a>)</span> 模型中使用的参数外，其他参数都继承了 <code>Photosyn</code> 的参数</p>
+<section id="sec-photosyntuzet_para" class="level4"><h4 class="anchored" data-anchor-id="sec-photosyntuzet_para">
+<code>PhotosynTuzet</code> 的参数</h4>
+<p>除 <span class="citation" data-cites="tuzet2003a">Tuzet, Perrier, 和 Leuning (<a href="references.html#ref-tuzet2003a" role="doc-biblioref">2003</a>)</span> 模型中使用的参数外，其他参数都继承了 <code>Photosyn</code> 的参数</p>
 <div class="cell">
-<p></p><details open="">
-<summary>Code</summary><p></p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PhotosynTuzet</span>(<span class="at">g1 =</span> <span class="dv">8</span>, <span class="at">Ca =</span> <span class="dv">400</span>, <span class="at">psis =</span> <span class="dv">0</span>,</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">kl =</span> <span class="dv">2</span>, <span class="at">sf =</span> <span class="dv">3</span>, <span class="at">psif =</span> <span class="sc">-</span><span class="dv">2</span>,</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/plantecophys/man/PhotosynTuzet.html">PhotosynTuzet</a></span><span class="op">(</span>g1 <span class="op">=</span> <span class="fl">8</span>, Ca <span class="op">=</span> <span class="fl">400</span>, psis <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>              kl <span class="op">=</span> <span class="fl">2</span>, sf <span class="op">=</span> <span class="fl">3</span>, psif <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>,</span>
+<span><span class="va">...</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <ul>
@@ -961,32 +961,46 @@ f_{\Psi v} = \frac{1 + exp(s_f \Psi_f)}{1 + exp(s_f(\Psi_f - \Psi_v))}
 </ul>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-Buckley2014Is" class="csl-entry" role="doc-biblioentry">
-Buckley, T. N., S Martorell, A Diazespejo, M Tomàs, and H Medrano. 2014. <span>“Is Stomatal Conductance Optimized over Both Time and Space in Plant Crowns? A Field Test in Grapevine Vitis Vinifera.”</span> <em>Plant Cell &amp; Environment</em> 37 (12): 2707.
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-Buckley2014Is" class="csl-entry" role="listitem">
+Buckley, T. N., S Martorell, A Diazespejo, M Tomàs, 和 H Medrano. 2014. <span>《Is stomatal conductance optimized over both time and space in plant crowns? A field test in grapevine Vitis vinifera.》</span> <em>Plant Cell &amp; Environment</em> 37 (12): 2707.
 </div>
-<div id="ref-Cowan1977Stomatal" class="csl-entry" role="doc-biblioentry">
-Cowan, I. R., and G. D. Farquhar. 1977. <span>“Stomatal Function in Relation to Leaf Metabolism and Environment.”</span> <em>Symposia of the Society for Experimental Biology</em> 31 (23): 471.
+<div id="ref-Cowan1977Stomatal" class="csl-entry" role="listitem">
+Cowan, I. R., 和 G. D. Farquhar. 1977. <span>《Stomatal function in relation to leaf metabolism and environment.》</span> <em>Symposia of the Society for Experimental Biology</em> 31 (23): 471.
 </div>
-<div id="ref-Duursma2012MAESPA" class="csl-entry" role="doc-biblioentry">
-Duursma, R. A., and B. E. Medlyn. 2012. <span>“MAESPA: A Model to Study Interactions Between Water Limitation, Environmental Drivers and Vegetation Function at Tree and Stand Levels, with an Example Application to CO<span class="math inline">_2</span> Drought Interactions.”</span> <em>Geoscientific Model Development Discussions</em> 5 (4): 919–40.
+<div id="ref-Duursma2012MAESPA" class="csl-entry" role="listitem">
+Duursma, R. A., 和 B. E. Medlyn. 2012. <span>《MAESPA: a model to study interactions between water limitation, environmental drivers and vegetation function at tree and stand levels, with an example application to CO<span class="math inline">_2</span> drought interactions》</span>. <em>Geoscientific Model Development Discussions</em> 5 (4): 919–40.
 </div>
-<div id="ref-Duursma2015Plantecophys" class="csl-entry" role="doc-biblioentry">
-Duursma, Remko A. 2015. <span>“Plantecophys-an r Package for Analysing and Modelling Leaf Gas Exchange Data.”</span> <em>Plos One</em> 10 (11): e0143346.
+<div id="ref-Duursma2015Plantecophys" class="csl-entry" role="listitem">
+Duursma, Remko A. 2015. <span>《Plantecophys-An R Package for Analysing and Modelling Leaf Gas Exchange Data》</span>. <em>Plos One</em> 10 (11): e0143346.
 </div>
-<div id="ref-Medlyn2011Reconciling" class="csl-entry" role="doc-biblioentry">
-Medlyn, Belinda E., Remko A. Duursma, Derek Eamus, David S. Ellsworth, I. Colin Prentice, Craig V. M. Barton, Kristine Y. Crous, Paolo De Angelis, Michael Freeman, and Lisa Wingate. 2011. <span>“Reconciling the Optimal and Empirical Approaches to Modelling Stomatal Conductance.”</span> <em>Global Change Biology</em> 17 (6): 2134–44.
+<div id="ref-Medlyn2011Reconciling" class="csl-entry" role="listitem">
+Medlyn, Belinda E., Remko A. Duursma, Derek Eamus, David S. Ellsworth, I. Colin Prentice, Craig V. M. Barton, Kristine Y. Crous, Paolo De Angelis, Michael Freeman, 和 Lisa Wingate. 2011. <span>《Reconciling the optimal and empirical approaches to modelling stomatal conductance》</span>. <em>Global Change Biology</em> 17 (6): 2134–44.
 </div>
-<div id="ref-tuzet2003a" class="csl-entry" role="doc-biblioentry">
-Tuzet, A, A Perrier, and R Leuning. 2003. <span>“A Coupled Model of Stomatal Conductance, Photosynthesis and Transpiration.”</span> <em>Plant Cell and Environment</em> 26 (7): 1097–1116.
+<div id="ref-tuzet2003a" class="csl-entry" role="listitem">
+Tuzet, A, A Perrier, 和 R Leuning. 2003. <span>《A coupled model of stomatal conductance, photosynthesis and transpiration》</span>. <em>Plant Cell and Environment</em> 26 (7): 1097–1116.
 </div>
 </div>
-</section>
-</section>
-</section>
-</main> <!-- /main -->
-<script type="application/javascript">
+</section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -994,9 +1008,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1006,16 +1034,53 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/zhujiedong\.github\.io\/photosynthesis-analysis\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1025,55 +1090,318 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./gm-gs.html">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./gm-gs.html" class="pagination-link" aria-label="叶肉与气孔导度">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">叶肉与气孔导度</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./gm.html">
-        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./gm.html" class="pagination-link" aria-label="叶肉导度计算">
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 
 
-</body></html>
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/gs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

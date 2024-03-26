@@ -53,12 +53,9 @@ abline(3,0,col="green")
 
 如果我们做一条通过中心点并与 PC1 垂直的线，并不断旋转这条线使其满足：所有投影于其上的点，他们的距离最大，也就是变异最大，这样就做出了第二个主成份，PC2，如图 @fig-pc3。**就这样不断的变换，一般情况下，我们可以使用 2~3 个主成份来解释绝大部分数据所展示的信息（所有数据都尽可能少的损失信息投影于其上）**。
 
-以上为基本变换，如果我们使用 R 计算 PCA (这里推荐两个包 `factoextra` 和 `FactoMineR`)，查看其结果：
+以上为基本变换，如果我们使用 R 计算 PCA (这里推荐两个包 `factoextra` 和 `FactoMineR`)，查看其结果（结果略）：
 
-```{r}
-#| label: fig-scree
-#| fig.cap: 'iris 碎石图'
-
+```r
 
 library("FactoMineR")
 library("factoextra")
@@ -71,13 +68,9 @@ fviz_eig(ir_pca, addlabels = TRUE)
 
 我们可以看到，前两个成分可以解释数据 95% 以上的变异，所以我们可以只使用主成份 1 和主成份 2 对我们的结果进行解释。
 
-既然我们使用两个主成份解释整个数据，那么我们怎么把四个性状都放在这个图上呢？这就需要载荷图来展示了，如图 @fig-loadingpca
+既然我们使用两个主成份解释整个数据，那么我们怎么把四个性状都放在这个图上呢？这就需要载荷图来展示了：
 
-```{r}
-#| label: fig-loadingpca
-#| fig.cap: 'iris 载荷图'
-
-
+```r
 fviz_pca_var(ir_pca)
 ```
 
@@ -85,9 +78,7 @@ fviz_pca_var(ir_pca)
 
 而如果我想通过这些性状来对鸢尾分类，怎么看呢？那就需要得分图来展示了，如图 @fig-scorepca ，得分图本质是各个品种的每个观测值在各个轴上的长度，也就是得分，所以其值都是每个物种性状的加权，每个点代表了每个物种的观测值。
 
-```{r}
-#| label: fig-scorepca
-#| fig.cap: 'iris 得分图'
+```r
 
 fviz_pca_ind(ir_pca, repel = TRUE, col.ind= iris$Species)
 ```

@@ -64,6 +64,7 @@ mod_rec_form <-  y ~
   alpha * ((1 - beta*x)/(1 + gamma * x)) * x - Rd
 
 ggplot(light, aes(x = lrc_Q, y = lrc_A)) + 
+  geom_point(shape = 16, size = 3, color = "green") + 
   geom_smooth(method="nls", 
     formula = mod_rec_form, 
     se = FALSE, method.args = list(

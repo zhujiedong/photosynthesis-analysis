@@ -124,3 +124,6 @@ kable(fitlrc_rec$coef)
 ```
 
 最终的数据拟结果如 @fig-recr 所示，拟合的参数及结果见 @tbl-rectable。
+
+
+
