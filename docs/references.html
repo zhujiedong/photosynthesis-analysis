@@ -1,87 +1,111 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.3.32">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
-  <title>LI-6800 和 LI-6400 光合数据分析指南 - 26&nbsp; 参考文献</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    div.csl-bib-body { }
-    div.csl-entry {
-      clear: both;
-    }
-    .hanging div.csl-entry {
-      margin-left:2em;
-      text-indent:-2em;
-    }
-    div.csl-left-margin {
-      min-width:2em;
-      float:left;
-    }
-    div.csl-right-inline {
-      margin-left:2em;
-      padding-left:1em;
-    }
-    div.csl-indent {
-      margin-left: 2em;
-    }
-  </style>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
 
-  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="./">
-  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="site_libs/quarto-search/fuse.min.js"></script>
-  <script src="site_libs/quarto-search/quarto-search.js"></script>
-  <link href="./a1-run-environment.html" rel="next">
-  <link href="./smatr.html" rel="prev">
-  <script src="site_libs/quarto-html/quarto.js"></script>
-  <script src="site_libs/quarto-html/popper.min.js"></script>
-  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="site_libs/quarto-html/anchor.min.js"></script>
-  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "sidebar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "start",
-    "type": "textbox",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="介绍使用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主， 有时候为方便或者作为比较，会涉及 python 和其他工具。">
+
+<title>LI-6800 和 LI-6400 光合数据分析指南 - 27&nbsp; 参考文献</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./a1-run-environment.html" rel="next">
+<link href="./smatr.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "搜索"
+  }
+}</script>
+
+
 </head>
-<body class="floating">
+
+<body class="nav-sidebar floating">
+
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></h1>
-      <button type="button" class="quarto-btn-toggle btn">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="切换侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">参考文献</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="切换侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -89,299 +113,357 @@
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-  <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">LI-6800 和 LI-6400 光合数据分析指南</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/zhujiedong/photosynthesis-analysis/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/zhujiedong/photosynthesis-analysis/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
     </div>
-  </div>
-    <div class="mt-2 flex-shrink-0 align-items-center">
-      <div class="sidebar-search">
-      <div id="quarto-search" class="" title="Search"></div>
       </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">欢迎</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./thanks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">致谢</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">序言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">介绍</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">必备工具</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rbasics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">光合相关的软件包</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phtosyn-pacakges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./general-packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./data-prepare.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./batch-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./light-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">光响应曲线简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nls-start.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./non-hypo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hyp-rev.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aq-choose.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./big-leaf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-aq-gui.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./aci-curve.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">二氧化碳响应曲线概述</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aci.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DAT-vs-racir.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plantecowraps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Rd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C4-related.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./fluorescence.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">叶绿素荧光数据的处理</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./jiptest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-fluor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./gm-gs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">叶肉与气孔导度</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./other-stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">其他统计方法</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./common-stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">正态分布检验</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">大话 PCA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./smatr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">参考文献</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="切換部分">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./a1-run-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
     </div>
-  <div class="sidebar-menu-container"> 
-  <ul class="list-unstyled mt-1">
-      <li class="sidebar-item">
-  <a href="./index.html" class="">欢迎</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./thanks.html" class="">致谢</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./preface.html" class="">序言</a>
-</li>
-      <li class="sidebar-item">
-  <a href="./intro.html" class="">介绍</a>
-</li>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./basics.html" class="">必备工具</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-basics.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-basics.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./rbasics.html" class=""><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">R 相关的准备</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./python-basics.html" class=""><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">其他工具</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./packages.html" class="">光合相关的软件包</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-packages.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-packages.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./phtosyn-pacakges.html" class=""><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">光合专用软件包</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./general-packages.html" class=""><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">生态学通用软件包</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./data-prepare.html" class="">数据准备</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-data-prepare.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-data-prepare.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./data-import.html" class=""><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据读取的选项</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./batch-method.html" class=""><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据的基本处理</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./light-response.html" class="">光响应曲线简介</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-light-response.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-light-response.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./nls-start.html" class=""><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">非线性拟合初值确定</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./hyp.html" class=""><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">直角双曲线模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./non-hypo.html" class=""><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">非直角双曲线模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./exp.html" class=""><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">指数模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./hyp-rev.html" class=""><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">直角双曲线的修正模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./aq-choose.html" class=""><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">如何选择合适的模型</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./big-leaf.html" class=""><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">大叶模型</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./aci-curve.html" class="">二氧化碳响应曲线概述</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-aci-curve.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-aci-curve.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./aci.html" class=""><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Aci 曲线拟合相关</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./DAT-vs-racir.html" class=""><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">快速<code>ACi</code> 曲线 (RACiR)</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./plantecowraps.html" class=""><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">plantecowrap 温度相关拟合</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./Rd.html" class=""><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rd 呼吸 相关</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./C4-related.html" class=""><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">C4 植物光合模拟</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./fluorescence.html" class="">叶绿素荧光数据的处理</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-fluorescence.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-fluorescence.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./jiptest.html" class=""><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LI-6800 JIP test 分析</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./other-fluor.html" class=""><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">其他叶绿素荧光数据处理</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./gm-gs.html" class="">叶肉与气孔导度</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-gm-gs.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-gm-gs.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./gs.html" class=""><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">气孔导度模型的拟合</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./gm.html" class=""><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">叶肉导度计算</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-          <div class="d-inline-flex w-100 sidebar-section-item">
-            <div class="sidebar-section-link me-auto">
-            <a href="./other-stat.html" class="">其他统计方法</a>
-            </div>
-            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-other-stat.qmd" aria-expanded="true">
-              <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-            </div>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-other-stat.qmd">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./common-stat.html" class=""><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">常用统计方法简介</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./pca.html" class=""><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">大话 PCA</span></a>
-</li>
-          <li class="sidebar-item">
-  <a href="./smatr.html" class=""><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-      <li class="sidebar-item">
-  <a href="./references.html" class="active"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></a>
-</li>
-      <ul class="list-unstyled sidebar-section depth1">
-    <li class="">
-        <div class="me-auto">
-            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-appendices" aria-expanded="true">
-              <div class="me-auto sidebar-section-item">Appendices</div>
-            <div><i class="bi bi-chevron-right ms-2"></i></div>
-            </a>
-        </div>
-      <div class="collapse  show" id="quarto-sidebar-section-appendices">
-        <ul class="list-unstyled sidebar-item-contents">
-          <li class="sidebar-item">
-  <a href="./a1-run-environment.html" class=""><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></a>
-</li>
-        </ul>
-      </div>
-    </li>
-  </ul>
-  </ul>
-  </div>
 </nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-      <div id="quarto-toc-target"></div>
+        
     </div>
 <!-- main -->
-<main class="content">
-<header id="title-block-header">
-<h1 class="title display-7"><span id="references" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">参考文献</span></span></h1>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="references" class="quarto-section-identifier"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">参考文献</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
 </header>
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-Aganchich2009" class="csl-entry" role="doc-biblioentry">
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Aganchich2009" class="csl-entry" role="listitem">
 Aganchich, B, S Wahbi, F Loreto, and M Centritto. 2009. <span>“Partial
 Root Zone Drying: Regulation of Photosynthetic Limitations and
 Antioxidant Enzymatic Activities in Young Olive (Olea Europaea)
 Saplings.”</span> <em>Tree Physiology</em> 29 (5): 685.
 </div>
-<div id="ref-Ball1987A" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Ball1987A" class="csl-entry" role="listitem">
 Ball, J. Timothy, Ian E. Woodrow, and Joseph A. Berry. 1987. <em>A Model
 Predicting Stomatal Conductance and Its Contribution to the Control of
 Photosynthesis Under Different Environmental Conditions</em>. Springer
 Netherlands.
 </div>
-<div id="ref-ball_model_1987" class="csl-entry" role="doc-biblioentry">
+<div id="ref-ball_model_1987" class="csl-entry" role="listitem">
 Ball, John, Ian Woodrow, and Joseph Berry. 1987. <span>“A
 <span>Model</span> <span>Predicting</span> <span>Stomatal</span>
 <span>Conductance</span> and <span>Its</span> <span>Contribution</span>
@@ -390,12 +472,12 @@ to the <span>Control</span> of <span>Photosynthesis</span>
 <span>Conditions</span>.”</span> <em>Progress in Photosynthesis
 Research</em> 4 (January): 221–24. <a href="https://doi.org/10.1007/978-94-017-0519-6_48">https://doi.org/10.1007/978-94-017-0519-6_48</a>.
 </div>
-<div id="ref-BalyEC1935" class="csl-entry" role="doc-biblioentry">
+<div id="ref-BalyEC1935" class="csl-entry" role="listitem">
 Baly, EC. 1935. <span>“The Kinetics of Photosynthesis.”</span>
 <em>Proceedings of the Royal Society of London Series B (Biological
 Sciences)</em>, no. 117: 218–39.
 </div>
-<div id="ref-bernacchi_temperature_2002" class="csl-entry" role="doc-biblioentry">
+<div id="ref-bernacchi_temperature_2002" class="csl-entry" role="listitem">
 Bernacchi, Carl J., Archie R. Portis, Hiromi Nakano, Susanne von
 Caemmerer, and Stephen P. Long. 2002. <span>“Temperature
 <span>Response</span> of <span>Mesophyll</span>
@@ -405,51 +487,51 @@ Caemmerer, and Stephen P. Long. 2002. <span>“Temperature
 <span>Photosynthesis</span> in <span>Vivo</span>.”</span> <em>Plant
 Physiology</em> 130 (4): 1992–98. <a href="https://doi.org/10.1104/pp.008250">https://doi.org/10.1104/pp.008250</a>.
 </div>
-<div id="ref-nls2" class="csl-entry" role="doc-biblioentry">
+<div id="ref-nls2" class="csl-entry" role="listitem">
 Bouvier, Annie, and Sylvie Huet. 1994. <span>“Nls2 Nonlinear Regression
 by s PLUS Functions.”</span> <em>Computational Statistics &amp; Data
 Analysis</em> 18 (1): 187–90.
 </div>
-<div id="ref-brooksEffectTemperatureCO21985" class="csl-entry" role="doc-biblioentry">
+<div id="ref-brooksEffectTemperatureCO21985" class="csl-entry" role="listitem">
 Brooks, A., and G. D. Farquhar. 1985. <span>“Effect of Temperature on
-the <span>Co2</span>/<span>O2</span> Specificity of
+the <span>CO2</span>/<span>O2</span> Specificity of
 Ribulose-1,5-Bisphosphate Carboxylase/Oxygenase and the Rate of
 Respiration in the Light.”</span> <em>Planta</em> 165 (3): 397–406. <a href="https://doi.org/10.1007/BF00392238">https://doi.org/10.1007/BF00392238</a>.
 </div>
-<div id="ref-Buckley2014Is" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Buckley2014Is" class="csl-entry" role="listitem">
 Buckley, T. N., S Martorell, A Diazespejo, M Tomàs, and H Medrano. 2014.
 <span>“Is Stomatal Conductance Optimized over Both Time and Space in
 Plant Crowns? A Field Test in Grapevine Vitis Vinifera.”</span>
 <em>Plant Cell &amp; Environment</em> 37 (12): 2707.
 </div>
-<div id="ref-bussotti_jip_2010" class="csl-entry" role="doc-biblioentry">
+<div id="ref-bussotti_jip_2010" class="csl-entry" role="listitem">
 Bussotti, Filippo, Rosanna Desotgiu, Martina Pollastrini, and Chiara
 Cascio. 2010. <span>“The <span>JIP</span> Test: <span>A</span> Tool to
 Screen the Capacity of Plant Adaptation to Climate Change.”</span>
 <em>Scandinavian Journal of Forest Research</em> 25 (August): 1–8.
 </div>
-<div id="ref-Caemmerer2000Biochemical" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Caemmerer2000Biochemical" class="csl-entry" role="listitem">
 Caemmerer, S. Von. 2000. <span>“Biochemical Models of Leaf
 Photosynthesis.”</span> <em>Quarterly Review of Biology</em>, 165.
 </div>
-<div id="ref-centritto2003" class="csl-entry" role="doc-biblioentry">
+<div id="ref-centritto2003" class="csl-entry" role="listitem">
 Centritto, M, F Loreto, and K Chartzoulakis. 2003. <span>“The Use of Low
-Co2 to Estimate Diffusional and Non-Diffusional Limitations of
+CO2 to Estimate Diffusional and Non-Diffusional Limitations of
 Photosynthetic Capacity of Salt-Stressed Olive Saplings.”</span>
 <em>Plant Cell and Environment</em> 26 (4): 585–94.
 </div>
-<div id="ref-Coursolle12019" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Coursolle12019" class="csl-entry" role="listitem">
 Coursolle, Carole, Guillaume O. Prud’homme, Manuel Lamothe1, and
 Nathalie Isabel1. 2019. <span>“Measuring Rapid a–Ci Curves in Boreal
 Conifers: Black Spruce and Balsam Fir.”</span> <em>Frontiers in Plant
 Science</em>. <a href="https://doi.org/10.3389/fpls.2019.01276">https://doi.org/10.3389/fpls.2019.01276</a>.
 </div>
-<div id="ref-Cowan1977Stomatal" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Cowan1977Stomatal" class="csl-entry" role="listitem">
 Cowan, I. R., and G. D. Farquhar. 1977. <span>“Stomatal Function in
 Relation to Leaf Metabolism and Environment.”</span> <em>Symposia of the
 Society for Experimental Biology</em> 31 (23): 471.
 </div>
-<div id="ref-De2016A" class="csl-entry" role="doc-biblioentry">
+<div id="ref-De2016A" class="csl-entry" role="listitem">
 De Kauwe, Martin G, Yan Shih Lin, Ian J Wright, Belinda E Medlyn,
 Kristine Y Crous, David S Ellsworth, Vincent Maire, I Colin Prentice,
 Owen K Atkin, and Alistair Rogers. 2016. <span>“A Test of the One Point
@@ -457,7 +539,7 @@ Method for Estimating Maximum Carboxlation Capacity from Field Measured,
 Light Saturated Photosynthesis.”</span> <em>New Phytologist</em> 210
 (3): 1130.
 </div>
-<div id="ref-Duursma2012MAESPA" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Duursma2012MAESPA" class="csl-entry" role="listitem">
 Duursma, R. A., and B. E. Medlyn. 2012. <span>“MAESPA: A Model to Study
 Interactions Between Water Limitation, Environmental Drivers and
 Vegetation Function at Tree and Stand Levels, with an Example
@@ -465,171 +547,171 @@ Application to CO<span class="math inline"><sub>2</sub></span> Drought
 Interactions.”</span> <em>Geoscientific Model Development
 Discussions</em> 5 (4): 919–40.
 </div>
-<div id="ref-Duursma2015Plantecophys" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Duursma2015Plantecophys" class="csl-entry" role="listitem">
 Duursma, Remko A. 2015. <span>“Plantecophys-an r Package for Analysing
 and Modelling Leaf Gas Exchange Data.”</span> <em>Plos One</em> 10 (11):
 e0143346.
 </div>
-<div id="ref-duursma_near-optimal_2013" class="csl-entry" role="doc-biblioentry">
+<div id="ref-duursma_near-optimal_2013" class="csl-entry" role="listitem">
 Duursma, Remko A., Paxton Payton, Michael P. Bange, Katrina J.
 Broughton, Renee A. Smith, Belinda E. Medlyn, and David T. Tissue.
 2013a. <span>“Near-Optimal Response of Instantaneous Transpiration
 Efficiency to Vapour Pressure Deficit, Temperature and
-[<span>Co2</span>] in Cotton (<span>Gossypium</span> Hirsutum
+[<span>CO2</span>] in Cotton (<span>Gossypium</span> Hirsutum
 <span>L</span>.).”</span> <em>Agricultural and Forest Meteorology</em>
 168: 168–76. <a href="https://doi.org/10.1016/j.agrformet.2012.09.005">https://doi.org/10.1016/j.agrformet.2012.09.005</a>.
 </div>
-<div id="ref-Duursma2013Near" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Duursma2013Near" class="csl-entry" role="listitem">
 ———. 2013b. <span>“Near-Optimal Response of Instantaneous Transpiration
 Efficiency to Vapour Pressure Deficit, Temperature and CO<span class="math inline"><sub>2</sub></span> in Cotton (Gossypium Hirsutum
 l.).”</span> <em>Agricultural &amp; Forest Meteorology</em> 168 (1):
 168–76.
 </div>
-<div id="ref-ellsworth2015phosphorus" class="csl-entry" role="doc-biblioentry">
+<div id="ref-ellsworth2015phosphorus" class="csl-entry" role="listitem">
 Ellsworth, David S, Kristine Y Crous, Hans Lambers, and Julia Cooke.
 2015. <span>“Phosphorus Recycling in Photorespiration Maintains High
 Photosynthetic Capacity in Woody Species.”</span> <em>Plant Cell and
 Environment</em> 38 (6): 1142–56.
 </div>
-<div id="ref-Elzhov2016minpack" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Elzhov2016minpack" class="csl-entry" role="listitem">
 Elzhov, Timur V., Katharine M. Mullen, Andrej Nikolai Spiess, and Ben
 Bolker. 2016. <span>“Minpack.lm: R Interface to the Levenberg-Marquardt
 Nonlinear Least-Squares Algorithm Found in MINPACK, Plus Support for
 Bounds.”</span>
 </div>
-<div id="ref-fabozzi_basics_2014" class="csl-entry" role="doc-biblioentry">
+<div id="ref-fabozzi_basics_2014" class="csl-entry" role="listitem">
 Fabozzi, Frank J., Sergio M. Focardi, Svetlozar T. Rachev, and Bala G.
 Arshanapalli. 2014. <em>The <span>Basics</span> of
 <span>Financial</span> <span>Econometrics</span>: <span>Tools</span>,
 <span>Concepts</span>, and <span>Asset</span> <span>Management</span>
 <span>Applications</span></em>. 1st edition. Wiley.
 </div>
-<div id="ref-Farquhar1980A" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Farquhar1980A" class="csl-entry" role="listitem">
 Farquhar, G. D., S. Von Caemmerer, and J. A. Berry. 1980. <span>“A
 Biochemical Model of Photosynthetic CO<span class="math inline"><sub>2</sub></span> Assimilation in Leaves of C3
 Species.”</span> <em>Planta</em> 149 (1): 78–90.
 </div>
-<div id="ref-Flexas2007leak" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Flexas2007leak" class="csl-entry" role="listitem">
 Flexas J, Azespejo A, and Berry J A. 2007. <span>“Analysis of Leakage in
 IRGA’s Leaf Chambers of Open Gas Exchange Systems: Quantification and
 Its Effects in Photosynthesis Parameterization.”</span> <em>Journal of
 Experimental Botany</em> 58 (6): 1533.
 </div>
-<div id="ref-Gu2010Reliable" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Gu2010Reliable" class="csl-entry" role="listitem">
 Gu, Lianhong, Stephen G Pallardy, Kevin Tu, Beverly E Law, and Stan D
 Wullschleger. 2010. <span>“Reliable Estimation of Biochemical Parameters
 from c-3 Leaf Photosynthesis-Intercellular Carbon Dioxide Response
 Curves.”</span> <em>Plant Cell &amp; Environment</em> 33 (11): 1852–74.
 </div>
-<div id="ref-harleyTheoreticalConsiderationsWhen1992" class="csl-entry" role="doc-biblioentry">
+<div id="ref-harleyTheoreticalConsiderationsWhen1992" class="csl-entry" role="listitem">
 Harley, Peter C., Francesco Loreto, Giorgio Di Marco, and Thomas D.
 Sharkey. 1992. <span>“Theoretical <span>Considerations</span> When
 <span>Estimating</span> the <span>Mesophyll</span>
-<span>Conductance</span> to <span>Co2</span> <span>Flux</span> by
+<span>Conductance</span> to <span>CO2</span> <span>Flux</span> by
 <span>Analysis</span> of the <span>Response</span> of
-<span>Photosynthesis</span> to <span>Co2</span>.”</span> <em>Plant
+<span>Photosynthesis</span> to <span>CO2</span>.”</span> <em>Plant
 Physiology</em> 98: 1429–36.
 </div>
-<div id="ref-haworth2015coordination" class="csl-entry" role="doc-biblioentry">
+<div id="ref-haworth2015coordination" class="csl-entry" role="listitem">
 Haworth, Matthew, Dilek Killi, Alessandro Materassi, and Antonio Raschi.
 2015. <span>“Coordination of Stomatal Physiological Behavior and
 Morphology with Carbon Dioxide Determines Stomatal Control.”</span>
 <em>American Journal of Botany</em> 102 (5): 677–88.
 </div>
-<div id="ref-matthew2018" class="csl-entry" role="doc-biblioentry">
+<div id="ref-matthew2018" class="csl-entry" role="listitem">
 Haworth, Matthew, Giovanni Marino, and Mauro Centritto. 2018. <span>“An
 Introductory Guide to Gas Exchange Analysis of Photosynthesis and Its
 Application to Plant Phenotyping and Precision Irrigation to Enhance
 Water Use Efficiency.”</span> <em>Journal of Water and Climate
 Change</em>. https://doi.org/<a href="https://doi.org/10.2166/wcc.2018.152">https://doi.org/10.2166/wcc.2018.152</a>.
 </div>
-<div id="ref-heath2005rising" class="csl-entry" role="doc-biblioentry">
+<div id="ref-heath2005rising" class="csl-entry" role="listitem">
 Heath, James R, Edward Ayres, Malcolm Possell, Richard D Bardgett,
 Helaina I J Black, Helen Grant, Phil Ineson, and Gerhard Kerstiens.
-2005. <span>“Rising Atmospheric Co2 Reduces Sequestration of
+2005. <span>“Rising Atmospheric CO2 Reduces Sequestration of
 Root-Derived Soil Carbon.”</span> <em>Science</em> 309 (5741): 1711–13.
 </div>
-<div id="ref-Hikosaka2006Temperature" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Hikosaka2006Temperature" class="csl-entry" role="listitem">
 Hikosaka, K, K Ishikawa, A Borjigidai, O Muller, and Y Onoda. 2006.
 <span>“Temperature Acclimation of Photosynthesis: Mechanisms Involved in
 the Changes in Temperature Dependence of Photosynthetic Rate.”</span>
 <em>Journal of Experimental Botany</em> 57 (2): 291.
 </div>
-<div id="ref-HuangHY2009" class="csl-entry" role="doc-biblioentry">
+<div id="ref-HuangHY2009" class="csl-entry" role="listitem">
 Huang, HY, XY Dou, PY Sun, B Deng, GJ Wu, and CL Peng. 2009.
 <span>“Comparison of Photosynthetic Characteristics in Two Ecotypes of
 Jatropha Curcas in Summer.”</span> <em>Acta Ecologica Sinica</em>, no.
 29: 2861–67.
 </div>
-<div id="ref-stinziano2019" class="csl-entry" role="doc-biblioentry">
+<div id="ref-stinziano2019" class="csl-entry" role="listitem">
 Joseph R., Stinziano, Adamson Rachael K., and Hanson David T. 2019.
 <span>“Using Multirate Rapid ACi Curves as a Tool to Explore New
 Questions in the Photosynthetic Physiology of Plants.”</span> <em>New
 Phytologist</em>. <a href="https://doi.org/10.1111/nph.15657">https://doi.org/10.1111/nph.15657</a>.
 </div>
-<div id="ref-kemp2003modern" class="csl-entry" role="doc-biblioentry">
+<div id="ref-kemp2003modern" class="csl-entry" role="listitem">
 Kemp, Freda. 2003. <span>“Modern Applied Statistics with s.”</span>
 <em>Journal of The Royal Statistical Society Series D-the
 Statistician</em> 52 (4): 704–5.
 </div>
-<div id="ref-knauerBigleafPackageCalculation2018" class="csl-entry" role="doc-biblioentry">
+<div id="ref-knauerBigleafPackageCalculation2018" class="csl-entry" role="listitem">
 Knauer, Jürgen, Tarek S. El-Madany, Sönke Zaehle, and Mirco Migliavacca.
 2018. <span>“Bigleaf—<span>An</span> <span>R</span> Package for the
 Calculation of Physical and Physiological Ecosystem Properties from Eddy
 Covariance Data.”</span> <em>PLOS ONE</em> 13 (8): e0201114. <a href="https://doi.org/10.1371/journal.pone.0201114">https://doi.org/10.1371/journal.pone.0201114</a>.
 </div>
-<div id="ref-kokInhibitionPhotosynthesisIntense1956" class="csl-entry" role="doc-biblioentry">
+<div id="ref-kokInhibitionPhotosynthesisIntense1956" class="csl-entry" role="listitem">
 Kok, Bessel. 1956. <span>“On the Inhibition of Photosynthesis by Intense
 Light.”</span> <em>Biochimica Et Biophysica Acta</em> 21 (2): 234–44. <a href="https://doi.org/10.1016/0006-3002(56)90003-8">https://doi.org/10.1016/0006-3002(56)90003-8</a>.
 </div>
-<div id="ref-lauteri2014" class="csl-entry" role="doc-biblioentry">
+<div id="ref-lauteri2014" class="csl-entry" role="listitem">
 Lauteri, Marco, Matthew Haworth, Rachid Serraj, Maria Cristina
 Monteverdi, and Mauro Centritto. 2014. <span>“Photosynthetic Diffusional
 Constraints Affect Yield in Drought Stressed Rice Cultivars During
 Flowering.”</span> <em>PLOS ONE</em> 9 (10).
 </div>
-<div id="ref-leuning1995a" class="csl-entry" role="doc-biblioentry">
+<div id="ref-leuning1995a" class="csl-entry" role="listitem">
 Leuning, R. 1995a. <span>“A Critical Appraisal of a Combined
 Stomatal‐photosynthesis Model for C3 Plants.”</span> <em>Plant Cell and
 Environment</em> 18 (4): 339–55.
 </div>
-<div id="ref-leuning_critical_1995" class="csl-entry" role="doc-biblioentry">
+<div id="ref-leuning_critical_1995" class="csl-entry" role="listitem">
 Leuning, R. 1995b. <span>“A Critical Appraisal of a Combined
 Stomatal-Photosynthesis Model for C3 Plants.”</span> <em>Plant, Cell
 &amp; Environment</em> 18 (4): 339–55. https://doi.org/<a href="https://doi.org/10.1111/j.1365-3040.1995.tb00370.x">https://doi.org/10.1111/j.1365-3040.1995.tb00370.x</a>.
 </div>
-<div id="ref-rpkgphoto" class="csl-entry" role="doc-biblioentry">
+<div id="ref-rpkgphoto" class="csl-entry" role="listitem">
 Liu, Yasi, Xiangping Wang, Dayong Fan, Jiangshan Lai, Alonso Zavafer,
 Yasi Liu, Xiangping Wang, Dayong Fan, Jiangshan Lai, and Alonso Zavafer.
 2021. <span>“The Use of <span>R</span> in Photosynthesis
 Research.”</span> <em>Functional Plant Biology</em>, October. <a href="https://doi.org/10.1071/FP21102">https://doi.org/10.1071/FP21102</a>.
 </div>
-<div id="ref-de_lobo_fitting_2013" class="csl-entry" role="doc-biblioentry">
+<div id="ref-de_lobo_fitting_2013" class="csl-entry" role="listitem">
 Lobo, F. A. de, M. P. de Barros, H. J. Dalmagro, Â. C. Dalmolin, W. E.
 Pereira, É. C. de Souza, G. L. Vourlitis, and C. E. Ortíz. 2013.
 <span>“Fitting Net Photosynthetic Light-Response Curves with
 <span>Microsoft</span> <span>Excel</span> - a Critical Look at the
 Models.”</span> <em>Photosynthetica</em> 51 (3): 445–56. <a href="https://doi.org/10.1007/s11099-013-0045-y">https://doi.org/10.1007/s11099-013-0045-y</a>.
 </div>
-<div id="ref-Lobo2013Fitting" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Lobo2013Fitting" class="csl-entry" role="listitem">
 Lobo, F. De A., M. P. De Barros, H. J. Dalmagro, Â. C. Dalmolin, W. E.
 Pereira, É. C. de Souza, G. L. Vourlitis, and C. E. Rodríguez Ortíz.
 2013. <span>“Fitting Net Photosynthetic Light-Response Curves with
 Microsoft Excel a Critical Look at the Models.”</span>
 <em>Photosynthetica</em> 51 (3): 445–56.
 </div>
-<div id="ref-Long2003Gas" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Long2003Gas" class="csl-entry" role="listitem">
 Long, S. P., and C. J. Bernacchi. 2003. <span>“Gas Exchange
 Measurements, What Can They Tell Us about the Underlying Limitations to
 Photosynthesis? Procedures and Sources of Error.”</span> <em>Journal of
 Experimental Botany</em> 54 (392): 2393.
 </div>
-<div id="ref-marshall1980a" class="csl-entry" role="doc-biblioentry">
+<div id="ref-marshall1980a" class="csl-entry" role="listitem">
 Marshall, B, and P V Biscoe. 1980. <span>“A Model for C3 Leaves
 Describing the Dependence of Net Photosynthesis on Irradiance.”</span>
 <em>Journal of Experimental Botany</em> 31 (1): 29–39.
 </div>
-<div id="ref-medlyn_temperature_2002" class="csl-entry" role="doc-biblioentry">
+<div id="ref-medlyn_temperature_2002" class="csl-entry" role="listitem">
 Medlyn, B. E., E. Dreyer, D. Ellsworth, M. Forstreuter, P. C. Harley, M.
 U. F. Kirschbaum, X. Le Roux, et al. 2002. <span>“Temperature Response
 of Parameters of a Biochemically Based Model of Photosynthesis.
@@ -637,20 +719,20 @@ of Parameters of a Biochemically Based Model of Photosynthesis.
 <em>Plant, Cell &amp; Environment</em> 25 (9): 1167–79.
 https://doi.org/<a href="https://doi.org/10.1046/j.1365-3040.2002.00891.x">https://doi.org/10.1046/j.1365-3040.2002.00891.x</a>.
 </div>
-<div id="ref-Medlyn2011Reconciling" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Medlyn2011Reconciling" class="csl-entry" role="listitem">
 Medlyn, Belinda E., Remko A. Duursma, Derek Eamus, David S. Ellsworth,
 I. Colin Prentice, Craig V. M. Barton, Kristine Y. Crous, Paolo De
 Angelis, Michael Freeman, and Lisa Wingate. 2011. <span>“Reconciling the
 Optimal and Empirical Approaches to Modelling Stomatal
 Conductance.”</span> <em>Global Change Biology</em> 17 (6): 2134–44.
 </div>
-<div id="ref-mejdovaPhotosyntheticParametersSedgegrass2021" class="csl-entry" role="doc-biblioentry">
+<div id="ref-mejdovaPhotosyntheticParametersSedgegrass2021" class="csl-entry" role="listitem">
 Mejdová, Markéta, Jiří Dušek, Lenka Foltýnová, Lenka Macálková, and Hana
 Čížková. 2021. <span>“Photosynthetic Parameters of a Sedge-Grass Marsh
 as a Big-Leaf: Effect of Plant Species Composition.”</span>
 <em>Scientific Reports</em> 11 (1): 3723. <a href="https://doi.org/10.1038/s41598-021-82382-2">https://doi.org/10.1038/s41598-021-82382-2</a>.
 </div>
-<div id="ref-ogren_convexity_1993" class="csl-entry" role="doc-biblioentry">
+<div id="ref-ogren_convexity_1993" class="csl-entry" role="listitem">
 Ogren, E. 1993. <span>“Convexity of the <span>Photosynthetic</span>
 <span>Light</span>-<span>Response</span> <span>Curve</span> in
 <span>Relation</span> to <span>Intensity</span> and
@@ -658,94 +740,77 @@ Ogren, E. 1993. <span>“Convexity of the <span>Photosynthetic</span>
 <span>Growth</span>.”</span> <em>Plant Physiology</em> 101 (3): 1013–19.
 <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC158720/">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC158720/</a>.
 </div>
-<div id="ref-Prado1997Photosynthetic" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Prado1997Photosynthetic" class="csl-entry" role="listitem">
 Prado, C. H., and J. A. P. V. De Moraes. 1997. <span>“Photosynthetic
 Capacity and Specific Leaf Mass in Twenty Woody Species of Cerrado
 Vegetation Under Field Conditions.”</span> <em>Photosynthetica</em> 33
 (1): 103–12.
 </div>
-<div id="ref-rcore" class="csl-entry" role="doc-biblioentry">
+<div id="ref-rcore" class="csl-entry" role="listitem">
 R Core Team. 2021. <em>R: A Language and Environment for Statistical
 Computing</em>. Vienna, Austria: R Foundation for Statistical Computing.
 <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
 </div>
-<div id="ref-saathoff_gas_2021" class="csl-entry" role="doc-biblioentry">
+<div id="ref-saathoff_gas_2021" class="csl-entry" role="listitem">
 Saathoff, Aaron J., and Jon Welles. 2021. <span>“Gas Exchange
 Measurements in the Unsteady State.”</span> <em>Plant, Cell &amp;
 Environment</em> 44 (11): 3509–23. <a href="https://doi.org/10.1111/pce.14178">https://doi.org/10.1111/pce.14178</a>.
 </div>
-<div id="ref-Smith2002" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Smith2002" class="csl-entry" role="listitem">
 Smith, Lindsay I. 2002. <span>“A Tutorial on Principal Component
 Analysis.”</span>
 </div>
-<div id="ref-stinziano2017" class="csl-entry" role="doc-biblioentry">
+<div id="ref-stinziano2017" class="csl-entry" role="listitem">
 Stinziano, J. R., P. B. Morgan, D. J. Lynch, A. J. Saathoff, D. K.
 Mcdermitt, and D. T. Hanson. 2017. <span>“The Rapid a-Ci Response:
 Photosynthesis in the Phenomic Era.”</span> <em>Plant Cell &amp;
 Environment</em> 40.
 </div>
-<div id="ref-stinziano2018" class="csl-entry" role="doc-biblioentry">
+<div id="ref-stinziano2018" class="csl-entry" role="listitem">
 Stinziano, Joseph R, Dayle K Mcdermitt, Douglas J Lynch, Aaron J
 Saathoff, Patrick B Morgan, and David T Hanson. 2018. <span>“The Rapid
 a/Ci Response: A Guide to Best Practices.”</span> <em>New
 Phytologist</em>.
 </div>
-<div id="ref-photosynthesispkg" class="csl-entry" role="doc-biblioentry">
+<div id="ref-photosynthesispkg" class="csl-entry" role="listitem">
 Stinziano, Joseph R, Cassaundra Roback, Demi Gamble, Bridget Murphy,
 Patrick Hudson, and Christopher D Muir. 2020. <span>“Photosynthesis:
 Tools for Plant Ecophysiology &amp; Modeling.”</span> <a href="https://CRAN.R-project.org/package=photosynthesis">https://CRAN.R-project.org/package=photosynthesis</a>.
 </div>
-<div id="ref-stirbetRelationKautskyEffect2011" class="csl-entry" role="doc-biblioentry">
-Stirbet, Alexandrina, and Govindjee. 2011. <span>“On the Relation
-Between the <span>Kautsky</span> Effect (Chlorophyll a Fluorescence
-Induction) and <span>Photosystem</span> <span>II</span>:
-<span>Basics</span> and Applications of the <span>OJIP</span>
-Fluorescence Transient.”</span> <em>Journal of Photochemistry and
-Photobiology B: Biology</em>, Special <span>Issue</span> on
-<span>Recent</span> <span>Progress</span> in the <span>Studies</span> of
-<span>Structure</span> and <span>Function</span> of
-<span>Photosystem</span> <span>II</span>, 104 (1): 236–57. <a href="https://doi.org/10.1016/j.jphotobiol.2010.12.010">https://doi.org/10.1016/j.jphotobiol.2010.12.010</a>.
-</div>
-<div id="ref-stirbetChlorophyllFluorescenceInduction2012" class="csl-entry" role="doc-biblioentry">
-Stirbet, Alexandrina, and Govindjee. 2012. <span>“Chlorophyll a
-Fluorescence Induction: A Personal Perspective of the Thermal Phase, the
-<span>J</span>–<span>I</span>–<span>P</span> Rise.”</span>
-<em>Photosynthesis Research</em> 113 (1): 15–61. <a href="https://doi.org/10.1007/s11120-012-9754-5">https://doi.org/10.1007/s11120-012-9754-5</a>.
-</div>
-<div id="ref-Thornley1976" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Thornley1976" class="csl-entry" role="listitem">
 Thornley, J H M. 1976. <span>“Mathematical Models in Plant
 Physiology.”</span> <em>London: Academic Press</em>.
 </div>
-<div id="ref-tsimilli_revisiting2019" class="csl-entry" role="doc-biblioentry">
+<div id="ref-tsimilli_revisiting2019" class="csl-entry" role="listitem">
 Tsimilli-Michael, Merope. 2019. <span>“Revisiting <span>JIP</span>-Test:
 <span>An</span> Educative Review on Concepts, Assumptions,
 Approximations, Definitions and Terminology.”</span>
 <em>Photosynthetica</em> 57 (December): 90–107. <a href="https://doi.org/10.32615/ps.2019.150">https://doi.org/10.32615/ps.2019.150</a>.
 </div>
-<div id="ref-tuzet2003a" class="csl-entry" role="doc-biblioentry">
+<div id="ref-tuzet2003a" class="csl-entry" role="listitem">
 Tuzet, A, A Perrier, and R Leuning. 2003. <span>“A Coupled Model of
 Stomatal Conductance, Photosynthesis and Transpiration.”</span>
 <em>Plant Cell and Environment</em> 26 (7): 1097–1116.
 </div>
-<div id="ref-walkerImprovedMethodMeasuring2015a" class="csl-entry" role="doc-biblioentry">
+<div id="ref-walkerImprovedMethodMeasuring2015a" class="csl-entry" role="listitem">
 Walker, Berkley J., and Donald R. Ort. 2015. <span>“Improved Method for
-Measuring the Apparent <span>Co2</span> Photocompensation Point Resolves
-the Impact of Multiple Internal Conductances to <span>Co2</span> to Net
+Measuring the Apparent <span>CO2</span> Photocompensation Point Resolves
+the Impact of Multiple Internal Conductances to <span>CO2</span> to Net
 Gas Exchange.”</span> <em>Plant, Cell &amp; Environment</em> 38 (11):
 2462–74. https://doi.org/<a href="https://doi.org/10.1111/pce.12562">https://doi.org/10.1111/pce.12562</a>.
 </div>
-<div id="ref-warton2012smatr" class="csl-entry" role="doc-biblioentry">
+<div id="ref-warton2012smatr" class="csl-entry" role="listitem">
 Warton, David I, Remko A Duursma, Daniel S Falster, and Sara Taskinen.
 2012. <span>“Smatr 3– an r Package for Estimation and Inference about
 Allometric Lines.”</span> <em>Methods in Ecology and Evolution</em> 3
 (2): 257–59.
 </div>
-<div id="ref-warton2006smatr" class="csl-entry" role="doc-biblioentry">
+<div id="ref-warton2006smatr" class="csl-entry" role="listitem">
 Warton, David I, Ian J Wright, Daniel S Falster, and Mark Westoby. 2006.
 <span>“Bivariate Line‐fitting Methods for Allometry.”</span>
 <em>Biological Reviews</em> 81 (2): 259–91.
 </div>
-<div id="ref-wayResponsesRespirationLight2019" class="csl-entry" role="doc-biblioentry">
+<div id="ref-wayResponsesRespirationLight2019" class="csl-entry" role="listitem">
 Way, Danielle A., Michael J. Aspinwall, John E. Drake, Kristine Y.
 Crous, Courtney E. Campany, Oula Ghannoum, David T. Tissue, and Mark G.
 Tjoelker. 2019. <span>“Responses of Respiration in the Light to Warming
@@ -753,13 +818,13 @@ in Field-Grown Trees: A Comparison of the Thermal Sensitivity of the
 <span>Kok</span> and <span>Laisk</span> Methods.”</span> <em>New
 Phytologist</em> 222 (1): 132–43. https://doi.org/<a href="https://doi.org/10.1111/nph.15566">https://doi.org/10.1111/nph.15566</a>.
 </div>
-<div id="ref-Wullschleger1993Biochemical" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Wullschleger1993Biochemical" class="csl-entry" role="listitem">
 Wullschleger, Stan D. 1993. <span>“Biochemical Limitations to Carbon
 Assimilation in C3 Plants—a Retrospective Analysis of the a-Ci Curves
 from 109 Species.”</span> <em>Journal of Experimental Botany</em> 44
 (262): 907–20.
 </div>
-<div id="ref-yin2009using" class="csl-entry" role="doc-biblioentry">
+<div id="ref-yin2009using" class="csl-entry" role="listitem">
 Yin, Xinyou, P C Struik, Pascual Romero, Jeremy Harbinson, Jochem B
 Evers, Peter E L Van Der Putten, and J Vos. 2009. <span>“Using Combined
 Measurements of Gas Exchange and Chlorophyll Fluorescence to Estimate
@@ -768,27 +833,27 @@ Appraisal and a New Integrated Approach Applied to Leaves in a Wheat
 (Triticum Aestivum) Canopy.”</span> <em>Plant Cell and Environment</em>
 32 (5): 448–64.
 </div>
-<div id="ref-yinEvaluatingNewMethod2011" class="csl-entry" role="doc-biblioentry">
+<div id="ref-yinEvaluatingNewMethod2011" class="csl-entry" role="listitem">
 Yin, Xinyou, Zhouping Sun, Paul C. Struik, and Junfei Gu. 2011.
 <span>“Evaluating a New Method to Estimate the Rate of Leaf Respiration
 in the Light by Analysis of Combined Gas Exchange and Chlorophyll
 Fluorescence Measurements.”</span> <em>Journal of Experimental
 Botany</em> 62 (10): 3489–99. <a href="https://doi.org/10.1093/jxb/err038">https://doi.org/10.1093/jxb/err038</a>.
 </div>
-<div id="ref-yinC3C4Photosynthesis2009" class="csl-entry" role="doc-biblioentry">
+<div id="ref-yinC3C4Photosynthesis2009" class="csl-entry" role="listitem">
 Yin, X., and P. C. Struik. 2009. <span>“C3 and <span>C4</span>
 Photosynthesis Models: <span>An</span> Overview from the Perspective of
 Crop Modelling.”</span> <em>NJAS - Wageningen Journal of Life
 Sciences</em>, Recent <span>Advances</span> in <span>Crop</span>
 <span>Growth</span> <span>Modelling</span>, 57 (1): 27–38. <a href="https://doi.org/10.1016/j.njas.2009.07.001">https://doi.org/10.1016/j.njas.2009.07.001</a>.
 </div>
-<div id="ref-ZhangXS2009" class="csl-entry" role="doc-biblioentry">
+<div id="ref-ZhangXS2009" class="csl-entry" role="listitem">
 Zhang, XS, SH Shen, and J Song. 2009. <span>“The Vertical Distribution
 of Cotton Leaf Nitrogen Content and Photosynthetic Characteristics in
 the North China Plain.”</span> <em>Acta Ecologica Sinica</em>, no. 29:
 1893–98.
 </div>
-<div id="ref-YEZiPiao2010" class="csl-entry" role="doc-biblioentry">
+<div id="ref-YEZiPiao2010" class="csl-entry" role="listitem">
 ZiPiao, YE. 2010. <span>“A Review on Modeling of Responses of
 Photosynthesis to Light and <span class="math inline"><em>C</em><em>O</em><sub>2</sub></span>.”</span>
 <em>Chinese Journal of Plant Ecology</em>, no. 06.
@@ -796,9 +861,28 @@ Photosynthesis to Light and <span class="math inline"><em>C</em><em>O</em><sub>2
 </div>
 
 
+
 </main> <!-- /main -->
-<script type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -806,9 +890,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -818,16 +916,53 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/zhujiedong\.github\.io\/photosynthesis-analysis\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -837,50 +972,314 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./smatr.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></span>
+      <a href="./smatr.html" class="pagination-link" aria-label="标准主轴分析介绍">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">标准主轴分析介绍</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./a1-run-environment.html">
+      <a href="./a1-run-environment.html" class="pagination-link" aria-label="运行环境">
         <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">运行环境</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -888,4 +1287,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 
 
-</body></html>
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/zhujiedong/photosynthesis-analysis/edit/master/references.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

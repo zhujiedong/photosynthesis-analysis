@@ -206,7 +206,6 @@ colnames(r_light_yin) <- c("C_s", "r_light")
 ```{r}
 #| label: yin-kable
 #| echo: false
-#| tbl-cap:  
 
 kable(r_light_yin, caption = "Yin 的方法测量的结果 {#tbl-yin-kable}")
 ```
@@ -234,9 +233,9 @@ walker_ort[[2]]
 ```{r}
 #| label: walk-kable
 #| echo: false
-#| tbl-cap:  
 
 kable(walker_ort[[3]], caption = "Walker 的方法测量的结果 {#tbl-walker-kable}")
 ```
 
 就是这些内容了，属于比较使用的函数。
+

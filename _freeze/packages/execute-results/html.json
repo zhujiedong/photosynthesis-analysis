@@ -1,0 +1,15 @@
+{
+  "hash": "b9a1ff2b49dbdd86cabdfc64a42bc392",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# 光合相关的软件包 {#sec-photo-packages}\n\n@rpkgphoto 对光合模型研究中使用的 `R` 包做了一个汇总，如下表：\n\n\n::: {.cell tbl-cap='{}'}\n::: {.cell-output-display}\n\n\nTable: 光合模型中使用的软件包{#tbl-packages-photo}\n\n|Model.description                                          |Repesentative.R.packages                                                                             |\n|:----------------------------------------------------------|:----------------------------------------------------------------------------------------------------|\n|FvCB/von Caemmerer model                                   |Agricolae (S), flux(S), hsdar (S), photosynthesis (S), plantecophys (S), rpmodel(S), YplantQMC(S)    |\n|Temperature response of parameters of photosynthesis model |Agricolae (S), flux(S), hsdar (S), photosynthesis (S), plantecophys (S), rpmodel (S), YplantQMC (S)  |\n|Irradiance response of parameters of photosynthesis model  |Photosynthesis (S), plantecophys (S)                                                                 |\n|Stomatal/mesophyll conductance models                      |Agricolae (S), gunit (S), hsdar (S), plantecophys (S), photosynthesis (S), SuessR (S), YplantQMC (S) |\n|Sensitivity analysis models                                |Agricolae (S), photosynthesis (S), plantecophys (S)                                                  |\n|Light environment and energy balance models                |AquaEnv (S), tealeaves (S), plantecophys (S), VICmodel (S)                                           |\n|Large-scale vegetation models                              |FluxnetLSM (S), plantecophys (S), vegan                                                              |\n|Hydraulic models                                           |Agricolae (S), photosynthesis (S), plantecophys (S), YplantQMC (S)                                   |\n|Spectral dynamics analysis models                          |Agricolae (S), hsdar(S), plantecophys (S), timp (S)                                                  |\n|Phylogenetic and evolutionary analysis models              |Ape (E), Caper (E), exp2flux (E), geiger (E), HyPhy (E), Phangorn (E), phyloch (E), phytools (E)     |\n\n\n:::\n:::\n\n\n表内将其功能有了一个简单的分类，有一些是光合专用包，有一些实际上是包含了一部分功能在里面。本章内容主要是对上述软件包以及一些上面表格没有列出的软件包进行相关介绍。其中专用于光合的软件包我会单独介绍，而普适性的或者只有部分功能用于此的则只是简单介绍部分功能。\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "hash": "6ad43b777a035e72521d7aed13e5a00f",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# 指数模型 {#sec-lrc_exp}\n\n光合指数模型较多，我们此处使用的指数模型为 @Prado1997Photosynthetic，其表达式为：\n\n$$\nP_{n} = P_{nmax}[1 - e^{-b(I-I_{C})}]\n$$ {#eq-exp}\n\n其中，$I_{c}$ 为光补偿点，$e$ 为自然对数的底，b为常数，其他参数意义同 @eq-exp。同样，该方程仍然是没有极值的函数，但我们可以直接求得光补偿点。\n\n## 指数模型的实现 {#sec-lrc_exp_exam}\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(minpack.lm)\n\n# 读取数据，同fitaci数据格式\nlrc <- read.csv(\"data/lrc.csv\")\nlrc <- subset(lrc, Obs > 0)\n\n# 光响应曲线没有太多参数，\n# 直接调出相应的光强和光合速率\n# 方便后面调用\nlrc_Q <- lrc$PARi\nlrc_A <- lrc$Photo \n\n# 模型的拟合\nlrcnls <- nlsLM(lrc_A ~ Am*(1-exp((-b)*(lrc_Q-Ic))),\n                start=list(Am=(max(lrc_A)-min(lrc_A)),\n                           Ic=5, b=1)\n                )\nfitlrc_exp <- summary(lrcnls)\n\n# 光饱和点\nIsat <- function(Isat){fitlrc_exp$coef[1,1]*\n    (1-exp((-fitlrc_exp$coef[3,1])*(Isat-\n    fitlrc_exp$coef[2,1])))-0.9*fitlrc_exp$coef[1,1]}\n\nuniroot(Isat, c(0,2000))$root\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 558.6038\n```\n\n\n:::\n\n```{.r .cell-code}\n## 拟合图形\nlibrary(ggplot2)\nlight <- data.frame(lrc_Q = lrc$PARi, lrc_A = lrc$Photo)\n\nexp_form <- y ~ Am*(1-exp((-b)*(x -Ic)))\n\nggplot(light, aes(x = lrc_Q, y = lrc_A)) + \n  geom_point(shape = 16, size = 3, color = \"green\") + \n  geom_smooth(method=\"nls\", formula = exp_form, \n    se = FALSE, method.args = list(\n    start = c(Am=(max(lrc_A)-min(lrc_A)),\n    Ic=5, b=0.002), aes(x =lrc_Q, y = lrc_A, \n    color='blue', size = 1.2))\n  )  +\n  labs(y=expression(paste(\"photosynthetic rate  \", \n          \"(\", mu, mol%.%m^-2%.%s^-1, \")\")), \n       x=expression(paste(\"PAR \", \n           \"(\", mu, mol%.%m^-2%.%s^-1, \")\"))) +\n  theme_light()\n```\n\n::: {.cell-output-display}\n![指数模型拟合](exp_files/figure-html/fig-nexpr-1.png){#fig-nexpr width=672}\n:::\n:::\n\n::: {#tbl-nexptable .cell tbl-cap='指数模型计算参数'}\n::: {.cell-output-display}\n\n\n|   |   Estimate| Std. Error|   t value| Pr(>&#124;t&#124;)|\n|:--|----------:|----------:|---------:|------------------:|\n|Am | 13.6547568|  0.1723363| 79.233185|          0.0000000|\n|Ic | -0.5133438|  2.3370250| -0.219657|          0.8305573|\n|b  |  0.0041183|  0.0002012| 20.467032|          0.0000000|\n\n\n:::\n:::\n\n\n最终的数据拟结果如图 @fig-nexpr 所示，拟合的参数及结果见表 @tbl-nexptable。\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

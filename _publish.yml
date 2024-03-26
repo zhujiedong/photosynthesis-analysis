@@ -1,0 +1,6 @@
+- source: project
+  quarto-pub:
+    - id: 8c9da1cd-dba8-4511-90fb-50acf4866dd1
+      url: 'https://zhujiedong.quarto.pub/yes'
+    - id: 43f16afe-24c0-4dc2-8bdd-503f3781ce06
+      url: 'https://zhujiedong.quarto.pub/photosynthesis-data-analysis'

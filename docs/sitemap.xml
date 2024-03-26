@@ -2,158 +2,162 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/index.html</loc>
-    <lastmod>2022-01-26T05:54:27.498Z</lastmod>
+    <lastmod>2024-03-26T01:04:28.654Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/thanks.html</loc>
-    <lastmod>2022-01-26T05:54:27.501Z</lastmod>
+    <lastmod>2021-11-26T07:17:58.248Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/preface.html</loc>
-    <lastmod>2022-01-26T05:54:27.522Z</lastmod>
+    <lastmod>2021-11-16T12:23:10.408Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/intro.html</loc>
-    <lastmod>2022-01-26T05:54:27.524Z</lastmod>
+    <lastmod>2021-11-15T14:26:29.475Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/basics.html</loc>
-    <lastmod>2022-01-26T05:54:27.530Z</lastmod>
+    <lastmod>2021-11-19T01:34:46.694Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/rbasics.html</loc>
-    <lastmod>2022-01-26T05:54:27.533Z</lastmod>
+    <lastmod>2021-11-19T01:34:41.798Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/python-basics.html</loc>
-    <lastmod>2022-01-26T05:54:27.538Z</lastmod>
+    <lastmod>2021-11-17T00:09:18.342Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/packages.html</loc>
-    <lastmod>2022-01-26T05:54:27.540Z</lastmod>
+    <lastmod>2021-12-03T06:59:52.127Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/phtosyn-pacakges.html</loc>
-    <lastmod>2022-01-26T05:54:27.542Z</lastmod>
+    <lastmod>2021-11-20T09:01:17.586Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/general-packages.html</loc>
-    <lastmod>2022-01-26T05:54:27.544Z</lastmod>
+    <lastmod>2021-11-18T01:17:09.869Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/data-prepare.html</loc>
-    <lastmod>2022-01-26T05:54:27.546Z</lastmod>
+    <lastmod>2021-11-19T07:08:25.195Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/data-import.html</loc>
-    <lastmod>2022-01-26T05:54:27.553Z</lastmod>
+    <lastmod>2024-03-26T02:33:14.899Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/batch-method.html</loc>
-    <lastmod>2022-01-26T05:54:27.561Z</lastmod>
+    <lastmod>2021-11-19T07:52:40.618Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/light-response.html</loc>
-    <lastmod>2022-01-26T05:54:27.564Z</lastmod>
+    <lastmod>2021-11-20T08:06:15.414Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/nls-start.html</loc>
-    <lastmod>2022-01-26T05:54:27.573Z</lastmod>
+    <lastmod>2021-12-07T12:09:45.222Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/hyp.html</loc>
-    <lastmod>2022-01-26T05:54:27.578Z</lastmod>
+    <lastmod>2024-03-26T02:53:27.143Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/non-hypo.html</loc>
-    <lastmod>2022-01-26T05:54:27.584Z</lastmod>
+    <lastmod>2022-01-11T10:21:28.179Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/exp.html</loc>
-    <lastmod>2022-01-26T05:54:27.592Z</lastmod>
+    <lastmod>2022-01-11T10:16:16.749Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/hyp-rev.html</loc>
-    <lastmod>2022-01-26T05:54:27.601Z</lastmod>
+    <lastmod>2022-04-02T06:57:30.596Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/aq-choose.html</loc>
-    <lastmod>2022-01-26T05:54:27.610Z</lastmod>
+    <lastmod>2024-03-26T02:57:04.831Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/big-leaf.html</loc>
-    <lastmod>2022-01-26T05:54:27.612Z</lastmod>
+    <lastmod>2022-01-11T10:23:43.782Z</lastmod>
+  </url>
+  <url>
+    <loc>https://zhujiedong.github.io/photosynthesis-analysis/python-aq-gui.html</loc>
+    <lastmod>2024-03-26T02:54:08.299Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/aci-curve.html</loc>
-    <lastmod>2022-01-26T05:54:27.617Z</lastmod>
+    <lastmod>2022-01-11T10:27:00.692Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/aci.html</loc>
-    <lastmod>2022-01-26T05:54:27.636Z</lastmod>
+    <lastmod>2024-03-26T03:02:04.891Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/DAT-vs-racir.html</loc>
-    <lastmod>2022-01-26T05:54:27.642Z</lastmod>
+    <lastmod>2021-12-07T12:29:29.628Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/plantecowraps.html</loc>
-    <lastmod>2022-01-26T05:54:27.647Z</lastmod>
+    <lastmod>2022-01-11T09:08:54.798Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/Rd.html</loc>
-    <lastmod>2022-01-26T05:54:27.664Z</lastmod>
+    <lastmod>2024-03-26T05:29:16.429Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/C4-related.html</loc>
-    <lastmod>2022-01-26T05:54:27.667Z</lastmod>
+    <lastmod>2024-03-26T02:59:35.207Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/fluorescence.html</loc>
-    <lastmod>2022-01-26T05:54:27.674Z</lastmod>
+    <lastmod>2021-11-23T10:41:27.290Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/jiptest.html</loc>
-    <lastmod>2022-01-26T05:54:27.681Z</lastmod>
+    <lastmod>2024-03-26T05:26:57.325Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/other-fluor.html</loc>
-    <lastmod>2022-01-26T05:54:27.690Z</lastmod>
+    <lastmod>2021-11-23T10:42:22.960Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/gm-gs.html</loc>
-    <lastmod>2022-01-26T05:54:27.693Z</lastmod>
+    <lastmod>2021-11-23T12:37:13.794Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/gs.html</loc>
-    <lastmod>2022-01-26T05:54:27.703Z</lastmod>
+    <lastmod>2022-01-11T10:35:04.648Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/gm.html</loc>
-    <lastmod>2022-01-26T05:54:27.708Z</lastmod>
+    <lastmod>2021-12-07T12:43:11.453Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/other-stat.html</loc>
-    <lastmod>2022-01-26T05:54:27.710Z</lastmod>
+    <lastmod>2021-11-24T05:47:27.173Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/common-stat.html</loc>
-    <lastmod>2022-01-26T05:54:27.715Z</lastmod>
+    <lastmod>2021-12-07T12:48:07.212Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/pca.html</loc>
-    <lastmod>2022-01-26T05:54:27.720Z</lastmod>
+    <lastmod>2024-03-26T05:34:18.829Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/smatr.html</loc>
-    <lastmod>2022-01-26T05:54:27.725Z</lastmod>
+    <lastmod>2021-12-07T12:52:27.020Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/references.html</loc>
-    <lastmod>2022-01-26T05:54:27.728Z</lastmod>
+    <lastmod>2021-11-19T06:37:34.475Z</lastmod>
   </url>
   <url>
     <loc>https://zhujiedong.github.io/photosynthesis-analysis/a1-run-environment.html</loc>
-    <lastmod>2022-01-26T05:54:27.730Z</lastmod>
+    <lastmod>2021-11-24T05:45:21.385Z</lastmod>
   </url>
 </urlset>

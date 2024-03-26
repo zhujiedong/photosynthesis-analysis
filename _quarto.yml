@@ -5,9 +5,9 @@ project:
 book:
   title: "LI-6800 和 LI-6400 光合数据分析指南"
   author: "祝介东"
-  date: "2021/11/13"
+  date: "2024/03/26"
   description: | 
-    介绍实用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主，
+    介绍使用相关工具对 LI-6800 和 LI-6400 光合数据进行分析的一些方法，主要以 R 为主，
     有时候为方便或者作为比较，会涉及 python 和其他工具。
   cover-image: img/cover.png
   site-url: https://zhujiedong.github.io/photosynthesis-analysis/
@@ -40,6 +40,7 @@ book:
         - hyp-rev.qmd
         - aq-choose.qmd
         - big-leaf.qmd
+        - python-aq-gui.qmd
         #-tbl- dataq-vs-aq.qmd
     - part: aci-curve.qmd
       chapters:
@@ -87,25 +88,15 @@ format:
     code-border-left: "#31BAE9"
     
     #self-contained: true
-    #lang: zh
+    lang: zh
 
 #editor: visual
 comments:
-  #hypothesis: true
-  
-crossref:
-  chapters: true
-  fig-title: 图
-  tbl-title: 表
-  title-delim: ":"
-  fig-prefix: 图
-  tbl-prefix: 表
-  eq-prefix: 公式
-  sec-prefix: 小节
+  hypothesis: false
   
 execute:
   warning: false
   message: false
-  #cache: true
-    
+  cache: true
+  freeze: auto  # re-render only when source changes   
 bibliography: references.bib
